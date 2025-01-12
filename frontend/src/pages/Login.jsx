@@ -5,6 +5,7 @@ const Login =() =>{
     return(
         <>
             <div class="text-center">
+                <h1>Inicio de Sesión</h1>
                 <img src={Logo} class="rounded" alt=""/>
             </div>
             <form>
