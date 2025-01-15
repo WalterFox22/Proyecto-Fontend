@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import { AuthProvider } from './context/AuthProvider';
 import Auth from './layout/Auth';
-import Register from './pages/Register';
+import Register from './pages/parent/Register';
 
 function App(){
   return(
