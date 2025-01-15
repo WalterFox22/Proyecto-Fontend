@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthProvider';
 import Auth from './layout/Auth';
 import Register from './pages/parent/Register';
 
+
 function App(){
   return(
     <>
