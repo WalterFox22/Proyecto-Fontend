@@ -1,3 +1,4 @@
+// Comuniar y trasmitir para lanzar la infromaicon a los componentes 
 import axios from 'axios'
 import { createContext, useEffect, useState} from 'react'
 
@@ -15,12 +16,13 @@ const AuthProvider = ({children}) =>{
             // pasos para acceder una una ruta privada
             const options={
                 headers:{
-                    'Content Type':'application/json',
-                    Authorization:`Bearer${token}`
+                    'Content-Type':'application/json',
+                    Authorization:`Bearer ${token}`
                 }
             }
 
             const respuesta = await axios.get(url, options);
+            console.warn(respuesta)
             setAuth(respuesta.data)
             
         } catch (error) {

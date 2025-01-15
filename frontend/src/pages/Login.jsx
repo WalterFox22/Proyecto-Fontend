@@ -1,11 +1,15 @@
 import Logo from '../assets/EMAUS.png';
 import '../App.css';
+import { Link } from 'react-router-dom';
 
 
 const Login =() =>{
 
     return(
         <>
+        <body className='body'>
+
+        
            <div class="glass-container">
                 <div class="login-box">
                     <h2>Login</h2>
@@ -21,13 +25,15 @@ const Login =() =>{
 
                         <button type='submit'>Ingresar</button>
 
-                        <p>¿No tienes una cuenta? <a href="#" id='registro'>Registrate</a></p>
+                        <p>¿No tienes una cuenta? </p>
+                        <Link to="/register"  className='registro'>Registrate</Link>
 
                     </form>
 
                 </div>
 
            </div>
+           </body>
         </>
         
     )
