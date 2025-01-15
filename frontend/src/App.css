@@ -10,19 +10,19 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('./assets/fondo.png');
+    background-image: url('./assets/fondo1.png');
     background-size: cover;
     background-position: center;
 }
 
 .glass-container {
-    width: 300px;
-    height: 450px;
+    width: 400px; /* Incrementa el ancho */
+    height: 550px; /* Incrementa la altura */
     position: relative;
     z-index: 1;
     background: rgba(255, 255, 255, 0.1); /* Transparencia */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    border-radius: 15px; /* Bordes más redondeados */
     border: 1px solid rgba(255, 255, 255, 0.6); /* Borde blanco */
     display: flex;
     flex-direction: column;
@@ -36,9 +36,9 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(8px); /* Efecto de desenfoque */
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 10px;
+    backdrop-filter: blur(10px); /* Efecto de desenfoque más notable */
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
     background: rgba(255, 255, 255, 0.2); /* Fondo adicional para mejorar el contraste */
     z-index: -1;
 }
@@ -51,21 +51,22 @@ form {
 }
 
 h2 {
-    color: black; /* Blanco para resaltar */
+    font-size: 24px; /* Texto más grande */
+    color: black; /* Negro para mejor visibilidad */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Sombra para mejor visibilidad */
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 input {
-    width: 80%;
-    padding: 10px;
-    margin-top: 15px;
+    width: 90%; /* Inputs más grandes */
+    padding: 15px; /* Más espacio interno */
+    margin-top: 20px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     background: transparent;
     border: 3px solid #fff;
-    color: black;
-    font-size: 13px;
+    color: white;
+    font-size: 16px; /* Texto más grande */
     text-align: center;
 }
 
@@ -79,15 +80,15 @@ input:focus {
 }
 
 button {
-    width: 80%;
+    width: 90%; /* Botón más ancho */
     background: linear-gradient(45deg, #4caf50, #81c784); /* Efecto degradado */
     color: white;
-    padding: 10px;
+    padding: 15px; /* Más espacio interno */
     border: none;
-    border-radius: 10px;
+    border-radius: 100px;
     cursor: pointer;
-    margin-top: 20px;
-    font-size: 14px;
+    margin-top: 25px;
+    font-size: 16px; /* Texto más grande */
     transition: 0.3s;
     text-transform: uppercase;
     font-weight: bold;
@@ -101,9 +102,9 @@ button:hover {
 }
 
 p, .options {
-    font-size: 14px;
+    font-size: 16px; /* Texto más grande */
     color: #ffffff; /* Blanco para buen contraste */
-    margin-top: 15px;
+    margin-top: 20px;
     text-align: center;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Sombra para mejor visibilidad */
 }
@@ -112,31 +113,31 @@ p, .options {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 80%;
+    width: 90%;
 }
-
 
 .options input {
     margin-right: 5px;
 }
 
 .options a {
-    color:aqua; /* Azul claro para enlaces */
+    color: aqua; /* Azul claro para enlaces */
     text-decoration: none;
     margin-left: 20px;
+    font-size: 16px; /* Texto más grande */
 }
 
 .options a:hover {
     text-decoration: underline;
 }
 
-.login-box{
-    max-width: 250px;
-    margin: o auto;
+.login-box {
+    max-width: 300px; /* Más ancho */
+    margin: 0 auto;
     text-align: center;
 }
 
 p a {
     color: aqua; 
-    margin:20px;
+    margin: 20px;
 }
