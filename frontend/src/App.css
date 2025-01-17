@@ -121,11 +121,19 @@ p, .options {
     margin-right: 5px;
 }
 
-.options a {
+.options a  {
     color: aqua; /* Azul claro para enlaces */
     text-decoration: none;
     margin-left: 20px;
     font-size: 16px; /* Texto más grande */
+}
+
+Link a {
+    color: aqua;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 16px; 
+
 }
 
 .options a:hover {

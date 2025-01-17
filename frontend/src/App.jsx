@@ -7,6 +7,7 @@ import Register from './pages/parent/Register';
 import LandingPage from './pages/driver/Landinpage';
 import { PrivateRoute } from './routes/PrivateRoutes';
 import Dashboard from './layout/Dashboard';
+import RecuperarContraseña from './pages/RecuperarContraseña';
 
 
 function App(){
@@ -20,6 +21,7 @@ function App(){
               
           <Route path='/' element={<Auth/>}>
             <Route path='register' element={<Register/>}></Route>
+            <Route path='recuperacion' element = {<RecuperarContraseña/>}></Route>
           </Route>
 
           <Route path='dashboard/*' element={

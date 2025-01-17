@@ -70,7 +70,8 @@ const Login =() =>{
                         <div class= "options">
                             <input type="checkbox" id="remember" name="remember" />
                             <label for="remember">Recordarme</label>
-                            <a href="#">Olvidaste tu contraseña?</a>
+                            <Link to= '/recuperacion' ><a href="#">Olvidaste tu contraseña?</a></Link>
+
                         </div>
 
                         
