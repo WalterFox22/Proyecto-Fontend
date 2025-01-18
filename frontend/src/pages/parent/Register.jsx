@@ -76,7 +76,16 @@ const Register = () =>{
 
                             <Form.Group as={Row} className="mt-3">
                                 <Col sm={{ span: 12, offset: 0 }} className="text-center">
-                                    <Button type="submit" variant="success" className="btn-lg px-5 py-3" style={{ fontWeight: 'bold', borderRadius: '10px', fontSize: '18px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', }}>
+                                    <Button type="submit" variant="success" className="btn-lg px-5 py-3" style={{
+                                        fontWeight: 'bold', 
+                                        borderRadius: '100px', 
+                                        fontSize: '18px', 
+                                        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', 
+                                        background: 'linear-gradient(45deg, #4caf50, #81c784)',  // Color de fondo
+                                        border: 'none', 
+                                        color: 'white',  
+                                        outline: 'none',  
+                                    }}>
                                         Registrar
                                     </Button>
                                 </Col>

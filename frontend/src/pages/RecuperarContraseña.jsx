@@ -34,50 +34,33 @@ const RecuperarContra = () => {
           }}
         >
           <Container style={{ maxWidth: "400px" }}>
-            <h1
-              className="text-center text-primary mb-4"
-              style={{ fontWeight: "700", fontSize: "2rem" }}
-            >
-              Welcome
-            </h1>
+          <h1
+            className="text-center mb-4"
+            style={{ fontWeight: "700", fontSize: "2rem", color: "black" }} // Título "Welcome" en negro
+          >
+            Recuperacion de Contraseña
+          </h1>
             <Form>
+              
               <Form.Group className="mb-3">
-                <Form.Label className="text-secondary fw-bold">Name:</Form.Label>
-                <Form.Control type="text" placeholder="Enter your name" />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label className="text-secondary fw-bold">
-                  Apellido:
-                </Form.Label>
-                <Form.Control type="text" placeholder="Ingresa tu apellido" />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label className="text-secondary fw-bold">
-                  Dirección:
-                </Form.Label>
-                <Form.Control type="text" placeholder="Ingresa tu dirección" />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label className="text-secondary fw-bold">
-                  Teléfono:
-                </Form.Label>
-                <Form.Control type="tel" placeholder="Ingresa tu teléfono" />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label className="text-secondary fw-bold">Email:</Form.Label>
+                <Form.Label className="text-black fw-bold">Email:</Form.Label> {/* Título en negro */}
                 <Form.Control type="email" placeholder="Ingresa tu email" />
               </Form.Group>
-              <Form.Group className="mb-4">
-                <Form.Label className="text-secondary fw-bold">
-                  Contraseña:
-                </Form.Label>
-                <Form.Control type="password" placeholder="********************" />
-              </Form.Group>
+              
               <Button
                 variant="primary"
                 type="submit"
                 className="w-100 mb-3"
-                style={{ fontWeight: "600", fontSize: "1rem" }}
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                  background: "linear-gradient(45deg, #4caf50, #81c784)",  // Estilo del botón
+                  color: "white",  // Color de texto
+                  border: "none",  // Eliminar borde
+                  borderRadius: "100px",  // Borde redondeado
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+                  transition: "0.3s",
+                }}
               >
                 Register
               </Button>
@@ -86,7 +69,7 @@ const RecuperarContra = () => {
               <p className="text-secondary mb-2">Already have an account?</p>
               <Button
                 variant="outline-primary"
-                href="/login"
+                href="/"
                 style={{ fontWeight: "600", fontSize: "0.9rem" }}
               >
                 Login
@@ -108,7 +91,7 @@ const RecuperarContra = () => {
         ></Col>
       </Row>
 
-      <Footer/>
+      <Footer />
     </div>
   );
 };

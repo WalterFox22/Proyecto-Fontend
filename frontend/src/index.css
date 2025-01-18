@@ -1,3 +1,59 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Estilos globales para tipografía */
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Títulos h1, h2, h3, h4 */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    color: #333;
+}
+
+/* Estilo para los botones */
+button, .btn {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Estilo para los botones */
+button {
+    background: linear-gradient(45deg, #4caf50, #81c784);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    margin-top: 25px;
+    font-size: 16px;
+    transition: 0.3s;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background: linear-gradient(45deg, #388e3c, #66bb6a);
+    transform: scale(1.05);
+}
+
+/* Eliminar borde azul en los botones dentro de un formulario */
+button:focus, .btn:focus {
+    outline: none; /* Quita el borde azul */
+    box-shadow: none; /* Elimina el efecto de sombra */
+}
+/* Estilo global para enlaces de React (Link) */
+.react-router-dom-link {
+    color: aqua;
+    margin: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-decoration: none;
+}
+
+.react-router-dom-link:hover {
+    text-decoration: underline;
+}

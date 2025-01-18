@@ -69,7 +69,7 @@ const Login = () => {
                             <label htmlFor="login-remember">Recordarme</label>
                             <Link to='/recuperacion' id="login-forgot-password">Olvidaste tu contraseña?</Link>
                         </div>
-                        <button id="login-button" className="btn btn-success">Ingresar</button>
+                        <button id="login-button" className="btn btn-success">Ingresar</button> <br></br>
                         <p id="login-register-text">¿No tienes una cuenta?</p>
                         <Link to="/register" id="login-register-link">Registrate</Link>
                     </form>
