@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import Fondo2 from "../../assets/Imagen2.jpg"; 
+import Fondo2 from "../../assets/Imagen4.jpg"; 
 import Footer from "../Footer";
 
 

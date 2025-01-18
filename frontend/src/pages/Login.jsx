@@ -1,4 +1,4 @@
-import Logo from '../assets/EMAUS.png';
+import Logo from '../assets/LogoEMAUS.jpg';
 import '../App.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';

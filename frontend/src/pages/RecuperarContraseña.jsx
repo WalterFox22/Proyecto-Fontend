@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import Fondo2 from "../assets/Imagen2.jpg"; // Imagen importada
+import Fondo2 from "../assets/Imagen3.jpg"; // Imagen importada
 import Footer from "./Footer";
 
 const RecuperarContra = () => {
