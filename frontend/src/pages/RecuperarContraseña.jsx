@@ -66,7 +66,7 @@ const RecuperarContra = () => {
               </Button>
             </Form>
             <div className="text-center">
-              <p className="text-secondary mb-2">Already have an account?</p>
+              <p className="text-secondary mb-2">¿Ya tienes una cuenta?</p>
               <Button
                 variant="outline-primary"
                 href="/"

@@ -1,5 +1,8 @@
-import {Button, Col, Form, Row, Image, Container} from 'react-bootstrap'
-import Imagen1 from '../../assets/EMAUS.png'
+import React from "react";
+
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import Fondo2 from "../../assets/Imagen2.jpg"; 
+import Footer from "../Footer";
 
 
 
@@ -10,97 +13,112 @@ const Register = () =>{
 
     return(
         <>
-            <Container fluid className="vh-100 p-0">
-                
-                <Row className="h-100 m-0"> 
-                    <Col xs={12} md={6} className="p-0">
-                    <Image src={Imagen1} className="w-100 h-100" style={{ objectFit: 'cover'}}/>
-                    </Col>
-                    <Col xs={12} md={6} className="p-0">
+            <div
+            style={{
+                display: "flex",
+                minHeight: "100vh",
+                flexDirection: "column",
+            }}
+            >
+            {/* Contenedor principal */}
+            <Row
+                className="flex-grow-1"
+                style={{
+                display: "flex",
+                margin: "0",
+                flexDirection: "row",
+                }}
+            >
+                {/* Columna izquierda: Formulario */}
+                <Col
+                xs={12}
+                md={6}
+                style={{
+                    backgroundColor: "#f8f9fa",
+                    padding: "2rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                >
+                <Container style={{ maxWidth: "400px" }}>
+                <h1
+                    className="text-center mb-4"
+                    style={{ fontWeight: "700", fontSize: "2rem", color: "black" }} // Título "Welcome" en negro
+                >
+                    Registrar Usuario
+                </h1>
+                    <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label className="text-black fw-bold">Name:</Form.Label> {/* Título en negro */}
+                        <Form.Control type="text" placeholder="Enter your name" />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label className="text-black fw-bold">Apellido:</Form.Label> {/* Título en negro */}
+                        <Form.Control type="text" placeholder="Ingresa tu apellido" />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label className="text-black fw-bold">Dirección:</Form.Label> {/* Título en negro */}
+                        <Form.Control type="text" placeholder="Ingresa tu dirección" />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label className="text-black fw-bold">Teléfono:</Form.Label> {/* Título en negro */}
+                        <Form.Control type="tel" placeholder="Ingresa tu teléfono" />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label className="text-black fw-bold">Email:</Form.Label> {/* Título en negro */}
+                        <Form.Control type="email" placeholder="Ingresa tu email" />
+                    </Form.Group>
+                    <Form.Group className="mb-4">
+                        <Form.Label className="text-black fw-bold">Contraseña:</Form.Label> {/* Título en negro */}
+                        <Form.Control type="password" placeholder="********************" />
+                    </Form.Group>
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        className="w-100 mb-3"
+                        style={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        background: "linear-gradient(45deg, #4caf50, #81c784)",  // Estilo del botón
+                        color: "white",  // Color de texto
+                        border: "none",  // Eliminar borde
+                        borderRadius: "100px",  // Borde redondeado
+                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+                        transition: "0.3s",
+                        }}
+                    >
+                        Register
+                    </Button>
+                    </Form>
+                    <div className="text-center">
+                    <p className="text-secondary mb-2">¿Ya tienes una cuenta?</p>
+                    <Button
+                        variant="outline-primary"
+                        href="/"
+                        style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                    >
+                        Login
+                    </Button>
+                    </div>
+                </Container>
+                </Col>
 
-                        <h1 className="text-center my-5 display-4">Registro</h1>
-                        <Form className="mx-auto" style={{ maxWidth: '500px' }}>
-                            <Form.Group as={Row} className="mb-4 align-items-center" controlId="formHorizontalNombre">
-                                <Form.Label column sm={3} className="fw-semibold text-end">
-                                    Nombre
-                                </Form.Label>
-                                <Col sm={9}>
-                                    <Form.Control type="text" className="py-2" />
-                                </Col>
-                            </Form.Group>
+                {/* Columna derecha: Imagen */}
+                <Col
+                xs={12}
+                md={6}
+                style={{
+                    backgroundImage: `url(${Fondo2})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    minHeight: "100%",
+                }}
+                ></Col>
+            </Row>
 
-                            <Form.Group as={Row} className="mb-4 align-items-center" controlId="formHorizontalApellido">
-                                <Form.Label column sm={3} className="fw-semibold text-end">
-                                    Apellido
-                                </Form.Label>
-                                <Col sm={9}>
-                                    <Form.Control type="text" className="py-2" />
-                                </Col>
-                            </Form.Group>
-
-                            <Form.Group as={Row} className="mb-4 align-items-center" controlId="formHorizontalTelefono">
-                                <Form.Label column sm={3} className="fw-semibold text-end">
-                                    Teléfono
-                                </Form.Label>
-                                <Col sm={9}>
-                                    <Form.Control type="text" className="py-2" />
-                                </Col>
-                            </Form.Group>
-
-                            <Form.Group as={Row} className="mb-4 align-items-center" controlId="formHorizontalCedula">
-                                <Form.Label column sm={3} className="fw-semibold text-end">
-                                    Cédula
-                                </Form.Label>
-                                <Col sm={9}>
-                                    <Form.Control type="text" className="py-2" />
-                                </Col>
-                            </Form.Group>
-
-                            <Form.Group as={Row} className="mb-4 align-items-center" controlId="formHorizontalEmail">
-                                <Form.Label column sm={3} className="fw-semibold text-end">
-                                    Email
-                                </Form.Label>
-                                <Col sm={9}>
-                                    <Form.Control type="email" placeholder="@" className="py-2" />
-                                </Col>
-                            </Form.Group>
-
-                            <Form.Group as={Row} className="mb-4 align-items-center" controlId="formHorizontalPassword">
-                                <Form.Label column sm={3} className="fw-semibold text-end">
-                                    Password
-                                </Form.Label>
-                                <Col sm={9}>
-                                    <Form.Control type="password" placeholder="*********" className="py-2" />
-                                </Col>
-                            </Form.Group>
-
-                            <Form.Group as={Row} className="mt-3">
-                                <Col sm={{ span: 12, offset: 0 }} className="text-center">
-                                    <Button type="submit" variant="success" className="btn-lg px-5 py-3" style={{
-                                        fontWeight: 'bold', 
-                                        borderRadius: '100px', 
-                                        fontSize: '18px', 
-                                        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', 
-                                        background: 'linear-gradient(45deg, #4caf50, #81c784)',  // Color de fondo
-                                        border: 'none', 
-                                        color: 'white',  
-                                        outline: 'none',  
-                                    }}>
-                                        Registrar
-                                    </Button>
-                                </Col>
-                            </Form.Group>
-                        </Form>
-                        
-
-
-
-
-                    </Col>
-                </Row>
-            </Container>
-            
-        
+            <Footer />
+        </div>
         </>
     )
 
