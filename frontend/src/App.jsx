@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import { AuthProvider } from './context/AuthProvider';
 import Auth from './layout/Auth';
@@ -9,6 +9,7 @@ import { PrivateRoute } from './routes/PrivateRoutes';
 import Dashboard from './layout/Dashboard';
 import RecuperarContraseña from './pages/RecuperarContraseña';
 import Inicio from './pages/driver/Inicio';
+import Perfil from './componets/Perfil/Perfil';
 
 
 function App(){
@@ -17,20 +18,22 @@ function App(){
       <BrowserRouter>
         <AuthProvider>
         <Routes>
-  
-          <Route index element={<Login />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          
+          <Route path='/login' element={<Login />} />
               
           <Route path='/' element={<Auth/>}>
-            <Route path='register' element={<Register/>}></Route>
-            <Route path='recuperacion' element = {<RecuperarContraseña/>}></Route>
+            <Route path='register' element={<Register/>}/>
+            <Route path='recuperacion' element = {<RecuperarContraseña/>}/>
           </Route>
 
           <Route path='dashboard/*' element={
             <PrivateRoute>
               <Routes>
                 <Route element={<Dashboard/>}>
+                  <Route index element={<Perfil/>}/>
 
-                  <Route index element={<Inicio/>}></Route>
+                  <Route path='inicio' element={<Inicio/>}/>
             
                 </Route>
               </Routes>

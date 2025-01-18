@@ -26,7 +26,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const url = `${import.meta.env.URL_BACKEND}login/conductor`;
+            const url = `${import.meta.env.URL_BACKEND}/login`;
             const respuesta = await axios.post(url, form);
             localStorage.setItem('token', respuesta.data.token);
             setAuth(respuesta.data);
@@ -48,28 +48,28 @@ const Login = () => {
                     <form id="login-form" onSubmit={handleSubmit}>
                         <input 
                             id="login-email" 
-                            value={form.email} 
-                            onChange={handleChange} 
+                            
                             type='email' 
                             name='email' 
+                            value={form.email} 
+                            onChange={handleChange} 
                             required 
                             placeholder='Email' 
                         />
                         <input 
                             id="login-password" 
+                            type='password' 
+                            name='password'
                             value={form.password} 
                             onChange={handleChange} 
-                            type='password' 
-                            name='password' 
                             required 
                             placeholder='Password' 
                         />
                         <div id="login-options">
-                            <input id="login-remember" type="checkbox" name="remember" />
-                            <label htmlFor="login-remember">Recordarme</label>
                             <Link to='/recuperacion' id="login-forgot-password">Olvidaste tu contraseña?</Link>
                         </div>
-                        <button id="login-button" className="btn btn-success">Ingresar</button> <br></br>
+                        <button to="/dashboard" id="login-button" className="btn btn-success">Ingresar</button> 
+                        <br></br>
                         <p id="login-register-text">¿No tienes una cuenta?</p>
                         <Link to="/register" id="login-register-link">Registrate</Link>
                     </form>
