@@ -1,8 +1,9 @@
 import React from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Fondo2 from "../assets/Imagen2.jpg"; // Imagen importada
+import Footer from "./Footer";
 
-const RecuperarContraseña = () => {
+const RecuperarContra = () => {
   return (
     <div
       style={{
@@ -107,20 +108,9 @@ const RecuperarContraseña = () => {
         ></Col>
       </Row>
 
-      {/* Pie de página */}
-      <footer
-        style={{
-          backgroundColor: "#343a40",
-          color: "#fff",
-          textAlign: "center",
-          padding: "1rem",
-          fontSize: "0.9rem",
-        }}
-      >
-        <p style={{ margin: 0 }}>© 2025 Todos los derechos Reservados. U.E EMAUS.</p>
-      </footer>
+      <Footer/>
     </div>
   );
 };
 
-export default RecuperarContraseña;
+export default RecuperarContra;
