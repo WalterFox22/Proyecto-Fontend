@@ -4,10 +4,11 @@ import Login from './pages/Login';
 import { AuthProvider } from './context/AuthProvider';
 import Auth from './layout/Auth';
 import Register from './pages/parent/Register';
-import LandingPage from './pages/driver/Landinpage';
+
 import { PrivateRoute } from './routes/PrivateRoutes';
 import Dashboard from './layout/Dashboard';
-import RecuperarContra from './pages/RecuperarContraseña';
+import RecuperarContraseña from './pages/RecuperarContraseña';
+import Inicio from './pages/driver/Inicio';
 
 
 function App(){
@@ -21,7 +22,7 @@ function App(){
               
           <Route path='/' element={<Auth/>}>
             <Route path='register' element={<Register/>}></Route>
-            <Route path='recuperacion' element = {<RecuperarContra/>}></Route>
+            <Route path='recuperacion' element = {<RecuperarContraseña/>}></Route>
           </Route>
 
           <Route path='dashboard/*' element={
@@ -29,7 +30,7 @@ function App(){
               <Routes>
                 <Route element={<Dashboard/>}>
 
-                  <Route index element={<LandingPage/>}></Route>
+                  <Route index element={<Inicio/>}></Route>
             
                 </Route>
               </Routes>

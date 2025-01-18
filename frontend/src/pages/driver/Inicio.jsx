@@ -1,6 +1,6 @@
 
 
-const LandingPage = () =>{
+const Inicio = () =>{
     return(
         <>
             <h1>Driver Landing Page</h1>
@@ -16,4 +16,4 @@ const LandingPage = () =>{
 
 
 
-export default LandingPage;
+export default Inicio;
