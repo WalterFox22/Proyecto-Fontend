@@ -1,82 +1,125 @@
-import { Button, Col, Form, Row, Image, Container } from 'react-bootstrap';
-import React from 'react';
-import Fondo2 from '../assets/Imagen2.jpg'; // Cambia por tu imagen de mejor calidad
+import React from "react";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import Fondo2 from "../assets/Imagen2.jpg"; // Imagen importada
 
 const RecuperarContraseña = () => {
   return (
-    <>
-      <Container fluid className="vh-100 p-0">
-        <Row className="h-100 m-0">
-          {/* Columna de la imagen */}
-          <Col xs={12} md={6} className="p-0">
-            <Image
-              src="https://image.isu.pub/140721180844-827232ba155ccf9840de108c501b26b1/jpg/page_1_thumb_large.jpg"
-              className="w-100 h-100"
-              style={{ objectFit: 'cover' }}
-            />
-          </Col>
-
-          {/* Columna del formulario */}
-          <Col xs={12} md={6} className="d-flex justify-content-center align-items-center p-4">
-            <div
-              className="w-100"
-              style={{
-                maxWidth: '500px',
-                padding: '30px',
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                textAlign: 'center',
-              }}
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        flexDirection: "column",
+      }}
+    >
+      {/* Contenedor principal */}
+      <Row
+        className="flex-grow-1"
+        style={{
+          display: "flex",
+          margin: "0",
+          flexDirection: "row",
+        }}
+      >
+        {/* Columna izquierda: Formulario */}
+        <Col
+          xs={12}
+          md={6}
+          style={{
+            backgroundColor: "#f8f9fa",
+            padding: "2rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Container style={{ maxWidth: "400px" }}>
+            <h1
+              className="text-center text-primary mb-4"
+              style={{ fontWeight: "700", fontSize: "2rem" }}
             >
-               <h1
-                className="text-center mb-4"
-                style={{
-                  fontFamily: 'Playfair Display, serif',
-                  fontWeight: '700', 
-                  fontSize: '3rem', 
-                  color: '#333',
-                  letterSpacing: '1px', 
-                  textTransform: 'uppercase',
-                }}
-              >Recuperar Contraseña</h1>
-
-              <Form>
-                {/* Campo de Email */}
-                <Form.Group as={Row} className="mb-4" controlId="formHorizontalEmail">
-                  <Form.Label column sm={3} className="fw-semibold text-end">
-                    Email
-                  </Form.Label>
-                  <Col sm={9}>
-                    <Form.Control
-                      type="email"
-                      placeholder="Ingrese su correo electrónico"
-                      className="py-2"
-                    />
-                  </Col>
-                </Form.Group>
-
-                {/* Mensaje informativo */}
-                <div className="mb-4" >
-                  <p style={{ color: '#666', fontSize: '0.9rem', textShadow:"none" }}>
-                    Verifique su correo electrónico para cambiar la contraseña
-                  </p>
-                </div>
-
-                {/* Botón */}
-                <Form.Group as={Row} className="mt-3">
-                  <Col sm={{ span: 12 }} className="text-center">
-                    <Button variant="success" className="w-100 py-2">
-                      Enviar
-                    </Button>
-                  </Col>
-                </Form.Group>
-              </Form>
+              Welcome
+            </h1>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label className="text-secondary fw-bold">Name:</Form.Label>
+                <Form.Control type="text" placeholder="Enter your name" />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label className="text-secondary fw-bold">
+                  Apellido:
+                </Form.Label>
+                <Form.Control type="text" placeholder="Ingresa tu apellido" />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label className="text-secondary fw-bold">
+                  Dirección:
+                </Form.Label>
+                <Form.Control type="text" placeholder="Ingresa tu dirección" />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label className="text-secondary fw-bold">
+                  Teléfono:
+                </Form.Label>
+                <Form.Control type="tel" placeholder="Ingresa tu teléfono" />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label className="text-secondary fw-bold">Email:</Form.Label>
+                <Form.Control type="email" placeholder="Ingresa tu email" />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="text-secondary fw-bold">
+                  Contraseña:
+                </Form.Label>
+                <Form.Control type="password" placeholder="********************" />
+              </Form.Group>
+              <Button
+                variant="primary"
+                type="submit"
+                className="w-100 mb-3"
+                style={{ fontWeight: "600", fontSize: "1rem" }}
+              >
+                Register
+              </Button>
+            </Form>
+            <div className="text-center">
+              <p className="text-secondary mb-2">Already have an account?</p>
+              <Button
+                variant="outline-primary"
+                href="/login"
+                style={{ fontWeight: "600", fontSize: "0.9rem" }}
+              >
+                Login
+              </Button>
             </div>
-          </Col>
-        </Row>
-      </Container>
-    </>
+          </Container>
+        </Col>
+
+        {/* Columna derecha: Imagen */}
+        <Col
+          xs={12}
+          md={6}
+          style={{
+            backgroundImage: `url(${Fondo2})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "100%",
+          }}
+        ></Col>
+      </Row>
+
+      {/* Pie de página */}
+      <footer
+        style={{
+          backgroundColor: "#343a40",
+          color: "#fff",
+          textAlign: "center",
+          padding: "1rem",
+          fontSize: "0.9rem",
+        }}
+      >
+        <p style={{ margin: 0 }}>© 2025 Todos los derechos Reservados. U.E EMAUS.</p>
+      </footer>
+    </div>
   );
 };
 

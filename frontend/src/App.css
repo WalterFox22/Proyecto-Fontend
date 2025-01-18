@@ -1,11 +1,4 @@
-
-* {
-    margin: 0;
-    font-family: 'montserrat', sans-serif;
-    box-sizing: border-box;
-}
-
-.body {
+#login-body {
     margin: 0;
     display: flex;
     justify-content: center;
@@ -16,15 +9,15 @@
     background-position: center;
 }
 
-.glass-container {
-    width: 400px; /* Incrementa el ancho */
-    height: 550px; /* Incrementa la altura */
+#login-glass-container {
+    width: 400px;
+    height: 550px;
     position: relative;
     z-index: 1;
-    background: rgba(255, 255, 255, 0.1); /* Transparencia */
+    background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 15px; /* Bordes más redondeados */
-    border: 1px solid rgba(255, 255, 255, 0.6); /* Borde blanco */
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,123 +25,114 @@
     overflow: hidden;
 }
 
-.glass-container::before {
+#login-glass-container::before {
     content: '';
     position: absolute;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(10px); /* Efecto de desenfoque más notable */
+    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 15px;
-    background: rgba(255, 255, 255, 0.2); /* Fondo adicional para mejorar el contraste */
+    background: rgba(255, 255, 255, 0.2);
     z-index: -1;
 }
 
-form {
+#login-form {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
 }
 
-h2 {
-    font-size: 24px; /* Texto más grande */
-    color: black; /* Negro para mejor visibilidad */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Sombra para mejor visibilidad */
+#login-title {
+    font-size: 24px;
+    color: black;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     margin-bottom: 25px;
 }
 
-input {
-    width: 90%; /* Inputs más grandes */
-    padding: 15px; /* Más espacio interno */
+#login-email, #login-password {
+    width: 90%;
+    padding: 15px;
     margin-top: 20px;
     border: none;
     border-radius: 12px;
     background: transparent;
     border: 3px solid #fff;
     color: white;
-    font-size: 16px; /* Texto más grande */
+    font-size: 16px;
     text-align: center;
 }
 
-input::placeholder {
-    color: rgba(255, 255, 255, 0.7); /* Color más tenue */
+#login-email::placeholder, #login-password::placeholder {
+    color: rgba(255, 255, 255, 0.7);
 }
 
-input:focus {
+#login-email:focus, #login-password:focus {
     outline: none;
-    border-color: black; /* Color llamativo al enfocar */
+    border-color: black;
 }
 
-button {
-    width: 90%; /* Botón más ancho */
-    background: linear-gradient(45deg, #4caf50, #81c784); /* Efecto degradado */
+#login-button {
+    width: 90%;
+    background: linear-gradient(45deg, #4caf50, #81c784);
     color: white;
-    padding: 15px; /* Más espacio interno */
+    padding: 15px;
     border: none;
     border-radius: 100px;
     cursor: pointer;
     margin-top: 25px;
-    font-size: 16px; /* Texto más grande */
+    font-size: 16px;
     transition: 0.3s;
     text-transform: uppercase;
     font-weight: bold;
     letter-spacing: 1px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para resaltar */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-button:hover {
-    background: linear-gradient(45deg, #388e3c, #66bb6a); /* Cambia el degradado al pasar el mouse */
-    transform: scale(1.05); /* Efecto de zoom */
+#login-button:hover {
+    background: linear-gradient(45deg, #388e3c, #66bb6a);
+    transform: scale(1.05);
 }
 
-p, .options {
-    font-size: 16px; /* Texto más grande */
-    color: #ffffff; /* Blanco para buen contraste */
+#login-no-account {
+    font-size: 16px;
+    color: #ffffff;
     margin-top: 20px;
     text-align: center;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Sombra para mejor visibilidad */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-.options {
+#login-options {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 90%;
 }
 
-.options input {
+#login-remember {
     margin-right: 5px;
 }
 
-.options a  {
-    color: aqua; /* Azul claro para enlaces */
-    text-decoration: none;
-    margin-left: 20px;
-    font-size: 16px; /* Texto más grande */
-}
-
-Link a {
+#login-forgot-password {
     color: aqua;
     text-decoration: none;
     margin-left: 20px;
-    font-size: 16px; 
-
+    font-size: 16px;
 }
 
-.options a:hover {
+#login-forgot-password:hover {
     text-decoration: underline;
 }
 
-.login-box {
-    max-width: 300px; /* Más ancho */
+#login-box {
+    max-width: 300px;
     margin: 0 auto;
     text-align: center;
 }
 
-.registro {
-    color: aqua; 
+#login-register-link {
+    color: aqua;
     margin: 20px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Sombra para mejor visibilidad */
-
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }

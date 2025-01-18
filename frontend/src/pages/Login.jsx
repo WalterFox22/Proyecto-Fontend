@@ -4,92 +4,80 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import AuthContext from '../context/AuthProvider';
 import axios from 'axios';
-import {toast, ToastContainer} from 'react-toastify'
+import {toast, ToastContainer} from 'react-toastify';
 
+const Login = () => {
 
-const Login =() =>{
+    const navigate = useNavigate();
+    const {setAuth, setEstado} = useContext(AuthContext);
 
-    const navigate = useNavigate()
-    const {setAuth, setEstado}= useContext(AuthContext)
-
-
-    // Paso 1  exraer la informacion de frontend
     const [form, setForm] = useState({
-        email:"",
-        password:""
-    })
+        email: "",
+        password: ""
+    });
 
-    //PASO 2 guardar la informacion obtenida 
-    const handleChange =(e) =>{
+    const handleChange = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
-        })
-    }
+        });
+    };
 
-    // PASO 3
-    const handleSubmit = async(e)=>{
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
-            const url= `${import.meta.env.URL_BACKEND}login/conductor`
-            const respuesta = await axios.post(url,form)
-            localStorage.setItem('token', respuesta.data.token)
-            setAuth(respuesta.data)
-            console.log(respuesta)
-            toast.success(respuesta.data.msg)
-            navigate('/dashboard')
-            
-            
+            const url = `${import.meta.env.URL_BACKEND}login/conductor`;
+            const respuesta = await axios.post(url, form);
+            localStorage.setItem('token', respuesta.data.token);
+            setAuth(respuesta.data);
+            toast.success(respuesta.data.msg);
+            navigate('/dashboard');
         } catch (error) {
-            console.log(error)
-            toast.error(error.response.data.msg)
+            console.log(error);
+            toast.error(error.response.data.msg);
         }
-    }
+    };
 
-    
-
-    return(
+    return (
         <>
-        <ToastContainer></ToastContainer>
-        <body className='body'>
-
-        
-           <div class="glass-container">
-                <div class="login-box">
-                    <h2>Login</h2>
-                    <form onSubmit={handleSubmit}>
+        <ToastContainer />
+        <body id="login-body">
+            <div id="login-glass-container">
+                <div id="login-box">
+                    <h2 id="login-title">Login</h2>
+                    <form id="login-form" onSubmit={handleSubmit}>
                         <input 
-                        value={form.email}
-                        onChange={handleChange}
-                        type='email' id='email' name='email' required placeholder='Email'/> <br></br>
+                            id="login-email" 
+                            value={form.email} 
+                            onChange={handleChange} 
+                            type='email' 
+                            name='email' 
+                            required 
+                            placeholder='Email' 
+                        />
                         <input 
-                        value={form.password}
-                        onChange={handleChange}
-                        type='password' id='password' name='password' required placeholder='Password'/>
-                        
-                        <div class= "options">
-                            <input type="checkbox" id="remember" name="remember" />
-                            <label for="remember">Recordarme</label>
-                            <Link to= '/recuperacion' ><a href="#">Olvidaste tu contraseña?</a></Link>
-
+                            id="login-password" 
+                            value={form.password} 
+                            onChange={handleChange} 
+                            type='password' 
+                            name='password' 
+                            required 
+                            placeholder='Password' 
+                        />
+                        <div id="login-options">
+                            <input id="login-remember" type="checkbox" name="remember" />
+                            <label htmlFor="login-remember">Recordarme</label>
+                            <Link to='/recuperacion' id="login-forgot-password">Olvidaste tu contraseña?</Link>
                         </div>
-
-                        
-                        <button to='/dashboard' className="btn btn-primary">Ingresar</button>
-                
-
-                        <p>¿No tienes una cuenta? </p>
-                        <Link to="/register"  className='registro'>Registrate</Link>
-
+                        <button id="login-button" className="btn btn-success">Ingresar</button>
+                        <p id="login-register-text">¿No tienes una cuenta?</p>
+                        <Link to="/register" id="login-register-link">Registrate</Link>
                     </form>
-
                 </div>
-
-           </div>
-           </body>
+            </div>
+        </body>
         </>
-        
-    )
-}
+    );
+};
 
 export default Login;
