@@ -12,8 +12,8 @@ const Login = () => {
     const {setAuth, setEstado} = useContext(AuthContext)
 
     const [form, setForm] = useState({
-        email: "",
-        password: ""
+        email:"",
+        password:""
     });
 
     const handleChange = (e) => {
