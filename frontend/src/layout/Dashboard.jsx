@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { Container, Row, Col, Navbar, Nav, Image, Button } from 'react-bootstrap';
 import AuthContext from '../context/AuthProvider';
-import Footer from '../pages/Footer';
+import Footer from '../pages/Footer'
+import LogoAdmin from '../assets/Admin.png'
 
 const Dashboard = () => {
   const location = useLocation();
@@ -22,18 +23,18 @@ const Dashboard = () => {
             className="bg-dark text-light p-3 d-flex flex-column"
             style={{ height: '100vh', overflowY: 'auto' }}
             >
-            <h2 className="text-center fw-bold">APP-DEMO</h2>
+            <h2 className="text-center fw-bold">U.E EMAUS</h2>
             <div className="text-center my-4">
                 <Image
-                src="https://cdn-icons-png.flaticon.com/512/2138/2138508.png"
+                src={LogoAdmin}
                 roundedCircle
                 width={120}
                 height={120}
                 className="border border-secondary"
                 />
                 <p className="mt-3">
-                <span className="bg-success rounded-circle d-inline-block me-2" style={{ width: 10, height: 10 }}></span>
-                Bienvenido - {auth?.nombre}
+                    <span className="bg-success rounded-circle d-inline-block me-2" style={{ width: 10, height: 10 }}></span>
+                    Bienvenido - {auth?.nombre || 'Usuario desconocido'}
                 </p>
             </div>
             <hr />
@@ -43,12 +44,12 @@ const Dashboard = () => {
                 to="/dashboard"
                 className={urlActual === '/dashboard' ? 'active text-light bg-secondary rounded p-2' : 'text-light'}
                 >
-                Perfil
+                Perfil Administrador
                 </Nav.Link>
                 <Nav.Link
                 as={Link}
                 to="/dashboard/inicio"
-                className={urlActual === '/dashboard/inicio' ? 'active text-light bg-secondary rounded p-2' : 'text-light'}
+                className={urlActual === '/dashboard/registro/conductores' ? 'active text-light bg-secondary rounded p-2' : 'text-light'}
                 >
                 Inicio
                 </Nav.Link>

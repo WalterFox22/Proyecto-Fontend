@@ -10,6 +10,7 @@ import Dashboard from './layout/Dashboard';
 import RecuperarContraseña from './pages/RecuperarContraseña';
 import Inicio from './pages/driver/Inicio';
 import Perfil from './componets/Perfil/Perfil';
+import RegistroConductor from './pages/admin/RegistroConductor';
 
 
 function App(){
@@ -32,7 +33,7 @@ function App(){
                 <Route element={<Dashboard/>}>
                   <Route index element={<Perfil/>}/>
 
-                  <Route path='inicio' element={<Inicio/>}/>
+                  <Route path='registro/conductores' element={<Inicio/>}/>
             
                 </Route>
               </Routes>

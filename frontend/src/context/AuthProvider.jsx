@@ -11,7 +11,7 @@ const AuthProvider = ({children}) =>{
     // La URL del perfil 
     const perfil = async (token)=>{
         try {
-            const url = `${import.meta.env.VITE_URL_BACKEND}/perfil`;
+            const url = `${import.meta.env.VITE_URL_BACKEND}/visualizar/perfil/admin`;
             
             // pasos para acceder una una ruta privada
             const options={
@@ -33,6 +33,7 @@ const AuthProvider = ({children}) =>{
     // Para que la informacion no se pierda y se cargo lo que ya se guardo 
     useEffect(() => {
         const token = localStorage.getItem('token') // Verificar el token cuando el componente se carga
+        
         if(token){
             perfil(token)
         } 
