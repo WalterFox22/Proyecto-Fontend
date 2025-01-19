@@ -71,7 +71,7 @@ const Login = () => {
                 <button id="login-button" className="btn btn-success">Ingresar</button> 
                 <br />
                 <p id="login-register-text">¿No tienes una cuenta?</p>
-                <Link to="/register" id="login-register-link">Registrate</Link>
+                <Link to="/registro/representantes" id="login-register-link">Registrate</Link>
               </form>
             </div>
           </div>

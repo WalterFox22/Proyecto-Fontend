@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Fondo2 from "../assets/Imagen3.jpg"; // Imagen importada
 import Footer from "./Footer";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const RecuperarContra = () => {
 
@@ -29,14 +30,18 @@ const RecuperarContra = () => {
     try {
       const url = `${import.meta.env.VITE_URL_BACKEND}/recuperacion/contrasenia`
       const respuesta = await axios.post(url,mail)
+      toast.success(respuesta.data.msg)
     } catch (error) {
       console.log(error)
+      toast.error(error.response.data.msg)
     }
   }
 
 
   
   return (
+    <>
+    <ToastContainer></ToastContainer>
     <div
       style={{
         display: "flex",
@@ -94,7 +99,7 @@ const RecuperarContra = () => {
                   transition: "0.3s",
                 }}
               >
-                Register
+                Enviar
               </Button>
             </Form>
             <div className="text-center">
@@ -125,6 +130,7 @@ const RecuperarContra = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 
