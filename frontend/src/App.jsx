@@ -18,13 +18,12 @@ function App(){
       <BrowserRouter>
         <AuthProvider>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
           
-          <Route path='/login' element={<Login />} />
-              
+          <Route index element={<Login />} />
           <Route path='/' element={<Auth/>}>
+            <Route path="login" element={<Login />} />
             <Route path='register' element={<Register/>}/>
-            <Route path='recuperacion' element = {<RecuperarContraseña/>}/>
+            <Route path='recuperacion/contrasenia' element = {<RecuperarContraseña/>}/>
           </Route>
 
           <Route path='dashboard/*' element={

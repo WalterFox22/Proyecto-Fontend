@@ -1,9 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Fondo2 from "../assets/Imagen3.jpg"; // Imagen importada
 import Footer from "./Footer";
+import axios from "axios";
 
 const RecuperarContra = () => {
+
+  const [mensaje, setMensaje]= useState("")
+
+  //Paso 1 capturar la informacion
+
+  const [mail, setMail]=useState({})
+
+
+  //Paso 2 guardar la informacion caputurada 
+
+  const handleChange= (e)=>{
+    setMail({
+      ...mail,
+      [e.target.name]:e.target.value
+    })
+  }
+
+  // Paso 3 Envio de la informacion a backend
+
+  const handleSubmit = async (e)=>{
+    e.preventDefault() // Para evitar que se pierda la info al recargar 
+    try {
+      const url = `${import.meta.env.VITE_URL_BACKEND}/recuperacion/contrasenia`
+      const respuesta = await axios.post(url,mail)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  
   return (
     <div
       style={{
@@ -40,11 +72,11 @@ const RecuperarContra = () => {
           >
             Recuperacion de Contraseña
           </h1>
-            <Form>
+            <Form onSubmit={handleSubmit}>
               
               <Form.Group className="mb-3">
                 <Form.Label className="text-black fw-bold">Email:</Form.Label> {/* Título en negro */}
-                <Form.Control type="email" placeholder="Ingresa tu email" />
+                <Form.Control name='email' onChange={handleChange} type="email" placeholder="Ingresa tu email" />
               </Form.Group>
               
               <Button
@@ -69,7 +101,7 @@ const RecuperarContra = () => {
               <p className="text-secondary mb-2">¿Ya tienes una cuenta?</p>
               <Button
                 variant="outline-primary"
-                href="/"
+                href="/login"
                 style={{ fontWeight: "600", fontSize: "0.9rem" }}
               >
                 Login

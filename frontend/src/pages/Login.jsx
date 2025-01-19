@@ -35,6 +35,7 @@ const Login = () => {
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.msg);
+            
         }
     };
 
@@ -65,7 +66,7 @@ const Login = () => {
                   placeholder="Password" 
                 />
                 <div id="login-options">
-                  <Link to="/recuperacion" id="login-forgot-password">Olvidaste tu contraseña?</Link>
+                  <Link to="/recuperacion/contrasenia" id="login-forgot-password">Olvidaste tu contraseña?</Link>
                 </div>
                 <button id="login-button" className="btn btn-success">Ingresar</button> 
                 <br />
