@@ -11,7 +11,7 @@ const AuthProvider = ({children}) =>{
     // La URL del perfil 
     const perfil = async (token)=>{
         try {
-            const url = `${import.meta.env.URL_BACKEND}/perfil`;
+            const url = `${import.meta.env.VITE_URL_BACKEND}/perfil`;
             
             // pasos para acceder una una ruta privada
             const options={
