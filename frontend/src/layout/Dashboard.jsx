@@ -48,17 +48,17 @@ const Dashboard = () => {
                 </Nav.Link>
                 <Nav.Link
                 as={Link}
-                to="/dashboard/inicio"
+                to="/dashboard/registro/conductores"
                 className={urlActual === '/dashboard/registro/conductores' ? 'active text-light bg-secondary rounded p-2' : 'text-light'}
                 >
-                Inicio
+                Registrar Conductor
                 </Nav.Link>
                 <Nav.Link
                 as={Link}
-                to="/dashboard/crear"
-                className={urlActual === '/dashboard/crear' ? 'active text-light bg-secondary rounded p-2' : 'text-light'}
+                to="/dashboard/listar/conductores"
+                className={urlActual === '/dashboard/listar/conductores' ? 'active text-light bg-secondary rounded p-2' : 'text-light'}
                 >
-                Crear
+                Lista de Conductores
                 </Nav.Link>
             </Nav>
             </Col>
