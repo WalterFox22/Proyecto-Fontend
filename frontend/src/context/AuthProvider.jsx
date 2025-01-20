@@ -31,9 +31,8 @@ const AuthProvider = ({ children }) => {
     console.log('Token:', token); // Agrega este console.log para verificar el token
     if (token) {
       perfil(token);
-    } else {
-      setLoading(false);
     }
+    
   }, []);
 
   return (
