@@ -37,6 +37,7 @@ const Dashboard = () => {
         <Row className="flex-nowrap flex-grow-1 m-0">
           {/* Sidebar */}
           <Col
+            xs={12}
             md={3}
             lg={2}
             className="bg-dark text-light p-3 d-flex flex-column"
@@ -44,13 +45,11 @@ const Dashboard = () => {
           >
             <h2 className="text-center fw-bold">U.E EMAUS</h2>
             <div className="text-center my-4">
-              <Image
-                src={LogoAdmin}
-                roundedCircle
-                width={120}
-                height={120}
-                className="border border-secondary"
-              />
+            <Image
+              src={LogoAdmin}
+              roundedCircle
+              className="img-fluid border border-secondary"
+            />
               <p className="mt-3">
                 <span className="bg-success rounded-circle d-inline-block me-2" style={{ width: 10, height: 10 }}></span>
                 Bienvenido - {auth?.nombre || 'Usuario desconocido'}
