@@ -93,7 +93,7 @@ const Register = () =>{
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
                             <Form.Label className="text-black fw-bold">Nombre:</Form.Label> {/* Título en negro */}
-                            <Form.Control name="nombre" value={form.nombre || ""} onChange={handleChange} type="text" placeholder="Enter your name" />
+                            <Form.Control name="nombre" value={form.nombre || ""} onChange={handleChange} type="text" placeholder="Ingrese su Nombre" />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label className="text-black fw-bold">Apellido:</Form.Label> {/* Título en negro */}
