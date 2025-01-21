@@ -17,17 +17,10 @@ button, .btn {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-}
-
-/* Estilo para los botones */
-button {
-    background: linear-gradient(45deg, #4caf50, #81c784);
-    color: white;
+    border-radius: 100px; /* Bordes redondeados aplicados globalmente */
     padding: 15px;
     border: none;
-    border-radius: 100px;
     cursor: pointer;
-    margin-top: 25px;
     font-size: 16px;
     transition: 0.3s;
     text-transform: uppercase;
@@ -36,16 +29,18 @@ button {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-button:hover {
-    background: linear-gradient(45deg, #388e3c, #66bb6a);
-    transform: scale(1.05);
-}
-
 /* Eliminar borde azul en los botones dentro de un formulario */
 button:focus, .btn:focus {
     outline: none; /* Quita el borde azul */
     box-shadow: none; /* Elimina el efecto de sombra */
 }
+
+/* Efecto al pasar el mouse sobre el botón (sobresalir) */
+button:hover, .btn:hover {
+    transform: scale(1.05); /* Hace que el botón sobresalga ligeramente */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* Agrega más sombra para resaltar */
+}
+
 /* Estilo global para enlaces de React (Link) */
 .react-router-dom-link {
     color: aqua;
@@ -56,4 +51,13 @@ button:focus, .btn:focus {
 
 .react-router-dom-link:hover {
     text-decoration: underline;
+}
+
+.text-gray-700 {
+    font-weight: bold; /* Esto pondrá en negritas el texto */
+}
+button:hover, .btn:hover {
+    transform: scale(1.05); /* Hace que el botón sobresalga ligeramente */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* Agrega más sombra para resaltar */
+    background-color: #388e3c; /* Verde más oscuro al pasar el mouse */
 }

@@ -1,26 +1,30 @@
-import React from 'react'
-
+import React from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import FormularioRegistro from '../../componets/Perfil/FormularioRegistro';
+import LoadingPhoto from '../../componets/Perfil/LoadingPhoto';
 
 const RegistroConductor = () => {
     return (
-        <>       
-            <div>
-                <h1 className='font-black text-4xl text-gray-500'>Perfil</h1>
-                <hr className='my-4' />
-                <p className='mb-8'>Este módulo te permite visualizar y actualizar el El conductor</p>
+        <Container fluid>
+            {/* Encabezado */}
+            <div className="text-center mb-4">
+                <h1>Registro Conductor</h1>
+                <hr />
+                <p>Este módulo te permite visualizar y actualizar al conductor.</p>
             </div>
 
-            <div className='flex justify-around gap-x-8 flex-wrap gap-y-8 md:flex-nowrap'>
-                <div className='w-full md:w-1/2'>
-                    
-                </div>
-                <div className='w-full md:w-1/2'>
-                    
-                </div>
-            </div>
-        </>
+            {/* Contenido principal */}
+            <Row className="justify-content-center align-items-center">
+                <Col xs={12} md={6}>
+                    <FormularioRegistro />
+                </Col>
+                <Col xs={12} md={6}>
+                    {/* Espacio reservado para contenido adicional */}
+                    <LoadingPhoto/>
+                </Col>
+            </Row>
+        </Container>
+    );
+};
 
-    )
-}
-
-export default RegistroConductor
+export default RegistroConductor;

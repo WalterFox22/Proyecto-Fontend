@@ -54,6 +54,8 @@ const Dashboard = () => {
                 <span className="bg-success rounded-circle d-inline-block me-2" style={{ width: 10, height: 10 }}></span>
                 Bienvenido - {auth?.nombre || 'Usuario desconocido'}
               </p>
+              {/*PARA VISUALIZAR EL ROL*/}
+              <p className='text-slate-400 text-center my-4 text-sm'> Rol - {auth?.rol}</p>
             </div>
             <hr />
             <Nav className="flex-column">
@@ -62,7 +64,7 @@ const Dashboard = () => {
                 to="/dashboard"
                 className={urlActual === '/dashboard' ? 'active text-light bg-secondary rounded p-2' : 'text-light'}
               >
-                Perfil Administrador
+                Perfil del Usuario
               </Nav.Link>
               <Nav.Link
                 as={Link}

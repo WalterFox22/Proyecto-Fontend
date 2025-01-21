@@ -51,9 +51,15 @@ const FormularioPerfil = () => {
             </Form.Group>
 
             <Button
-                variant="dark"
                 type="submit"
-                className="w-100">
+                className="w-100 custom-btn" 
+                style={{
+                    color: "white", // Texto blanco
+                    border: "none", // Sin borde
+                    borderRadius: "5px", // Bordes redondeados
+                    background: "#4caf50", // Verde sólido
+                }}
+            >
                 Actualizar
             </Button>
         </Form>
