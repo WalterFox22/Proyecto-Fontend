@@ -52,12 +52,13 @@ const FormularioPerfil = () => {
 
             <Button
                 type="submit"
-                className="w-100 custom-btn" 
+                variant="success"
+                className="w-100 " 
                 style={{
                     color: "white", // Texto blanco
                     border: "none", // Sin borde
                     borderRadius: "5px", // Bordes redondeados
-                    background: "#4caf50", // Verde sólido
+                    
                 }}
             >
                 Actualizar

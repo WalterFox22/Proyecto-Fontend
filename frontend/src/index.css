@@ -58,6 +58,21 @@ button:hover, .btn:hover {
 }
 button:hover, .btn:hover {
     transform: scale(1.05); /* Hace que el botón sobresalga ligeramente */
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* Agrega más sombra para resaltar */
-    background-color: #388e3c; /* Verde más oscuro al pasar el mouse */
+    
+}
+
+/* Estilo global para los placeholders */
+::placeholder {
+    color: #ccc; /* Un gris más claro */
+    font-style: italic; /* Opcional, para diferenciarlos aún más */
+}
+
+/* Soporte para navegadores antiguos */
+::-webkit-input-placeholder {
+    color: #ccc;
+    font-style: italic;
+}
+:-ms-input-placeholder {
+    color: #ccc;
+    font-style: italic;
 }

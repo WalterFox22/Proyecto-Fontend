@@ -1,15 +1,24 @@
 import React from 'react';
-import { Table, Card } from 'react-bootstrap';
+import { Table, Card, Form,Button } from 'react-bootstrap';
 import { MdNoteAdd, MdInfo, MdDeleteForever } from 'react-icons/md';
 
 const BarraListar = () => {
     return (
         <>
+        <Form className="d-flex">
+            <Form.Control
+              type="search"
+              placeholder="Buscar Conductor"
+              className="me-2"
+              aria-label="Search"
+            />
+            <Button variant="outline-success">BUSCAR</Button>
+          </Form>
             <Card className="shadow-lg rounded-lg border-0 mt-5">
                 <Card.Body>
                     <Table striped bordered hover responsive className="table-sm text-center w-100">
-                        <thead className="bg-secondary text-white">
-                            <tr>
+                        <thead>
+                            <tr style={{ backgroundColor: '#1f2833', color: '#ffffff' }}>
                                 <th>N°</th>
                                 <th>Nombre</th>
                                 <th>Propietario</th>
@@ -20,19 +29,27 @@ const BarraListar = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {/* Ejemplo de datos */}
-                            <tr className="align-middle" style={{ backgroundColor: '#f7f7f7' }}>
+                            <tr style={{ backgroundColor: '#f8f9fa' }}>
                                 <td>1</td>
-                                <td style={{ backgroundColor: '#e9ecef' }}>Juan Pérez</td>
-                                <td style={{ backgroundColor: '#e9ecef' }}>Maria López</td>
-                                <td style={{ backgroundColor: '#e9ecef' }}>juan@email.com</td>
-                                <td style={{ backgroundColor: '#e9ecef' }}>1234567890</td>
-                                <td>
-                                    <span className="bg-success text-white text-xs font-weight-bold px-3 py-1 rounded">
-                                        Activo
-                                    </span>
+                                <td>Juan Pérez</td>
+                                <td>Maria López</td>
+                                <td>juan@email.com</td>
+                                <td>1234567890</td>
+                                <td><span className="badge bg-success">Activo</span></td>
+                                <td className="d-flex justify-content-center align-items-center" style={{ minWidth: '150px', minHeight:'36px' }}>
+                                    <MdNoteAdd className="h-9 w-9 text-primary cursor-pointer inline-block mr-3" />
+                                    <MdInfo className="h-9 w-9 text-info cursor-pointer inline-block mr-3" />
+                                    <MdDeleteForever className="h-9 w-9 text-danger cursor-pointer inline-block" />
                                 </td>
-                                <td className="d-flex justify-content-between align-items-center" style={{ width: '100%' }}>
+                            </tr>
+                            <tr style={{ backgroundColor: '#ffffff' }}>
+                                <td>2</td>
+                                <td>Carlos Gómez</td>
+                                <td>Lucía Ramírez</td>
+                                <td>carlos@email.com</td>
+                                <td>0987654321</td>
+                                <td><span className="badge bg-danger">Inactivo</span></td>
+                                <td className="d-flex justify-content-center align-items-center" style={{ minWidth: '150px' }}>
                                     <MdNoteAdd className="h-9 w-9 text-primary cursor-pointer inline-block mr-3" />
                                     <MdInfo className="h-9 w-9 text-info cursor-pointer inline-block mr-3" />
                                     <MdDeleteForever className="h-9 w-9 text-danger cursor-pointer inline-block" />

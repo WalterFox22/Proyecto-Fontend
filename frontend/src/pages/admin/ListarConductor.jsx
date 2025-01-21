@@ -14,7 +14,7 @@ const ListarCondutor = () => {
 
             {/* Contenido principal */}
             <Row className="justify-content-center">
-                <Col xs={12} md={10} lg={8}>
+                <Col xs={12} md={12} lg={10}>   
                     {/* BarraListar ocupa todo el ancho dentro de la columna */}
                     <BarraListar />
                 </Col>

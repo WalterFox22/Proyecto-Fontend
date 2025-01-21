@@ -48,14 +48,14 @@ const LoadingPhoto = () => {
             <div className="mt-3">
             <Button
             type="submit"
+            variant="success"
             className="me-2"
             disabled={!image}
             style={{
-                background: "linear-gradient(45deg, #4caf50, #388e3c)", // Degradado verde
                 border: "none", // Sin borde
                 borderRadius: "5px", // Bordes redondeados
                 padding: "10px 20px", // Espaciado dentro del botón
-                transition: "background 0.3s ease", // Transición suave para el fondo
+               
             }}
             >
             Subir
