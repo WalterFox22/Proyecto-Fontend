@@ -52,7 +52,6 @@ const LoadingPhoto = () => {
             disabled={!image}
             style={{
                 background: "linear-gradient(45deg, #4caf50, #388e3c)", // Degradado verde
-                
                 border: "none", // Sin borde
                 borderRadius: "5px", // Bordes redondeados
                 padding: "10px 20px", // Espaciado dentro del botón
@@ -68,8 +67,6 @@ const LoadingPhoto = () => {
                 onClick={handleClearImage}
                 disabled={!image} // Deshabilita el botón si no hay imagen seleccionada
                 style={{
-                    
-                  
                     border: "none", // Sin borde
                     borderRadius: "5px", // Bordes redondeados
                     padding: "10px 20px", // Espaciado dentro del botón
@@ -84,7 +81,7 @@ const LoadingPhoto = () => {
           {/* Mostrar la imagen cargada si existe */}
           {image && (
             <div className="mt-4">
-              <h5>Preview:</h5>
+              <h5>Vista Previa:</h5>
               <Image src={image} alt="Uploaded Preview" fluid />
             </div>
           )}
