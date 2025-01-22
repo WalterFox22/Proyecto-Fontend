@@ -106,7 +106,7 @@ const RecuperarContra = () => {
               <p className="text-secondary mb-2">¿Ya tienes una cuenta?</p>
               <Button
                 variant="outline-primary"
-                href="/login"
+                href="/"
                 style={{ fontWeight: "600", fontSize: "0.9rem" }}
               >
                 Login
