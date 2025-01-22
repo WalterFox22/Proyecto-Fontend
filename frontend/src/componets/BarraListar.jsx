@@ -1,6 +1,7 @@
 import React from 'react';
-import { Table, Card, Form,Button } from 'react-bootstrap';
-import { MdNoteAdd, MdInfo, MdDeleteForever } from 'react-icons/md';
+import { Table, Card, Form, Button } from 'react-bootstrap';
+import Delete from '../assets/Delete.png';
+import Update from '../assets/Update.png';
 
 const BarraListar = () => {
     return (
@@ -37,22 +38,8 @@ const BarraListar = () => {
                                 <td>1234567890</td>
                                 <td><span className="badge bg-success">Activo</span></td>
                                 <td className="d-flex justify-content-center align-items-center" style={{ minWidth: '150px', minHeight:'36px' }}>
-                                    <MdNoteAdd className="h-9 w-9 text-primary cursor-pointer inline-block mr-3" />
-                                    <MdInfo className="h-9 w-9 text-info cursor-pointer inline-block mr-3" />
-                                    <MdDeleteForever className="h-9 w-9 text-danger cursor-pointer inline-block" />
-                                </td>
-                            </tr>
-                            <tr style={{ backgroundColor: '#ffffff' }}>
-                                <td>2</td>
-                                <td>Carlos Gómez</td>
-                                <td>Lucía Ramírez</td>
-                                <td>carlos@email.com</td>
-                                <td>0987654321</td>
-                                <td><span className="badge bg-danger">Inactivo</span></td>
-                                <td className="d-flex justify-content-center align-items-center" style={{ minWidth: '150px' }}>
-                                    <MdNoteAdd className="h-9 w-9 text-primary cursor-pointer inline-block mr-3" />
-                                    <MdInfo className="h-9 w-9 text-info cursor-pointer inline-block mr-3" />
-                                    <MdDeleteForever className="h-9 w-9 text-danger cursor-pointer inline-block" />
+                                    <img src={Update} alt="Update" style={{ height: '24px', width: '24px', marginRight: '10px' }} className="cursor-pointer inline-block" />
+                                    <img src={Delete} alt="Delete" style={{ height: '24px', width: '24px', marginRight: '10px' }} className="cursor-pointer inline-block" />
                                 </td>
                             </tr>
                         </tbody>
