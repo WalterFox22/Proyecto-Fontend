@@ -4,6 +4,7 @@ import Fondo2 from "../assets/Imagen3.jpg"; // Imagen importada
 import Footer from "./Footer";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const RecuperarContra = () => {
 
@@ -101,17 +102,20 @@ const RecuperarContra = () => {
               >
                 Enviar
               </Button>
+
+                <div className="text-center">
+                <p className="text-secondary mb-2">¿Ya tienes una cuenta?</p>
+                <Button
+                  as={Link}
+                  to="/login"
+                  variant="outline-primary"
+                  style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                >
+                  Login
+                </Button>
+              </div>
             </Form>
-            <div className="text-center">
-              <p className="text-secondary mb-2">¿Ya tienes una cuenta?</p>
-              <Button
-                to="/login"
-                variant="outline-primary"
-                style={{ fontWeight: "600", fontSize: "0.9rem" }}
-              >
-                Login
-              </Button>
-            </div>
+            
           </Container>
         </Col>
 

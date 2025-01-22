@@ -4,6 +4,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Fondo2 from "../../assets/Imagen4.jpg"; 
 import Footer from "../Footer";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Register = () =>{
 
@@ -140,7 +141,8 @@ const Register = () =>{
                     <div className="text-center">
                     <p className="text-secondary mb-2">¿Ya tienes una cuenta?</p>
                     <Button
-                        to="/"
+                        as={Link}
+                        to="/login"
                         variant="outline-primary"
                         style={{ fontWeight: "600", fontSize: "0.9rem" }}
                     >
