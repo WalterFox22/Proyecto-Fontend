@@ -140,7 +140,7 @@ const Register = () =>{
                     <div className="text-center">
                     <p className="text-secondary mb-2">¿Ya tienes una cuenta?</p>
                     <Button
-                        to="/login"
+                        to="/"
                         variant="outline-primary"
                         style={{ fontWeight: "600", fontSize: "0.9rem" }}
                     >
