@@ -20,15 +20,9 @@ const ListarCondutor = () => {
             <Row className="justify-content-center">
                 <Col xs={12} md={12} lg={10}>   
                     {/* BarraListar ocupa todo el ancho dentro de la columna */}
-                    {auth.nombre ? (
+                    
                         <BarraListar />
-                    )
-                    :(
-                        <p className="text-center" style={{ fontSize: '1.2rem' }}>
-                                Cargando datos del perfil...
-                        </p>
-
-                    )}
+                   
                     
                 </Col>
             </Row>
