@@ -20,7 +20,7 @@ const Perfil = () => {
                 <Col md={6}>
                     <div className="p-4 border rounded shadow-lg bg-light">
                         <h2 className="text-3xl font-bold mb-4 text-center">Información del Perfil</h2>
-                        
+                        {auth.nombre ? (
                             <div style={{ fontSize: '1.2rem' }}>
                                 <p><strong>Nombre:</strong> {auth.nombre}</p>
                                 <p><strong>Apellido:</strong> {auth.apellido}</p>
@@ -28,7 +28,11 @@ const Perfil = () => {
                                 <p><strong>Email:</strong> {auth.email}</p>
                                 <p><strong>Institución:</strong> {auth.institucion}</p>
                             </div>
-                       
+                        ) : (
+                            <p className="text-center" style={{ fontSize: '1.2rem' }}>
+                                Cargando datos del perfil...
+                            </p>
+                        )}
                     </div>
                 </Col>
             </Row>
