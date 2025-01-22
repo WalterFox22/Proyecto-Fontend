@@ -1,171 +1,218 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const FormularioRegistro = () => {
 
-  // PASO 1 EXTRAER LA INFORMACION
-  const navigate= useNavigate()
-
-  const [mensaje, setMensaje]=useState({})
-  const [form, setForm]=useState({
-      nombre:"",
-      apellido:"",
-      rutaAsiganda:"", 
-      sectoresRuta:"",
-      telefono:"", 
-      placaAutomovil:"",
-      cedula:"",
-      email:""
-
-  })
-
-  //PASO 2 GUARDAR LA INFORMACION
-
-  const handleChange = (e)=>{
-      setForm({
-          ...form,
-          [e.target.name]:e.target.value
-      })
-  }
-
-  // Paso 3 Envio al backend
-  const handleSubmit= async (e)=>{
-      e.preventDefault()
-
-      try{
-      const token = localStorage.getItem('token')
-      // Evalua si existe campos vacios
-      const url = `${import.meta.env.VITE_URL_BACKEND}/registro/conductores`
-          const options={
-              headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`
-              }
-          }
-          await axios.post(url,form,options)
-    setMensaje({ respuesta:"Conductor registrado con exito y correo enviado", tipo: true })
-          navigate('/dashboard/listar/conductores')
-         
-      } catch (error) {
-    setMensaje({ respuesta: error.response.data.msg, tipo: false })
-          toast.error(error.response.data?.msg)
-      }
-  }
-
-
-
+  const navigate=useNavigate()
   
-  
-  return (
-      <Form onChange={handleSubmit}>
-          <Form.Group className="mb-3" controlId="nombre">
-              <Form.Label className="text-gray-700 uppercase font-bold text-sm">Nombre:</Form.Label>
-              <Form.Control
-                  type="text"
-                  placeholder="Nombre"
-                  name="nombre"
-                  value={form.nombre}
-                  onChange={handleChange}
-              />
-          </Form.Group>
 
-          <Form.Group className="mb-3" controlId="apellido">
-              <Form.Label className="text-gray-700 uppercase font-bold text-sm">Apellido:</Form.Label>
-              <Form.Control
-                  type="text"
-                  placeholder="Apellido"
-                  name="apellido"
-                  value={form.apellido}
-                  onChange={handleChange}
-              />
-          </Form.Group>
+  const [form, setForm] = useState({
+      nombre: '',
+      apellido: '',
+      rutaAsignada: '',
+      sectoresRuta: '',
+      telefono: '',
+      placaAutomovil: '',
+      cedula: '',
+      email: '',
+  });
 
-          <Form.Group className="mb-3" controlId="rutaAsiganda">
-              <Form.Label className="text-gray-700 uppercase font-bold text-sm">Ruta de trasporte:</Form.Label>
-              <Form.Control
-                  type="text"
-                  placeholder="Ruta"
-                  name="rutaAsiganda"
-                  value={form.rutaAsiganda}
-                  onChange={handleChange}
-              />
-          </Form.Group>
+    const [imagen, setImagen] = useState(null); // Estado para la imagen
 
-          <Form.Group className="mb-3" controlId="sectoresRuta">
-              <Form.Label className="text-gray-700 uppercase font-bold text-sm">Sector:</Form.Label>
-              <Form.Control
-                  type="text"
-                  placeholder="Sector"
-                  name="sectoresRuta"
-                  value={form.sectoresRuta}
-                  onChange={handleChange}
-              />
-          </Form.Group>
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value,
+        });
+    };
 
-          <Form.Group className="mb-3" controlId="telefono">
-              <Form.Label className="text-gray-700 uppercase font-bold text-sm">Teléfono:</Form.Label>
-              <Form.Control
-                  type="tel"
-                  placeholder="Teléfono"
-                  name="telefono"
-                  value={form.telefono}
-                  onChange={handleChange}
-              />
-          </Form.Group>
+    const handleFileChange = (e) => {
+        setImagen(e.target.files[0]); // Guardar la imagen seleccionada
+    };
 
-          <Form.Group className="mb-3" controlId="placaAutomovil">
-              <Form.Label className="text-gray-700 uppercase font-bold text-sm">Placa del Autómovil:</Form.Label>
-              <Form.Control
-                  type="text"
-                  placeholder="Placa"
-                  name="placaAutomovil"
-                  value={form.placaAutomovil}
-                  onChange={handleChange}
-              />
-          </Form.Group>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-          <Form.Group className="mb-3" controlId="cedula">
-              <Form.Label className="text-gray-700 uppercase font-bold text-sm">Cédula:</Form.Label>
-              <Form.Control
-                  type="text"
-                  placeholder="Cedula del conductor"
-                  pattern="\d{10}"
-                  name="cedula"
-                  value={form.cedula}
-                  onChange={handleChange}
-              />
-          </Form.Group>
+        // Verificamos si hay algún campo vacío
+        for (let key in form) {
+            if (form[key] === '') {
+                toast.error('Por favor, completa todos los campos');
+                return;
+            }
+        }
 
-          <Form.Group className="mb-3" controlId="email">
-              <Form.Label className="text-gray-700 uppercase font-bold text-sm">Email:</Form.Label>
-              <Form.Control
-                  type="email"
-                  placeholder="Email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
+        // Creamos un objeto FormData para enviar tanto los datos del formulario como la imagen
+        const formDataToSend = new FormData();
+        Object.keys(form).forEach((key) => {
+            formDataToSend.append(key, form[key]);
+        });
 
-              />
-          </Form.Group>
+        if (imagen) {
+            formDataToSend.append('fotografiaDelConductor', imagen); // Agregar la imagen al FormData
+        }
 
-          <Button
-              type="submit"
-              variant="success"
-              className="w-100 " 
-              style={{
-                  color: "white", // Texto blanco
-                  border: "none", // Sin borde
-                  borderRadius: "5px", // Bordes redondeados
-                  
-              }}
-          >
-              Actualizar
-          </Button>
-      </Form>
-  );
+        try {
+            const token = localStorage.getItem('token'); // Obtener el token de localStorage
+            const url = `${import.meta.env.VITE_URL_BACKEND}/registro/conductores`
+            const options = {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Indicamos que estamos enviando FormData
+                    Authorization: `Bearer ${token}`, // Agregar el token de autenticación
+                },
+            };
+
+            // Enviar los datos al backend
+            const response = await axios.post(url, formDataToSend, options);
+
+            // Si la respuesta es exitosa
+            if (response.status === 200) {
+                toast.success('Conductor registrado con éxito y correo enviado');
+                setForm({ // Limpiar el formulario
+                    nombre: '',
+                    apellido: '',
+                    rutaAsignada: '',
+                    sectoresRuta: '',
+                    telefono: '',
+                    placaAutomovil: '',
+                    cedula: '',
+                    email: '',
+                });
+                setImagen(null); // Limpiar la imagen
+                navigate('/dashboard/listar/conductores');
+            }
+        } catch (error) {
+            // Manejo de errores
+            toast.error(error.response?.data?.msg || 'Ocurrió un error al registrar el conductor');
+        }
+    };
+
+    return (
+        <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="nombre">
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="nombre"
+                    value={form.nombre}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="apellido">
+                <Form.Label>Apellido</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="apellido"
+                    value={form.apellido}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="rutaAsignada">
+                <Form.Label>Ruta Asignada</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="rutaAsignada"
+                    value={form.rutaAsignada}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="sectoresRuta">
+                <Form.Label>Sectores de la Ruta</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="sectoresRuta"
+                    value={form.sectoresRuta}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="telefono">
+                <Form.Label>Teléfono</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="telefono"
+                    value={form.telefono}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="placaAutomovil">
+                <Form.Label>Placa del Automóvil</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="placaAutomovil"
+                    value={form.placaAutomovil}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="cedula">
+                <Form.Label>Cédula</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="cedula"
+                    value={form.cedula}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="fotografiaDelConductor" className="mb-3">
+                <Form.Label>Fotografía</Form.Label>
+                <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    required
+                />
+                {/* Vista previa de la imagen */}
+                {imagen && (
+                    <div>
+                        <img
+                            src={URL.createObjectURL(imagen)}
+                            alt="Vista previa"
+                            style={{ width: '100px', height: '100px', objectFit: 'cover', marginTop: '10px' }}
+                        />
+                    </div>
+                )}
+            </Form.Group>
+
+            <Button
+                type="submit"
+                variant="success"
+                className="w-100"
+                style={{
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                }}
+            >
+                Registrar
+            </Button>
+        </Form>
+    );
 };
 
 export default FormularioRegistro;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import LoadingPhoto from '../../componets/Perfil/LoadingPhoto';
-import FormularioRegistro from '../../componets/Perfil/FormularioRegistro'
+import FormularioRegistro from '../../componets/Perfil/FormularioRegistro';
 
 const RegistroConductor = () => {
     return (
@@ -17,10 +16,6 @@ const RegistroConductor = () => {
             <Row className="justify-content-center align-items-center">
                 <Col xs={12} md={6}>
                     <FormularioRegistro />
-                </Col>
-                <Col xs={12} md={6}>
-                    {/* Espacio reservado para contenido adicional */}
-                    <LoadingPhoto/>
                 </Col>
             </Row>
         </Container>
