@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Card, Form, Button } from 'react-bootstrap';
-import Delete from '../assets/Delete.png';
-import Update from '../assets/Update.png';
+import Delete from '../assets/borrar1.png';
+import Update from '../assets/actualizar.png';
+
+//import Delete  from '../assets/remover.png';
+
 import axios from 'axios';
 import Mensaje from './Alertas/Mensaje';
 
@@ -81,9 +84,9 @@ const BarraListar = () => {
                   <th>Ruta</th>
                   <th>Sector</th>
                   <th>Placa Vehicular</th>
-                  <th>Institución</th>
+                  
                   <th>Correo</th>
-                  <th>Estado</th>
+                 
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -97,13 +100,9 @@ const BarraListar = () => {
                     <td>{conductor.rutaAsignada}</td>
                     <td>{conductor.sectoresRuta}</td>
                     <td>{conductor.placaAutomovil}</td>
-                    <td>{conductor.institucion}</td>
+                    
                     <td>{conductor.email}</td>
-                    <td>
-                      <span className={`badge ${conductor.estado ? 'bg-success' : 'bg-danger'}`}>
-                        {conductor.estado ? 'Activo' : 'Inactivo'}
-                      </span>
-                    </td>
+                   
                     <td className="d-flex justify-content-center align-items-center" style={{ minWidth: '150px' }}>
                       <img
                         src={Update}
@@ -112,6 +111,7 @@ const BarraListar = () => {
                         className="cursor-pointer inline-block"
                         onClick={() => console.log('Actualizar:', conductor._id)}
                       />
+                      
                       <img
                         src={Delete}
                         alt="Delete"

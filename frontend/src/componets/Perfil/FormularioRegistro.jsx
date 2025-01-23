@@ -131,6 +131,7 @@ const FormularioRegistro = () => {
           name="rutaAsignada"
           value={form.rutaAsignada}
           onChange={handleChange}
+          maxLength={2}
           required
         />
       </Form.Group>
@@ -139,7 +140,7 @@ const FormularioRegistro = () => {
       <Form.Group controlId="sectoresRuta" className="mb-3">
         <Form.Label style={{ fontWeight: 'bold' }}>Sectores de la Ruta</Form.Label>
         <Form.Control
-          placeholder="Ingrese el sector (Ejm: Quito)"
+          placeholder="Ingrese el sector (Ejm: La Mariscal)"
           type="text"
           name="sectoresRuta"
           value={form.sectoresRuta}
