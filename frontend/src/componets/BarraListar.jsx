@@ -24,11 +24,11 @@ const BarraListar = () => {
 
       const respuesta = await axios.get(url, options);
 
-      // Validamos que el backend devuelve un arreglo
-      if (Array.isArray(respuesta.data)) {
-        setConductores(respuesta.data);
+      // Validamos que la respuesta contiene la propiedad "conductores" y es un arreglo
+      if (respuesta.data && Array.isArray(respuesta.data.conductores)) {
+        setConductores(respuesta.data.conductores);
       } else {
-        throw new Error('La respuesta del servidor no es un arreglo');
+        throw new Error('La respuesta del servidor no contiene un arreglo de conductores');
       }
     } catch (err) {
       console.error(err);
@@ -108,14 +108,14 @@ const BarraListar = () => {
                       <img
                         src={Update}
                         alt="Update"
-                        style={{ height: '24px', width: '24px', marginRight: '10px' }}
+                        style={{ height: '35px', width: '35px', marginRight: '7px' }}
                         className="cursor-pointer inline-block"
                         onClick={() => console.log('Actualizar:', conductor._id)}
                       />
                       <img
                         src={Delete}
                         alt="Delete"
-                        style={{ height: '24px', width: '24px', marginRight: '10px' }}
+                        style={{ height: '35px', width: '35px', marginRight: '7px' }}
                         className="cursor-pointer inline-block"
                         onClick={() => console.log('Eliminar:', conductor._id)}
                       />
