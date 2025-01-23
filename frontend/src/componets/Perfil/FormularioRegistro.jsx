@@ -1,218 +1,274 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 const FormularioRegistro = () => {
 
-  const navigate=useNavigate()
-  
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
-      nombre: '',
-      apellido: '',
-      rutaAsignada: '',
-      sectoresRuta: '',
-      telefono: '',
-      placaAutomovil: '',
-      cedula: '',
-      email: '',
+    nombre: '',
+    apellido: '',
+    rutaAsignada: '',
+    sectoresRuta: '',
+    telefono: '',
+    placaAutomovil: '',
+    cedula: '',
+    email: '',
+    institucion: 'Unidad Educativa Particular Emaús', // Campo quemado
+    generoConductor: '',      // Campo para el género
   });
 
-    const [imagen, setImagen] = useState(null); // Estado para la imagen
+  const [imagen, setImagen] = useState(null); // Estado para la imagen
 
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleFileChange = (e) => {
+    setImagen(e.target.files[0]); // Guardar la imagen seleccionada
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Verificamos si hay algún campo vacío
+    for (let key in form) {
+      if (form[key] === '') {
+        toast.error('Por favor, completa todos los campos');
+        return;
+      }
+    }
+
+    // Creamos un objeto FormData para enviar tanto los datos del formulario como la imagen
+    const formDataToSend = new FormData();
+    Object.keys(form).forEach((key) => {
+      formDataToSend.append(key, form[key]);
+    });
+
+    if (imagen) {
+      formDataToSend.append('fotografiaDelConductor', imagen); // Agregar la imagen al FormData
+    }
+
+    try {
+      const token = localStorage.getItem('token'); // Obtener el token de localStorage
+      const url = `${import.meta.env.VITE_URL_BACKEND}/registro/conductores`;
+      const options = {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Indicamos que estamos enviando FormData
+          Authorization: `Bearer ${token}`,      // Agregar el token de autenticación
+        },
+      };
+
+      // Enviar los datos al backend
+      const response = await axios.post(url, formDataToSend, options);
+
+      // Si la respuesta es exitosa
+      if (response) {
+        toast.success('Conductor registrado con éxito y correo enviado');
+        setForm({ // Limpiar el formulario
+          nombre: '',
+          apellido: '',
+          rutaAsignada: '',
+          sectoresRuta: '',
+          telefono: '',
+          placaAutomovil: '',
+          cedula: '',
+          email: '',
+          institucion: 'Unidad Educativa Particular Emaús', // Retener el valor quemado
+          generoConductor: '',
         });
-    };
+        setImagen(null); // Limpiar la imagen
+        
+      }
+    } catch (error) {
+      // Manejo de errores
+      toast.error(error.response?.data?.msg || 'Ocurrió un error al registrar el conductor');
+    }
+  };
 
-    const handleFileChange = (e) => {
-        setImagen(e.target.files[0]); // Guardar la imagen seleccionada
-    };
+  return (
+    <>
+    <ToastContainer/>
+    
+    <Form onSubmit={handleSubmit}>
+      {/* Título y campo Nombre */}
+      <Form.Group controlId="nombre" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Nombre</Form.Label>
+        <Form.Control
+          placeholder="Ingrese el Nombre"
+          type="text"
+          name="nombre"
+          value={form.nombre}
+          onChange={handleChange}
+          required
+        />
+      </Form.Group>
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+      {/* Título y campo Apellido */}
+      <Form.Group controlId="apellido" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Apellido</Form.Label>
+        <Form.Control
+          placeholder="Ingrese el Apellido"
+          type="text"
+          name="apellido"
+          value={form.apellido}
+          onChange={handleChange}
+          required
+        />
+      </Form.Group>
 
-        // Verificamos si hay algún campo vacío
-        for (let key in form) {
-            if (form[key] === '') {
-                toast.error('Por favor, completa todos los campos');
-                return;
-            }
-        }
+      {/* Título y campo Ruta Asignada */}
+      <Form.Group controlId="rutaAsignada" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Ruta Asignada</Form.Label>
+        <Form.Control
+          placeholder="Ingrese la ruta (Ejm: 11)"
+          type="text"
+          name="rutaAsignada"
+          value={form.rutaAsignada}
+          onChange={handleChange}
+          required
+        />
+      </Form.Group>
 
-        // Creamos un objeto FormData para enviar tanto los datos del formulario como la imagen
-        const formDataToSend = new FormData();
-        Object.keys(form).forEach((key) => {
-            formDataToSend.append(key, form[key]);
-        });
+      {/* Título y campo Sectores de la Ruta */}
+      <Form.Group controlId="sectoresRuta" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Sectores de la Ruta</Form.Label>
+        <Form.Control
+          placeholder="Ingrese el sector (Ejm: Quito)"
+          type="text"
+          name="sectoresRuta"
+          value={form.sectoresRuta}
+          onChange={handleChange}
+          required
+        />
+      </Form.Group>
 
-        if (imagen) {
-            formDataToSend.append('fotografiaDelConductor', imagen); // Agregar la imagen al FormData
-        }
+      {/* Título y campo Teléfono */}
+      <Form.Group controlId="telefono" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Teléfono</Form.Label>
+        <Form.Control
+          placeholder="Ingrese el teléfono"
+          type="text"
+          name="telefono"
+          value={form.telefono}
+          onChange={handleChange}
+          required
+        />
+      </Form.Group>
 
-        try {
-            const token = localStorage.getItem('token'); // Obtener el token de localStorage
-            const url = `${import.meta.env.VITE_URL_BACKEND}/registro/conductores`
-            const options = {
-                headers: {
-                    'Content-Type': 'multipart/form-data', // Indicamos que estamos enviando FormData
-                    Authorization: `Bearer ${token}`, // Agregar el token de autenticación
-                },
-            };
+      {/* Título y campo Placa del Automóvil */}
+      <Form.Group controlId="placaAutomovil" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Placa del Automóvil</Form.Label>
+        <Form.Control
+          placeholder="Ingrese las placas (solo 7 digitos)"
+          type="text"
+          name="placaAutomovil"
+          value={form.placaAutomovil}
+          onChange={handleChange}
+          maxLength={7}
+          required
+        />
+      </Form.Group>
 
-            // Enviar los datos al backend
-            const response = await axios.post(url, formDataToSend, options);
+      {/* Título y campo Cédula */}
+      <Form.Group controlId="cedula" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Cédula</Form.Label>
+        <Form.Control
+          placeholder="Ingrese su cédula (solo 10 digitos)"
+          type="text"
+          name="cedula"
+          value={form.cedula}
+          onChange={handleChange}
+          maxLength={10}
+          required
+        />
+      </Form.Group>
 
-            // Si la respuesta es exitosa
-            if (response.status === 200) {
-                toast.success('Conductor registrado con éxito y correo enviado');
-                setForm({ // Limpiar el formulario
-                    nombre: '',
-                    apellido: '',
-                    rutaAsignada: '',
-                    sectoresRuta: '',
-                    telefono: '',
-                    placaAutomovil: '',
-                    cedula: '',
-                    email: '',
-                });
-                setImagen(null); // Limpiar la imagen
-                navigate('/dashboard/listar/conductores');
-            }
-        } catch (error) {
-            // Manejo de errores
-            toast.error(error.response?.data?.msg || 'Ocurrió un error al registrar el conductor');
-        }
-    };
+      {/* Título y campo Email */}
+      <Form.Group controlId="email" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Email</Form.Label>
+        <Form.Control
+          placeholder="Ingrese el correo electrónico"
+          type="email"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          required
+        />
+      </Form.Group>
 
-    return (
-        <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="nombre">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="nombre"
-                    value={form.nombre}
-                    onChange={handleChange}
-                    required
-                />
-            </Form.Group>
+      {/* Título y campo Institución */}
+      <Form.Group controlId="institucion" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Institución</Form.Label>
+        <Form.Control
+          type="text"
+          name="institucion"
+          value={form.institucion}
+          readOnly
+        />
+      </Form.Group>
 
-            <Form.Group controlId="apellido">
-                <Form.Label>Apellido</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="apellido"
-                    value={form.apellido}
-                    onChange={handleChange}
-                    required
-                />
-            </Form.Group>
+      {/* Título y campo Género */}
+      <Form.Group controlId="genero" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Género</Form.Label>
+        <Form.Control
+          as="select"
+          name="generoConductor"
+          value={form.genero}
+          onChange={handleChange}
+          required
+        >
+          <option value="" style={{ color: '#ccc' }}>Seleccione un género</option> {/* Gris claro */}
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Prefiero no decirlo">Prefiero no decirlo</option>
 
-            <Form.Group controlId="rutaAsignada">
-                <Form.Label>Ruta Asignada</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="rutaAsignada"
-                    value={form.rutaAsignada}
-                    onChange={handleChange}
-                    required
-                />
-            </Form.Group>
+        </Form.Control>
+      </Form.Group>
 
-            <Form.Group controlId="sectoresRuta">
-                <Form.Label>Sectores de la Ruta</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="sectoresRuta"
-                    value={form.sectoresRuta}
-                    onChange={handleChange}
-                    required
-                />
-            </Form.Group>
+      {/* Título y campo Fotografía */}
+      <Form.Group controlId="fotografiaDelConductor" className="mb-3">
+        <Form.Label style={{ fontWeight: 'bold' }}>Fotografía</Form.Label>
+        <Form.Control
+          type="file"
+          accept="image/*"
+          name="fotografiaDelConductor"
+          onChange={handleFileChange}
+          required
+        />
+        {/* Vista previa de la imagen */}
+        {imagen && (
+          <div>
+            <img
+              src={URL.createObjectURL(imagen)}
+              alt="Vista previa"
+              style={{ width: '100px', height: '100px', objectFit: 'cover', marginTop: '10px' }}
+            />
+          </div>
+        )}
+      </Form.Group>
 
-            <Form.Group controlId="telefono">
-                <Form.Label>Teléfono</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="telefono"
-                    value={form.telefono}
-                    onChange={handleChange}
-                    required
-                />
-            </Form.Group>
-
-            <Form.Group controlId="placaAutomovil">
-                <Form.Label>Placa del Automóvil</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="placaAutomovil"
-                    value={form.placaAutomovil}
-                    onChange={handleChange}
-                    required
-                />
-            </Form.Group>
-
-            <Form.Group controlId="cedula">
-                <Form.Label>Cédula</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="cedula"
-                    value={form.cedula}
-                    onChange={handleChange}
-                    required
-                />
-            </Form.Group>
-
-            <Form.Group controlId="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                />
-            </Form.Group>
-
-            <Form.Group controlId="fotografiaDelConductor" className="mb-3">
-                <Form.Label>Fotografía</Form.Label>
-                <Form.Control
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    required
-                />
-                {/* Vista previa de la imagen */}
-                {imagen && (
-                    <div>
-                        <img
-                            src={URL.createObjectURL(imagen)}
-                            alt="Vista previa"
-                            style={{ width: '100px', height: '100px', objectFit: 'cover', marginTop: '10px' }}
-                        />
-                    </div>
-                )}
-            </Form.Group>
-
-            <Button
-                type="submit"
-                variant="success"
-                className="w-100"
-                style={{
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                }}
-            >
-                Registrar
-            </Button>
-        </Form>
-    );
+      <Button
+        type="submit"
+        variant="success"
+        className="w-100"
+        style={{
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+        }}
+      >
+        Registrar
+      </Button>
+    </Form>
+    </>
+  );
 };
 
 export default FormularioRegistro;
