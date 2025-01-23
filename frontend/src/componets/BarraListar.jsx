@@ -107,7 +107,7 @@ const BarraListar = () => {
                       <img
                         src={Update}
                         alt="Update"
-                        style={{ height: '35px', width: '35px', marginRight: '7px' }}
+                        style={{ height: '20px', width: '20px', marginRight: '7px' }}
                         className="cursor-pointer inline-block"
                         onClick={() => console.log('Actualizar:', conductor._id)}
                       />
@@ -115,7 +115,7 @@ const BarraListar = () => {
                       <img
                         src={Delete}
                         alt="Delete"
-                        style={{ height: '35px', width: '35px', marginRight: '7px' }}
+                        style={{ height: '20px', width: '20px', marginRight: '7px' }}
                         className="cursor-pointer inline-block"
                         onClick={() => console.log('Eliminar:', conductor._id)}
                       />
