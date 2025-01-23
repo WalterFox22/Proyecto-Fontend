@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 
 const FormularioRegistro = () => {
 
-  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     nombre: '',
@@ -81,7 +80,7 @@ const FormularioRegistro = () => {
           cedula: '',
           email: '',
           institucion: 'Unidad Educativa Particular Emaús', // Retener el valor quemado
-          generoConductor: '',
+          generoConductor:'',
         });
         setImagen(null); // Limpiar la imagen
         
