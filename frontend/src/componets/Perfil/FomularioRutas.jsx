@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { Form, Button } from 'react-bootstrap';
 import Mensaje from "../Alertas/Mensaje";
@@ -9,7 +9,7 @@ import Mensaje from "../Alertas/Mensaje";
 const FormularioRutaSector =({conductores})=>{
     // Validar si me esta mando el valor id = console.log(conductores._id);
 
-
+    const navigate = useNavigate()
     const [mensaje, setMensaje]=useState({})
     const [form, setForm] = useState({
        
@@ -45,6 +45,8 @@ const FormularioRutaSector =({conductores})=>{
             await axios.patch(url, form, options);
             setMensaje({ respuesta: 'Conductor actualizado con éxito', tipo: true });
             toast.success('Ruta y Secto del Conductor actualizado con éxito');
+            //navigate('/dashboard/listar/conductores')
+
           } catch (error) {
             console.error('Error al actualizar', error.response?.data);
             setMensaje({ respuesta: error.response?.data?.msg || 'Error al actualizar', tipo: false });

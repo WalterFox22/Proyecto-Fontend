@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Mensaje from './Alertas/Mensaje';
 
+
 const BarraListar = () => {
 
   const navigate= useNavigate()
@@ -84,6 +85,7 @@ const BarraListar = () => {
 
   return (
     <>
+      
       {/* Barra de búsqueda */}
       <Form className="d-flex mb-3">
         <Form.Control
