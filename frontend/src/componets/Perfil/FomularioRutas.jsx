@@ -44,7 +44,7 @@ const FormularioRutaSector =({conductores})=>{
             };
             await axios.patch(url, form, options);
             setMensaje({ respuesta: 'Conductor actualizado con éxito', tipo: true });
-            toast.success('Conductor actualizado con éxito');
+            toast.success('Ruta y Secto del Conductor actualizado con éxito');
           } catch (error) {
             console.error('Error al actualizar', error.response?.data);
             setMensaje({ respuesta: error.response?.data?.msg || 'Error al actualizar', tipo: false });
