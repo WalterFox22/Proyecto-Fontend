@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Table, Card, Form, Button } from 'react-bootstrap';
 import Delete from '../assets/borrar1.png';
 import Update from '../assets/actualizar.png';
+import { useNavigate } from 'react-router-dom';
+
 
 //import Delete  from '../assets/remover.png';
 
@@ -9,9 +11,11 @@ import axios from 'axios';
 import Mensaje from './Alertas/Mensaje';
 
 const BarraListar = () => {
-  const [conductores, setConductores] = useState([]);
-  const [busqueda, setBusqueda] = useState('');
-  const [error, setError] = useState(null);
+
+  const navigate= useNavigate()
+  const [conductores, setConductores] = useState([])
+  const [busqueda, setBusqueda] = useState('')
+  const [error, setError] = useState(null)
 
   // Función para listar conductores desde el backend
   const listarConductores = async () => {
@@ -38,6 +42,35 @@ const BarraListar = () => {
       setError('Ocurrió un error al cargar los conductores. Intente nuevamente.');
     }
   };
+
+  // Borrar Conductor de la base de datos 
+  const handleDelete = async (id) => {
+    try {
+        // Alerta de enviar antes de eliminar para evitar errores  
+        const confirmar = confirm("Vas a eliminar a un conductor, ¿Estás seguro de realizar esta acción?")
+        if (confirmar) {
+            // definicion del token
+            const token = localStorage.getItem('token')
+            // establecer la ruta de acceso al backend
+            const url = `${import.meta.env.VITE_URL_BACKEND}/eliminar/conductor/${id}`
+            // Enviamos la solicitud al backend definicion de objeto para los headers
+            const headers= {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+                // objeto de data para registrar la salida donde el estado va estar en "false"
+            const data ={
+                salida:new Date().toString()
+            }
+            // recibimos la respuesta del backend
+            await axios.delete(url, {headers, data});
+            listarConductores()
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
 
   // Filtrar los conductores según la búsqueda
   const conductoresFiltrados = conductores.filter((conductor) =>
@@ -107,17 +140,17 @@ const BarraListar = () => {
                       <img
                         src={Update}
                         alt="Update"
-                        style={{ height: '20px', width: '20px', marginRight: '7px' }}
+                        style={{ height: '20px', width: '20px', marginRight: '7px', cursor: 'pointer' }}
                         className="cursor-pointer inline-block"
-                        onClick={() => console.log('Actualizar:', conductor._id)}
+                        onClick={() =>navigate(`/dashboard/buscar/conductor/ruta/${conductor.rutaAsignada}`)}
                       />
                       
                       <img
                         src={Delete}
                         alt="Delete"
-                        style={{ height: '20px', width: '20px', marginRight: '7px' }}
+                        style={{ height: '20px', width: '20px', marginRight: '7px', cursor:'pointer'}}
                         className="cursor-pointer inline-block"
-                        onClick={() => console.log('Eliminar:', conductor._id)}
+                        onClick={() => {handleDelete(conductor._id)}}
                       />
                     </td>
                   </tr>

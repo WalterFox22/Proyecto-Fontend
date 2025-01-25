@@ -12,6 +12,7 @@ import Inicio from './pages/driver/Inicio';
 import Perfil from './componets/Perfil/Perfil';
 import RegistroConductor from './pages/admin/RegistroConductor';
 import ListarCondutor from './pages/admin/ListarConductor';
+import ActualizarConductor from './pages/admin/ActualizarConductor';
 
 
 function App(){
@@ -36,6 +37,7 @@ function App(){
 
                   <Route path='registro/conductores' element={<RegistroConductor/>}/>
                   <Route path='listar/conductores' element ={<ListarCondutor/>}/>
+                  <Route path='buscar/conductor/ruta/:rutaAsignada' element={<ActualizarConductor/>}/>
                   
             
                 </Route>
