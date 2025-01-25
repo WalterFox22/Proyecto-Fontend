@@ -15,8 +15,9 @@ const BarraListar = () => {
 
   const navigate= useNavigate()
   const [conductores, setConductores] = useState([])
-  const [busqueda, setBusqueda] = useState('')
+  const [rutaAsignada, setRutaAsignada] = useState(''); // Ruta que se ingresa para búsqueda
   const [error, setError] = useState(null)
+
 
   // Función para listar conductores desde el backend
   const listarConductores = async () => {
@@ -44,6 +45,44 @@ const BarraListar = () => {
     }
   };
 
+  
+
+  // Buscar conductor por la ruta ingresada
+  const buscarConductorPorRuta = async () => {
+    if (!rutaAsignada) {
+      // Si no hay nada en el input, no realizar la búsqueda
+      return;
+    }
+    try {
+      const token = localStorage.getItem('token');
+      const url = `${import.meta.env.VITE_URL_BACKEND}/buscar/conductor/ruta/${rutaAsignada}`;
+      const options = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const respuesta = await axios.get(url, options);
+
+      if (respuesta.data && respuesta.data.conductores) {
+        setConductores(respuesta.data.conductores);
+      } else {
+        setConductores([]);
+        setError('No se encontraron conductores para la ruta especificada');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Error al buscar el conductor. Intente nuevamente.');
+    }
+  };
+
+  // Filtrar los conductores solo por la ruta asignada
+const conductoresFiltrados = conductores.filter((conductor) =>
+  String(conductor.rutaAsignada).toLowerCase().includes(rutaAsignada.toLowerCase())
+);
+
+
   // Borrar Conductor de la base de datos 
   const handleDelete = async (id) => {
     try {
@@ -59,12 +98,9 @@ const BarraListar = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 }
-                // objeto de data para registrar la salida donde el estado va estar en "false"
-            const data ={
-                salida:new Date().toString()
-            }
+           
             // recibimos la respuesta del backend
-            await axios.delete(url, {headers, data});
+            await axios.delete(url, {headers});
             listarConductores()
         }
     }
@@ -73,10 +109,7 @@ const BarraListar = () => {
     }
 };
 
-  // Filtrar los conductores según la búsqueda
-  const conductoresFiltrados = conductores.filter((conductor) =>
-    `${conductor.nombre} ${conductor.apellido}`.toLowerCase().includes(busqueda.toLowerCase())
-  );
+
 
   // Efecto para cargar los conductores al montar el componente
   useEffect(() => {
@@ -90,13 +123,15 @@ const BarraListar = () => {
       <Form className="d-flex mb-3">
         <Form.Control
           type="search"
-          placeholder="Buscar Conductor"
+          placeholder="Buscar Conductor por ruta"
           className="me-2"
           aria-label="Search"
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
+          value={rutaAsignada}
+          onChange={(e) => setRutaAsignada(e.target.value)}
         />
-        <Button variant="outline-success">BUSCAR</Button>
+        <Button variant="outline-success" onClick={buscarConductorPorRuta}> {/** SE INVOCA ACA LA FUNCION BUCAR Y NO EN EL USEEFFECT */}
+          BUSCAR
+        </Button>
       </Form>
 
       {/* Mostrar mensaje de error si ocurre */}

@@ -86,8 +86,33 @@ const FormularioRegistro = () => {
         
       }
     } catch (error) {
-      // Manejo de errores
-      toast.error(error.response?.data?.msg || 'Ocurrió un error al registrar el conductor');
+
+      // Manejo de errores que manda el backend en diferentes formatos para que se muestre en pantalla:
+      if (error.response && error.response.data) {
+        const backendResponse = error.response.data;
+  
+        // Manejar formato con 'errors' (array)
+        if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
+          backendResponse.errors.forEach((err) => {
+            toast.error(err.msg); // Mostrar cada mensaje de error
+          });
+        } 
+        // Manejar otros formatos de error
+        else if (backendResponse.msg_registro_conductor) {
+          toast.error(backendResponse.msg_registro_conductor); // Mostrar mensaje específico
+        } 
+        // Manejar formato genérico
+        else if (backendResponse.msg) {
+          toast.error(backendResponse.msg); // Mostrar mensaje genérico
+        } 
+        // Si no se reconoce el formato, usar mensaje genérico
+        else {
+          toast.error('Error desconocido. Por favor, verifica los datos e intenta nuevamente.');
+        }
+      } else {
+        // Errores fuera de la respuesta del backend (por ejemplo, problemas de red)
+        toast.error('Error de red. Por favor, intenta nuevamente.');
+      }
     }
   };
 
