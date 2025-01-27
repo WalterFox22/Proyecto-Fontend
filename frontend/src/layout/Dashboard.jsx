@@ -40,8 +40,8 @@ const Dashboard = () => {
             xs={12}
             md={3}
             lg={2}
-            className="bg-dark text-light p-3 d-flex flex-column"
-            style={{ height: '100vh', overflowY: 'auto' }}
+            className="text-light p-3 d-flex flex-column"
+            style={{ backgroundColor: '#560C23', height: '100vh', overflowY: 'auto' }}
           >
             <h2 className="text-center fw-bold">U.E EMAUS</h2>
             <div className="text-center my-4">
@@ -50,12 +50,12 @@ const Dashboard = () => {
               roundedCircle
               className="img-fluid border border-secondary"
             />
-              <p className="mt-3">
+              <p className="mt-3" style={{ color: 'white' }}>
                 <span className="bg-success rounded-circle d-inline-block me-2" style={{ width: 10, height: 10 }}></span>
                 Bienvenido - {auth?.nombre || 'Usuario desconocido'}
               </p>
               {/*PARA VISUALIZAR EL ROL*/}
-              <p className='text-slate-400 text-center my-4 text-sm'> Rol - {auth?.rol}</p>
+              <p className='text-slate-400 text-center my-4 text-sm' style={{ color: 'white' }}> Rol - {auth?.rol}</p>
             </div>
             <hr />
             <Nav className="flex-column">
@@ -67,6 +67,7 @@ const Dashboard = () => {
                 Perfil del Usuario
               </Nav.Link>
               <Nav.Link
+              
                 as={Link}
                 to="/dashboard/registro/conductores"
                 className={urlActual === '/dashboard/registro/conductores' ? 'active text-light bg-secondary rounded p-2' : 'text-light'}
@@ -86,8 +87,9 @@ const Dashboard = () => {
           {/* Main Content */}
           <Col className="d-flex flex-column p-0">
             {/* Top Navbar */}
-            <Navbar bg="dark" variant="dark" className="justify-content-end px-3">
-              <Navbar.Text className="me-3">Usuario - {auth?.nombre}</Navbar.Text>
+            <Navbar className="justify-content-end px-3"
+            style={{backgroundColor: '#560C23'}}>
+              <Navbar.Text className="me-3" style={{ color: 'white' }}>Usuario - {auth?.nombre}</Navbar.Text>
               <Image
                 src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"
                 roundedCircle

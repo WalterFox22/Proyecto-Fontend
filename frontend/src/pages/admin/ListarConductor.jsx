@@ -11,8 +11,8 @@ const ListarCondutor = () => {
         <Container fluid>
             {/* Encabezado */}
             <div className="text-center mb-4">
-                <h1 className="text-dark">Lista de Conductores</h1>
-                <h3 className="text-dark">Institución: Unidad Educativa Particular Emaús</h3>
+                <h1>Lista de Conductores</h1>
+                <h5>Unidad Educativa Particular Emaús</h5>
                 <hr />
                 <p>Este módulo te permite visualizar la lista de conductores.</p>
             </div>

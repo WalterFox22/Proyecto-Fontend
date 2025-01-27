@@ -129,7 +129,19 @@ const conductoresFiltrados = conductores.filter((conductor) =>
           value={rutaAsignada}
           onChange={(e) => setRutaAsignada(e.target.value)}
         />
-        <Button variant="outline-success" onClick={buscarConductorPorRuta}> {/** SE INVOCA ACA LA FUNCION BUCAR Y NO EN EL USEEFFECT */}
+        <Button variant="outline-success" 
+          style={{color: '#92BFF9', borderColor: '#92BFF9', backgroundColor: 'transparent',}}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#92BFF9';
+            e.target.style.color = '#fff';
+            e.target.style.borderColor = '#92BFF9';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.color = '#92BFF9';
+            e.target.style.borderColor = '#92BFF9';
+          }}
+          onClick={buscarConductorPorRuta}> {/** SE INVOCA ACA LA FUNCION BUCAR Y NO EN EL USEEFFECT */}
           BUSCAR
         </Button>
       </Form>

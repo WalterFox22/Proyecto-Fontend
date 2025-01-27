@@ -3,13 +3,62 @@
     font-family: 'Poppins', sans-serif;
 }
 
-/* Títulos h1, h2, h3, h4 */
-h1, h2, h3, h4, h5, h6 {
+
+
+h1 {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    color: #333;
+    color: #6C7C8C; /* Gris pastel fuerte para el título principal */
+    font-size: 2.5rem; /* Ajuste de tamaño para h1 */
 }
+
+h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    color: #6C7C8C; /* Gris pastel fuerte para el subtítulo */
+    font-size: 2rem; /* Ajuste de tamaño para h2 */
+}
+
+h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    color: #A0A5B1; /* Gris pastel medio para subtítulos secundarios */
+    font-size: 1.75rem; /* Ajuste de tamaño para h3 */
+}
+
+h4 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    
+    color: #A0A5B1; /* Gris pastel medio para subtítulos secundarios */
+    font-size: 1.5rem; /* Ajuste de tamaño para h4 */
+}
+
+h5 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(88, 87, 87, 0.3);
+    color: #A0A5B1; /* Gris pastel medio para subtítulos secundarios */
+    font-size: 1.25rem; /* Ajuste de tamaño para h5 */
+}
+
+h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    color: #A0A5B1; /* Gris pastel medio para subtítulos secundarios */
+    font-size: 1.1rem; /* Ajuste de tamaño para h6 */
+}
+p{
+    
+    font-size: 1.1rem;
+    color: #464747;
+    
+}
+ 
 
 /* Estilo para los botones */
 button, .btn {

@@ -8,7 +8,7 @@ const Perfil = () => {
     return (
         <Container fluid>
             <div className="text-center">
-                <h1 className="font-black text-5xl text-gray-500 mb-4">Perfil</h1>
+                <h1 className="mb-4">Perfil del Usuario</h1>
                 <hr className="my-4" />
                 <p className="text-lg mb-8">
                     Este módulo te permite visualizar el perfil del Usuario
@@ -19,7 +19,7 @@ const Perfil = () => {
                 {/* Información del Perfil */}
                 <Col md={6}>
                     <div className="p-4 border rounded shadow-lg bg-light">
-                        <h2 className="text-3xl font-bold mb-4 text-center">Información del Perfil</h2>
+                        <h2 className="mb-4 text-center">Información del Perfil</h2>
                         {auth.nombre ? (
                             <div style={{ fontSize: '1.2rem' }}>
                                 <p><strong>Nombre:</strong> {auth.nombre}</p>
