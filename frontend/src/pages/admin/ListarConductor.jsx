@@ -25,9 +25,7 @@ const ListarCondutor = () => {
                         <BarraListar />
                     )
                     :(
-                        <p className="text-center" style={{ fontSize: '1.2rem' }}>
-                                Cargando datos del perfil...
-                        </p>
+                        <Loading/>
 
                     )}
                     

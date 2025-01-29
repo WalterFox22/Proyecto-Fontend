@@ -7,6 +7,7 @@ import axios from 'axios';
 
 import Mensaje from '../../componets/Alertas/Mensaje';
 import FormularioRutaSector from '../../componets/Perfil/FomularioRutas';
+import Loading from '../../componets/Loading/Loading';
 
 const ActualizarConductor=()=>{
 
@@ -65,7 +66,7 @@ const ActualizarConductor=()=>{
                     {loading 
                     ? 
                     (
-                        <p className="text-center text-secondary">Cargando...</p>   
+                        <Loading/>   
                     ) 
                     : 
                     Object.keys(conductores).length 

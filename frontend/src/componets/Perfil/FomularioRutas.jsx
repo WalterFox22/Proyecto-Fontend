@@ -63,8 +63,8 @@ const FormularioRutaSector =({conductores})=>{
             {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
             
             {/* Título y campo Ruta Asignada */}
-            <Form.Group controlId="rutaAsignada" className="mb-3">
-                <Form.Label style={{ fontWeight: 'bold' }}>Ruta Asignada</Form.Label>
+            <Form.Group controlId="rutaAsignada" className="mb-3 text-center">
+                <Form.Label style={{ fontWeight: 'bold', display: 'block' }}>Ruta Asignada</Form.Label>
                 <Form.Control
                 placeholder="Ingrese la ruta (Ejm: 11)"
                 type="text"
@@ -73,12 +73,17 @@ const FormularioRutaSector =({conductores})=>{
                 onChange={handleChange}
                 maxLength={2}
                 required
+                style={{
+                    maxWidth: '400px', 
+                    margin: '0 auto', 
+                    textAlign: 'center'
+                }}
                 />
             </Form.Group>
 
             {/* Título y campo Sectores de la Ruta */}
-            <Form.Group controlId="sectoresRuta" className="mb-3">
-                <Form.Label style={{ fontWeight: 'bold' }}>Sectores de la Ruta</Form.Label>
+            <Form.Group controlId="sectoresRuta" className="mb-3 text-center">
+                <Form.Label style={{ fontWeight: 'bold', display: 'block' }}>Sectores de la Ruta</Form.Label>
                 <Form.Control
                 placeholder="Ingrese el sector (Ejm: La Mariscal)"
                 type="text"
@@ -86,16 +91,23 @@ const FormularioRutaSector =({conductores})=>{
                 value={form.sectoresRuta}
                 onChange={handleChange}
                 required
+                style={{
+                    maxWidth: '400px', 
+                    margin: '0 auto', 
+                    textAlign: 'center'
+                }}
                 />
             </Form.Group>
             <Button
                 type="submit"
                 variant="success"
-                className="w-100"
+                className="mx-auto d-block" 
                 style={{
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
+                    width: '200px', // Ajusta según necesites
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    padding: '10px 20px' // Ajustar relleno
                 }}
             >
                 Registrar

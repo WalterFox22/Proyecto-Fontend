@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Fondo2 from "../assets/Imagen3.jpg"; // Imagen importada
 import Footer from "./Footer";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
+import AuthContext from "../context/AuthProvider";
+import Loading from "../componets/Loading/Loading";
 
 const RecuperarContra = () => {
 
   const [mensaje, setMensaje]= useState("")
+  const {loading}=useContext(AuthContext)
 
   //Paso 1 capturar la informacion
 
@@ -36,6 +39,19 @@ const RecuperarContra = () => {
       console.log(error)
       toast.error(error.response.data.msg)
     }
+  }
+
+  // Para la pantalla de carga
+  useEffect(() => {
+    if (!loading) {
+      // Se puede hacer alguna lógica aquí si es necesario cuando la carga termina.
+    }
+  }, [loading]);
+
+  if (loading) {
+    return (
+      <Loading/>
+    ); 
   }
 
 

@@ -1,0 +1,92 @@
+.loading-container {
+    background-color: #560C23;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Para asegurar que esté sobre otros elementos */
+}
+
+.wrapper {
+    width: 200px;
+    height: 60px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    border-radius: 50%;
+    background-color: #fff;
+    animation: circle7124 0.5s alternate infinite ease;
+}
+
+.shadow {
+    width: 20px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: rgba(85, 85, 85, 0.9);
+    position: absolute;
+    top: 62px;
+    filter: blur(1px);
+    animation: shadow046 0.5s alternate infinite ease;
+}
+
+/* Distribuir círculos y sombras */
+.circle:nth-child(1) {
+    left: 15%;
+    animation-delay: 0s;
+}
+
+.circle:nth-child(2) {
+    left: 45%;
+    animation-delay: 0.2s;
+}
+
+.circle:nth-child(3) {
+    left: 75%;
+    animation-delay: 0.4s;
+}
+
+.shadow:nth-child(4) {
+    left: 15%;
+    animation-delay: 0s;
+}
+
+.shadow:nth-child(5) {
+    left: 45%;
+    animation-delay: 0.2s;
+}
+
+.shadow:nth-child(6) {
+    left: 75%;
+    animation-delay: 0.4s;
+}
+
+/* Animación para los círculos */
+@keyframes circle7124 {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-30px);
+    }
+}
+
+/* Animación para las sombras */
+@keyframes shadow046 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0.5);
+    }
+}

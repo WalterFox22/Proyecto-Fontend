@@ -3,6 +3,7 @@ import { Table, Card, Form, Button } from 'react-bootstrap';
 import Delete from '../assets/borrar1.png';
 import Update from '../assets/actualizar.png';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 
 //import Delete  from '../assets/remover.png';
@@ -87,8 +88,20 @@ const conductoresFiltrados = conductores.filter((conductor) =>
   const handleDelete = async (id) => {
     try {
         // Alerta de enviar antes de eliminar para evitar errores  
-        const confirmar = confirm("Vas a eliminar a un conductor, ¿Estás seguro de realizar esta acción?")
-        if (confirmar) {
+        // Mostrar alerta de confirmación
+        const result = await Swal.fire({
+          title: "¿Estás seguro?",
+          text: "Vas a eliminar a un conductor. Si lo eliminas, debes registrar otro de inmediato.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, eliminar",
+          cancelButtonText: "Cancelar",
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6"
+        });
+
+        // Si el usuario confirma, eliminar conductor
+        if (result.isConfirmed) {
             // definicion del token
             const token = localStorage.getItem('token')
             // establecer la ruta de acceso al backend
@@ -101,6 +114,15 @@ const conductoresFiltrados = conductores.filter((conductor) =>
            
             // recibimos la respuesta del backend
             await axios.delete(url, {headers});
+
+            // Mostrar alerta de éxito
+            Swal.fire({
+              title: "Eliminado",
+              text: "El conductor ha sido eliminado correctamente. Recuerda registrar a un nuevo conductor de manera URGENTE!!",
+              icon: "success",
+              confirmButtonColor: "#3085d6",
+            });
+
             listarConductores()
         }
     }

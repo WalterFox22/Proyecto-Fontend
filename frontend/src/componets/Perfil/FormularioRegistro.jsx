@@ -282,11 +282,13 @@ const FormularioRegistro = () => {
       <Button
         type="submit"
         variant="success"
-        className="w-100"
+        className="mx-auto d-block" 
         style={{
+          width: '200px', // Ajusta según necesites
           color: 'white',
           border: 'none',
           borderRadius: '5px',
+          padding: '10px 20px' // Ajustar relleno
         }}
       >
         Registrar

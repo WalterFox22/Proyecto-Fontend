@@ -2,8 +2,8 @@ import React, { useContext, useEffect } from 'react';
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { Container, Row, Col, Navbar, Nav, Image, Button } from 'react-bootstrap';
 import AuthContext from '../context/AuthProvider';
-import Footer from '../pages/Footer';
 import LogoAdmin from '../assets/Admin.png';
+import Loading from '../componets/Loading/Loading';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -20,9 +20,7 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <h3>Cargando...</h3>
-      </div>
+      <Loading/>
     ); // Mostramos un mensaje de carga o un spinner aquí
   }
 
@@ -85,11 +83,11 @@ const Dashboard = () => {
           </Col>
 
           {/* Main Content */}
-          <Col className="d-flex flex-column p-0">
+          <Col className="d-flex flex-column p-0" style={{ height: '100vh' }}>
             {/* Top Navbar */}
             <Navbar className="justify-content-end px-3"
-            style={{backgroundColor: '#560C23'}}>
-              <Navbar.Text className="me-3" style={{ color: 'white' }}>Usuario - {auth?.nombre}</Navbar.Text>
+            style={{backgroundColor: '#F8F9FA'}}>
+              <Navbar.Text className="me-3" style={{ color: 'black', fontSize:'18px' }}>Usuario - {auth?.nombre}</Navbar.Text>
               <Image
                 src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"
                 roundedCircle
@@ -116,7 +114,14 @@ const Dashboard = () => {
             </div>
           </Col>
         </Row>
-        <Footer />
+         {/* Footer */}
+         <footer className="text-white text-center py-3" style={{backgroundColor: '#560C23'}}>
+          <Container fluid>
+            <p className="mb-0" style={{color:'white'}}>
+              © {new Date().getFullYear()} Todos los derechos Reservados. U.E EMAUS.
+            </p>
+          </Container>
+        </footer>
       </Container>
     </>
   );
