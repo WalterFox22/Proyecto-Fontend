@@ -20,6 +20,13 @@ const BarraListar = () => {
   const [error, setError] = useState(null)
 
 
+
+  // Efecto para borrar el error cuando cambia la ruta asignada
+  useEffect(() => {
+    setError(null);  // Esto borra el mensaje de error cuando se empieza a escribir
+  }, [rutaAsignada]);
+
+
   // Función para listar conductores desde el backend
   const listarConductores = async () => {
     try {
@@ -50,10 +57,15 @@ const BarraListar = () => {
 
   // Buscar conductor por la ruta ingresada
   const buscarConductorPorRuta = async () => {
+    // Reseteamos el error antes de hacer la búsqueda
+    setError(null);
+  
     if (!rutaAsignada) {
-      // Si no hay nada en el input, no realizar la búsqueda
+      // Si el campo de búsqueda está vacío, recargamos toda la lista de conductores
+      listarConductores(); // Recarga todos los conductores
       return;
     }
+
     try {
       const token = localStorage.getItem('token');
       const url = `${import.meta.env.VITE_URL_BACKEND}/buscar/conductor/ruta/${rutaAsignada}`;
@@ -63,9 +75,9 @@ const BarraListar = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-
+  
       const respuesta = await axios.get(url, options);
-
+  
       if (respuesta.data && respuesta.data.conductores) {
         setConductores(respuesta.data.conductores);
       } else {
@@ -122,13 +134,37 @@ const conductoresFiltrados = conductores.filter((conductor) =>
               icon: "success",
               confirmButtonColor: "#3085d6",
             });
-
-            listarConductores()
+            navigate('/dashboard/registro/conductores')
+            //listarConductores()
         }
     }
     catch (error) {
         console.log(error);
     }
+};
+
+
+// Función para manejar el cambio en la barra de búsqueda
+const handleSearchChange = (e) => {
+  const value = e.target.value;
+  setRutaAsignada(value);
+
+  if (!value) {
+    // Si la barra de búsqueda está vacía, recargar toda la lista de conductores
+    listarConductores();
+  }
+};
+
+// Función para manejar la búsqueda cuando presionas "Enter"
+const handleSearchSubmit = (e) => {
+  e.preventDefault();  // Prevenir la acción por defecto del formulario
+
+  if (!rutaAsignada) {
+    // Si la barra de búsqueda está vacía, recargar toda la lista de conductores
+    listarConductores();
+  } else {
+    buscarConductorPorRuta();  // Realizar la búsqueda con la ruta especificada
+  }
 };
 
 
@@ -142,14 +178,22 @@ const conductoresFiltrados = conductores.filter((conductor) =>
     <>
       
       {/* Barra de búsqueda */}
-      <Form className="d-flex mb-3">
+      <Form className="d-flex mb-3" onSubmit={handleSearchSubmit}>
         <Form.Control
           type="search"
           placeholder="Buscar Conductor por ruta"
           className="me-2"
           aria-label="Search"
           value={rutaAsignada}
-          onChange={(e) => setRutaAsignada(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            setRutaAsignada(value);  // Actualizar el estado con lo que el usuario escribe
+        
+            // Si la barra de búsqueda está vacía, mostramos toda la lista
+            if (!value) {
+              listarConductores();  // Llama a la función para cargar todos los conductores
+            }
+          }}
         />
         <Button variant="outline-success" 
           style={{color: '#92BFF9', borderColor: '#92BFF9', backgroundColor: 'transparent',}}
@@ -163,16 +207,17 @@ const conductoresFiltrados = conductores.filter((conductor) =>
             e.target.style.color = '#92BFF9';
             e.target.style.borderColor = '#92BFF9';
           }}
-          onClick={buscarConductorPorRuta}> {/** SE INVOCA ACA LA FUNCION BUCAR Y NO EN EL USEEFFECT */}
+          onClick={buscarConductorPorRuta}
+          type="submit"> {/** SE INVOCA ACA LA FUNCION BUCAR Y NO EN EL USEEFFECT */}
           BUSCAR
         </Button>
       </Form>
 
       {/* Mostrar mensaje de error si ocurre */}
-      {error && <Mensaje tipo="danger">{error}</Mensaje>}
+      {error && <Mensaje tipo={false} className="text-danger">{error}</Mensaje>}
 
       {/* Mostrar mensaje si no hay conductores */}
-      {conductores.length === 0 && !error && <Mensaje tipo="info">{'No existen registros'}</Mensaje>}
+      {conductores.length === 0 && !error && <Mensaje tipo={false}>{'No existen registros'}</Mensaje>}
 
       {/* Tabla de conductores */}
       {conductores.length > 0 && (

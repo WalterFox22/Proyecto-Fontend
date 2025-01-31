@@ -29,12 +29,10 @@ const Login = () => {
       const url = `${import.meta.env.VITE_URL_BACKEND}/login`;
       const respuesta = await axios.post(url, form);
       localStorage.setItem('token', respuesta.data.token)
-      console.log(respuesta)
       setAuth(respuesta.data.administrador);
       toast.success(respuesta?.data?.msg);
       navigate('/dashboard');
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.msg);
     } finally {
       setLoading(false);
