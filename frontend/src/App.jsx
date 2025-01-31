@@ -12,6 +12,7 @@ import Perfil from './componets/Perfil/Perfil';
 import RegistroConductor from './pages/admin/RegistroConductor';
 import ListarCondutor from './pages/admin/ListarConductor';
 import ActualizarConductor from './pages/admin/ActualizarConductor';
+import Error404 from './componets/Error/Error404';
 
 
 
@@ -29,6 +30,7 @@ function App(){
             <Route path="login" element={<Login />} />
             <Route path='registro/representantes' element={<Register/>}/>
             <Route path='recuperacion/contrasenia' element = {<RecuperarContraseña/>}/>
+            <Route path='*' element={<Error404/>}/>
           </Route>
 
           <Route path='dashboard/*' element={
@@ -40,9 +42,11 @@ function App(){
                   <Route path='registro/conductores' element={<RegistroConductor/>}/>
                   <Route path='listar/conductores' element ={<ListarCondutor/>}/>
                   <Route path='buscar/conductor/ruta/:rutaAsignada' element={<ActualizarConductor/>}/>
-                  
+
             
                 </Route>
+                <Route path='*' element={<Error404/>}/>
+
               </Routes>
             </PrivateRoute>
           }/>
