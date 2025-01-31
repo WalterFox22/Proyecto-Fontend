@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import AuthContext from '../context/AuthProvider';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ const Login = () => {
     email: '',
     password: '',
   });
+
+
+  const [showPassword, setShowPassword] = useState(false);  // Estado para mostrar/ocultar la contraseña
 
   const handleChange = (e) => {
     setForm({
@@ -56,15 +60,36 @@ const Login = () => {
                 required
                 placeholder="Email"
               />
-              <input
-                id="login-password"
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                placeholder="Password"
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  id="login-password"
+                  type={showPassword ? 'text' : 'password'}  // Alternar entre texto y password
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Password"
+                  style={{
+                    paddingRight: '35px',  // Espacio para el ícono
+                    width: '100%',         // Asegura que el campo tenga el tamaño completo
+                  }}
+                />
+                {/* Ícono de ojo */}
+                <span
+                  onClick={() => setShowPassword(!showPassword)}  // Alternar visibilidad
+                  style={{
+                    position: 'absolute',
+                    right: '10px',      // Alinea el ícono a la derecha
+                    top: '62%',
+                    transform: 'translateY(-50%)',  // Centra el ícono verticalmente
+                    cursor: 'pointer',
+                    fontSize: '20px',
+                    color: 'white',     // Color blanco para el ícono
+                  }}
+                >
+                  {showPassword ? <FaEye />: <FaEyeSlash />  }  {/* Alterna entre los íconos */}
+                </span>
+              </div>
               <div id="login-options">
                 <Link to="/recuperacion/contrasenia" id="login-forgot-password">
                   Olvidaste tu contraseña?
