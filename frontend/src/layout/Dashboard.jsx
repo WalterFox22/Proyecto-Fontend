@@ -115,8 +115,8 @@ const Dashboard = () => {
       </Row>
 
       {/* Footer */}
-      <footer className="text-white text-center py-3 mt-auto w-100" style={{ backgroundColor: '#560C23' }}>
-        <Container fluid>
+      <footer className="text-white text-center py-3 mt-auto w-100" style={{ backgroundColor: '#560C23', width: '100%' }}>
+        <Container fluid style={{ padding: 0 }}>
           <p className="mb-0 text-white">© {new Date().getFullYear()} Todos los derechos Reservados. U.E EMAUS.</p>
         </Container>
       </footer>

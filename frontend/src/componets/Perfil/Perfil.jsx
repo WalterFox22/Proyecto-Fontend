@@ -1,23 +1,23 @@
 import React, { useContext } from 'react';
-import { Row, Col, Container } from 'react-bootstrap'; // Importa componentes de React-Bootstrap
+import { Row, Col, Container } from 'react-bootstrap';
 import AuthContext from '../../context/AuthProvider';
 
 const Perfil = () => {
     const { auth } = useContext(AuthContext);
 
     return (
-        <Container fluid>
+        <Container fluid className="p-3">
             <div className="text-center">
                 <h1 className="mb-4">Perfil del Usuario</h1>
                 <hr className="my-4" />
-                <p className="text-lg mb-8">
+                <p className="text-lg mb-4">
                     Este módulo te permite visualizar el perfil del Usuario
                 </p>
             </div>
 
             <Row className="justify-content-center">
                 {/* Información del Perfil */}
-                <Col md={6}>
+                <Col xs={12} md={8} lg={6}>
                     <div className="p-4 border rounded shadow-lg bg-light">
                         <h2 className="mb-4 text-center">Información del Perfil</h2>
                         {auth.nombre ? (

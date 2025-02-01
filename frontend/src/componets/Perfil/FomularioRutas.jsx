@@ -11,6 +11,7 @@ const FormularioRutaSector =({conductores})=>{
 
     const navigate = useNavigate()
     const [mensaje, setMensaje]=useState({})
+    const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
        
         rutaAsignada: conductores?.rutaAsignada || '',
@@ -51,6 +52,8 @@ const FormularioRutaSector =({conductores})=>{
             console.error('Error al actualizar', error.response?.data);
             setMensaje({ respuesta: error.response?.data?.msg || 'Error al actualizar', tipo: false });
             toast.error(error.response?.data?.msg || 'Error al actualizar el conductor');
+        }finally {
+            setLoading(false);
         }
         
         

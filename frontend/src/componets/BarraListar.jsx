@@ -178,7 +178,7 @@ const handleSearchSubmit = (e) => {
     <>
       
       {/* Barra de búsqueda */}
-      <Form className="d-flex mb-3" onSubmit={handleSearchSubmit}>
+      <Form className="d-flex justify-content-center mb-3" onSubmit={handleSearchSubmit} style={{ width: '100%' }}>
         <Form.Control
           type="search"
           placeholder="Buscar Conductor por ruta"
@@ -194,6 +194,7 @@ const handleSearchSubmit = (e) => {
               listarConductores();  // Llama a la función para cargar todos los conductores
             }
           }}
+          style={{ maxWidth: '500px', width: '100%' }}
         />
         <Button variant="outline-success" 
           style={{color: '#92BFF9', borderColor: '#92BFF9', backgroundColor: 'transparent',}}

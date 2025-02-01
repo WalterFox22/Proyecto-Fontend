@@ -4,7 +4,7 @@ import FormularioRegistro from '../../componets/Perfil/FormularioRegistro';
 
 const RegistroConductor = () => {
     return (
-        <Container fluid>
+        <Container fluid className="p-3">
             {/* Encabezado */}
             <div className="text-center mb-4">
                 <h1>Registro Conductor</h1>
@@ -14,7 +14,7 @@ const RegistroConductor = () => {
 
             {/* Contenido principal */}
             <Row className="justify-content-center align-items-center">
-                <Col xs={12} md={6}>
+                <Col xs={12} sm={10} md={8} lg={6}>
                     <FormularioRegistro />
                 </Col>
             </Row>
