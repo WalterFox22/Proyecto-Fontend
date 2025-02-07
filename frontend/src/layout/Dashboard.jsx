@@ -12,6 +12,7 @@ const Dashboard = () => {
   const { auth, loading } = useContext(AuthContext);
   const autenticado = localStorage.getItem('token');
 
+  
   useEffect(() => {
     if (!loading) {
       // Se puede hacer alguna lógica aquí si es necesario cuando la carga termina.
@@ -23,6 +24,8 @@ const Dashboard = () => {
       <Loading/>
     ); // Mostramos un mensaje de carga o un spinner aquí
   }
+    
+
 
   // Verificamos si el usuario no está autenticado y lo redirigimos a login
   if (!autenticado) {
@@ -30,7 +33,7 @@ const Dashboard = () => {
   }
 
   return (
-    <Container fluid className="p-0 d-flex flex-column" style={{ height: '100vh' }}>
+    <Container fluid className="p-0 d-flex flex-column" style={{ minHeight: '100vh' }}>
       <Row className="flex-nowrap flex-grow-1 m-0" style={{ flex: 1 }}>
         {/* Sidebar */}
         <Col
@@ -81,7 +84,7 @@ const Dashboard = () => {
         </Col>
 
         {/* Main Content */}
-        <Col className="d-flex flex-column p-0" style={{ height: '100vh' }}>
+        <Col className="d-flex flex-column p-0" style={{ minHeight: '100vh' }}>
           {/* Top Navbar */}
           <Navbar className="justify-content-end px-3" style={{backgroundColor: '#F8F9FA'}}>
             <Navbar.Text className="me-3" style={{ color: 'black', fontSize:'18px' }}>
@@ -107,19 +110,12 @@ const Dashboard = () => {
           {/* Dynamic Content */}
           <div
             className="flex-grow-1 p-4 bg-light"
-            style={{ height: 'calc(100vh - 56px)', overflow: 'auto' }}
+            style={{ minHeight: 'calc(100vh - 56px)', overflow: 'auto' }}
           >
             {autenticado ? <Outlet /> : <Navigate to="/login" />}
           </div>
         </Col>
       </Row>
-
-      {/* Footer */}
-      <footer className="text-white text-center py-3 mt-auto w-100" style={{ backgroundColor: '#560C23', width: '100%' }}>
-        <Container fluid style={{ padding: 0 }}>
-          <p className="mb-0 text-white">© {new Date().getFullYear()} Todos los derechos Reservados. U.E EMAUS.</p>
-        </Container>
-      </footer>
     </Container>
   );
 };
