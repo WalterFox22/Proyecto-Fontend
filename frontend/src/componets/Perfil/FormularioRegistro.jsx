@@ -20,11 +20,21 @@ const FormularioRegistro = () => {
     generoConductor: '',      // Campo para el género
   });
 
+  // Control de formato para los nombres ingresados
+  const FormatoNombres =(str)=>{
+    return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+
+  }
+
+
+
   const [imagen, setImagen] = useState(null); // Estado para la imagen
 
   const handleChange = (e) => {
     setForm({
       ...form,
+      nombre:FormatoNombres(form.nombre),
+      apellido:FormatoNombres(form.apellido),
       [e.target.name]: e.target.value,
     });
   };
