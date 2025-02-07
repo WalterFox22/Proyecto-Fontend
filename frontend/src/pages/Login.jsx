@@ -6,10 +6,11 @@ import AuthContext from '../context/AuthProvider';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Loading from '../componets/Loading/Loading';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setAuth, setLoading } = useContext(AuthContext);
+  const { setAuth,loading, setLoading } = useContext(AuthContext);
 
   const [form, setForm] = useState({
     email: '',
@@ -46,10 +47,16 @@ const Login = () => {
   return (
     <>
       <ToastContainer />
+      {
+        loading ? (
+          <Loading/>
+        ):(
+
+        
       <div id="login-body">
         <div id="login-glass-container">
           <div id="login-box">
-            <h2 id="login-title">Login</h2>
+            <h2 id="login-title">LOGIN</h2>
             <form id="login-form" onSubmit={handleSubmit}>
               <input
                 id="login-email"
@@ -58,7 +65,7 @@ const Login = () => {
                 value={form.email}
                 onChange={handleChange}
                 required
-                placeholder="Email"
+                placeholder="Correo"
               />
               <div style={{ position: 'relative' }}>
                 <input
@@ -68,7 +75,7 @@ const Login = () => {
                   value={form.password}
                   onChange={handleChange}
                   required
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   style={{
                     paddingRight: '35px',  // Espacio para el ícono
                     width: '100%',         // Asegura que el campo tenga el tamaño completo
@@ -107,6 +114,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+    )}
     </>
   );
 };
