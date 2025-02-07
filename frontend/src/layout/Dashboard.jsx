@@ -41,7 +41,7 @@ const Dashboard = () => {
           md={3}
           lg={2}
           className="text-light p-3 d-flex flex-column"
-          style={{ backgroundColor: '#560C23', height: '100vh', overflowY: 'auto' }}
+          style={{ backgroundColor: '#560C23',minHeight: '100vh', maxWidth: '250px',width: '100%', overflowY: 'auto' }}
         >
           <h2 className="text-center fw-bold">U.E EMAUS</h2>
           <div className="text-center my-4">
@@ -84,7 +84,7 @@ const Dashboard = () => {
         </Col>
 
         {/* Main Content */}
-        <Col className="d-flex flex-column p-0" style={{ minHeight: '100vh' }}>
+        <Col className="d-flex flex-column p-0" style={{ minHeight: '100vh', flexGrow: 1 }}>
           {/* Top Navbar */}
           <Navbar className="justify-content-end px-3" style={{backgroundColor: '#F8F9FA'}}>
             <Navbar.Text className="me-3" style={{ color: 'black', fontSize:'18px' }}>
