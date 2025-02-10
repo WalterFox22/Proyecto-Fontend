@@ -28,8 +28,10 @@ function App(){
           <Route index element={<Login />} />
           <Route path='/' element={<Auth/>}>
             <Route path="login" element={<Login />} />
+            {/** 
             <Route path='registro/representantes' element={<Register/>}/>
             <Route path='recuperacion/contrasenia' element = {<RecuperarContraseña/>}/>
+            */}
             <Route path='*' element={<Error404/>}/>
           </Route>
 
