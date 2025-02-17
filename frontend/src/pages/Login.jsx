@@ -97,13 +97,13 @@ const Login = () => {
                   {showPassword ? <FaEye />: <FaEyeSlash />  }  {/* Alterna entre los íconos */}
                 </span>
               </div>
-              {/** 
+               
               <div id="login-options">
                 <Link to="/recuperacion/contrasenia" id="login-forgot-password">
                   Olvidaste tu contraseña?
                 </Link>
               </div>
-              */}
+              
               <button id="login-button" className="btn btn-success">
                 Ingresar
               </button>
