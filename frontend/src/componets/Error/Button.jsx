@@ -13,7 +13,7 @@ const Button = () => {
       navigate('/dashboard');
     } else {
       // Si no hay token, redirigimos al login
-      navigate('/login');
+      navigate('/categoria');
     }
   };
 

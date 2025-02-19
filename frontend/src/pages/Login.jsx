@@ -58,7 +58,7 @@ const Login = () => {
         {/* Icono para volver atrás */}
         <BsArrowLeftSquareFill
             className="back-icon"
-            onClick={() => navigate('/prueba')}
+            onClick={() => navigate('/categoria')}
           />
         <div id="login-glass-container">
           <div id="login-box">

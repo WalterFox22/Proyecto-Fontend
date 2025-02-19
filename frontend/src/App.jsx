@@ -26,16 +26,19 @@ function App(){
         <AuthProvider>
         <Routes>
           
-          <Route index element={<Login />} />
+          <Route index element={<Start />} />
           <Route path='/' element={<Auth/>}>
+            <Route path='categoria' element={<Start/>}/>
+
             <Route path="login" element={<Login />} />
+            
             {/** 
             <Route path='registro/representantes' element={<Register/>}/>
             */}
 
             <Route path='recuperacion/contrasenia' element = {<RecuperarContraseña/>}/>
 
-            <Route path='prueba' element={<Start/>}/>
+          
 
             <Route path='*' element={<Error404/>}/>
           </Route>

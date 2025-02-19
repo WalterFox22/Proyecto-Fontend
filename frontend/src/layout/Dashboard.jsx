@@ -29,7 +29,7 @@ const Dashboard = () => {
 
   // Verificamos si el usuario no está autenticado y lo redirigimos a login
   if (!autenticado) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/categoria" />;
   }
 
   return (
@@ -112,7 +112,7 @@ const Dashboard = () => {
             className="flex-grow-1 p-4 bg-light"
             style={{ minHeight: 'calc(100vh - 56px)', overflow: 'auto' }}
           >
-            {autenticado ? <Outlet /> : <Navigate to="/login" />}
+            {autenticado ? <Outlet /> : <Navigate to="/categoria" />}
           </div>
         </Col>
       </Row>
