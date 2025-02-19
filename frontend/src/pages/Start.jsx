@@ -1,12 +1,13 @@
 import React from "react";
 import { Container, Row, Col, Image,Button } from "react-bootstrap";
-import Rol1 from '../assets/Imagen4.jpg'
-import Rol2 from '../assets/Imagen3.jpg'
+import Rol1 from '../assets/admTrue.png'
+import Rol2 from '../assets/drivTrue.png'
 import BlurText from "../TextAnimations/BlurText/BlurText";
 import '../Styles/styleStart.css'
 
 
 const Start = () => {
+
   return (
     <div className="start-page">
         <div className="container-content">   
@@ -30,8 +31,8 @@ const Start = () => {
                 >
                     <Image src={Rol1} alt="Imagen 1" fluid
                     style={{
-                        width: "150px",
-                        height: "150px",
+                        maxWidth: "93.6%",  // La imagen no superará su tamaño original
+                        height: "auto",    // Mantiene la proporción
                         borderRadius: "10px",
                         transition: "transform 0.3s ease, box-shadow 0.3s ease",
                     }}
@@ -56,8 +57,8 @@ const Start = () => {
                 >
                     <Image src={Rol2} alt="Imagen 2" fluid
                     style={{
-                        width: "150px",
-                        height: "150px",
+                        maxWidth: "100%",  // La imagen no superará su tamaño original
+                        height: "auto",    // Mantiene la proporción
                         borderRadius: "10px",
                         transition: "transform 0.3s ease, box-shadow 0.3s ease",
                     }}
