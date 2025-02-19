@@ -17,7 +17,7 @@ const Start = () => {
             <Container className="d-flex flex-column align-items-center justify-content-center vh-100">
                 <BlurText
                 text="Escoja el tipo de rol con el que deseas ingresar"
-                delay={180}
+                delay={100}
                 animateBy="words"
                 direction="top"
                 className="blur-text"
