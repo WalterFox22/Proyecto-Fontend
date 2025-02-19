@@ -32,11 +32,13 @@ A continuación, se presentan las dependencias necesarias y los comandos para in
 | **Vite**      | `npm i vite` |
 | **Dom**      | `npm i react-router-dom` |
 | **Iconos de React**        | `npm i react-icons`                           |
-| **GSAP**      | `npm i gsap`                         |
+| **GSAP (animacion- opcional)**      | `npm i gsap`                         |
 | **Animación de botones**      | `npm i styled-components`                        |
 | **Bootstrap**    | `npm i react-bootstrap bootstrap`                       |
 | **Personalización de alertas**    | `npm i sweetalert2`                       |
 | **Validación de formularios**    | `npm i formik yup`                       |
+| **React Bits**    | `npx jsrepo init https://reactbits.dev/default`                       |
+| **Framer motion (liberia para animación)**    | `npm i framer-motion`                       |
 
 Ejecuta los comandos en la terminal dentro del directorio del proyecto para instalar cada una de las dependencias requeridas.
 ## Despliegue
