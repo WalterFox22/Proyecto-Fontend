@@ -4,9 +4,12 @@ import Rol1 from '../assets/admTrue.png'
 import Rol2 from '../assets/drivTrue.png'
 import BlurText from "../TextAnimations/BlurText/BlurText";
 import '../Styles/styleStart.css'
+import { useNavigate } from "react-router-dom";
 
 
 const Start = () => {
+
+    const navigate=useNavigate()
 
   return (
     <div className="start-page">
@@ -28,6 +31,7 @@ const Start = () => {
                     border: "none",
                     background: "none",
                     padding: 0}}
+                    onClick={()=>navigate('/login')}
                 >
                     <Image src={Rol1} alt="Imagen 1" fluid
                     style={{
@@ -54,6 +58,7 @@ const Start = () => {
                     border: "none",
                     background: "none",
                     padding: 0}}
+                    onClick={()=>navigate('/login')}
                 >
                     <Image src={Rol2} alt="Imagen 2" fluid
                     style={{

@@ -152,3 +152,17 @@
 #login-register-link:hover{
     text-decoration: underline;
 }
+
+/* Estilo para el boton de volver */
+.back-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 40px;
+    color: rgb(35, 133, 245);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.back-icon:hover {
+    transform: scale(1.1);
+}

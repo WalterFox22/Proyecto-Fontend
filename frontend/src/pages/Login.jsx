@@ -6,6 +6,7 @@ import AuthContext from '../context/AuthProvider';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { BsArrowLeftSquareFill } from "react-icons/bs";
 import Loading from '../componets/Loading/Loading';
 
 const Login = () => {
@@ -54,6 +55,11 @@ const Login = () => {
 
         
       <div id="login-body">
+        {/* Icono para volver atrás */}
+        <BsArrowLeftSquareFill
+            className="back-icon"
+            onClick={() => navigate('/prueba')}
+          />
         <div id="login-glass-container">
           <div id="login-box">
             <h2 id="login-title">LOGIN</h2>
