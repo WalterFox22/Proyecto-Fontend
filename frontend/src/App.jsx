@@ -13,6 +13,7 @@ import RegistroConductor from './pages/admin/RegistroConductor';
 import ListarCondutor from './pages/admin/ListarConductor';
 import ActualizarConductor from './pages/admin/ActualizarConductor';
 import Error404 from './componets/Error/Error404';
+import Start from './pages/Start';
 
 
 
@@ -33,6 +34,9 @@ function App(){
             */}
 
             <Route path='recuperacion/contrasenia' element = {<RecuperarContraseña/>}/>
+
+            <Route path='prueba' element={<Start/>}/>
+
             <Route path='*' element={<Error404/>}/>
           </Route>
 
