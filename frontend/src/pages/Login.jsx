@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import AuthContext from '../context/AuthProvider';
 import axios from 'axios';
+import * as jwt_decode from 'jwt-decode'
 import { toast, ToastContainer } from 'react-toastify';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { BsArrowLeftSquareFill } from "react-icons/bs";
@@ -32,9 +33,29 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      const rolSeleccionado = localStorage.getItem('rol'); // Obtener el rol elegido en la pantalla anterior
+      console.log(rolSeleccionado)
+
+      if (!rolSeleccionado) {
+        toast.error('Por favor, selecciona un rol antes de iniciar sesión.');
+        return;
+      }
+
       const url = `${import.meta.env.VITE_URL_BACKEND}/login`;
-      const respuesta = await axios.post(url, form);
+      const respuesta = await axios.post(url, { ...form });
       localStorage.setItem('token', respuesta.data.token)
+
+      //Extraer los valores del JWT
+      const tokenPayload = jwt_decode(respuesta.data.token)
+      const rolesUsuario= tokenPayload.roles ||[]
+      
+      // Validar si el usuario tiene el rol seleccionado
+      if(!rolesUsuario.includes(rolSeleccionado)){
+        toast.error('No tienes permiso para este rol.');
+        localStorage.removeItem('token'); // Borrar el token si no tiene permisos
+        return;
+      }
+
       setAuth(respuesta.data.administrador);
       toast.success(respuesta?.data?.msg);
       navigate('/dashboard');

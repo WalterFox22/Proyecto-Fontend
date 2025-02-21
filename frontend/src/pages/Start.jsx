@@ -11,6 +11,7 @@ const Start = () => {
 
     const navigate=useNavigate()
 
+
   return (
     <div className="start-page">
         <div className="container-content">   
@@ -31,12 +32,16 @@ const Start = () => {
                     border: "none",
                     background: "none",
                     padding: 0}}
-                    onClick={()=>navigate('/login')}
+                    onClick={()=>{
+                        localStorage.setItem('rol', 'administrador')
+                        navigate('/login')}
+                    }
+
                 >
                     <Image src={Rol1} alt="Imagen 1" fluid
                     style={{
-                        maxWidth: "93.6%",  // La imagen no superará su tamaño original
-                        height: "auto",    // Mantiene la proporción
+                        width: "210px",
+                        height: "200px",
                         borderRadius: "10px",
                         transition: "transform 0.3s ease, box-shadow 0.3s ease",
                     }}
@@ -58,12 +63,16 @@ const Start = () => {
                     border: "none",
                     background: "none",
                     padding: 0}}
-                    onClick={()=>navigate('/login')}
+                    onClick={()=>{
+                        localStorage.setItem('rol','conductor')
+                        navigate('/login')}
+                    }
+
                 >
                     <Image src={Rol2} alt="Imagen 2" fluid
                     style={{
-                        maxWidth: "100%",  // La imagen no superará su tamaño original
-                        height: "auto",    // Mantiene la proporción
+                        width: "210px",
+                        height: "200px",
                         borderRadius: "10px",
                         transition: "transform 0.3s ease, box-shadow 0.3s ease",
                     }}
@@ -77,6 +86,7 @@ const Start = () => {
                     }} />
 
                 </Button>
+                
 
                 </Col>
             </Row>
