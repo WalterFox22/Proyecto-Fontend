@@ -33,7 +33,7 @@ const Start = () => {
                     background: "none",
                     padding: 0}}
                     onClick={()=>{
-                        localStorage.setItem('rol', 'administrador')
+                        localStorage.setItem('role', 'admin')
                         navigate('/login')}
                     }
 
@@ -64,7 +64,7 @@ const Start = () => {
                     background: "none",
                     padding: 0}}
                     onClick={()=>{
-                        localStorage.setItem('rol','conductor')
+                        localStorage.setItem('role','conductor')
                         navigate('/login')}
                     }
 

@@ -1,127 +1,125 @@
 /* Estilos globales para tipografía */
 * {
-    font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
-
-
 h1 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    color: #6C7C8C; /* Gris pastel fuerte para el título principal */
-    font-size: 2.5rem; /* Ajuste de tamaño para h1 */
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  color: #6c7c8c; /* Gris pastel fuerte para el título principal */
+  font-size: 2.5rem; /* Ajuste de tamaño para h1 */
 }
 
 h2 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    color: #6C7C8C; /* Gris pastel fuerte para el subtítulo */
-    font-size: 2rem; /* Ajuste de tamaño para h2 */
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  color: #6c7c8c; /* Gris pastel fuerte para el subtítulo */
+  font-size: 2rem; /* Ajuste de tamaño para h2 */
 }
 
 h3 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    color: #A0A5B1; /* Gris pastel medio para subtítulos secundarios */
-    font-size: 1.75rem; /* Ajuste de tamaño para h3 */
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  color: #a0a5b1; /* Gris pastel medio para subtítulos secundarios */
+  font-size: 1.75rem; /* Ajuste de tamaño para h3 */
 }
 
 h4 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    
-    color: #A0A5B1; /* Gris pastel medio para subtítulos secundarios */
-    font-size: 1.5rem; /* Ajuste de tamaño para h4 */
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+
+  color: #a0a5b1; /* Gris pastel medio para subtítulos secundarios */
+  font-size: 1.5rem; /* Ajuste de tamaño para h4 */
 }
 
 h5 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(88, 87, 87, 0.3);
-    color: #A0A5B1; /* Gris pastel medio para subtítulos secundarios */
-    font-size: 1.25rem; /* Ajuste de tamaño para h5 */
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(88, 87, 87, 0.3);
+  color: #a0a5b1; /* Gris pastel medio para subtítulos secundarios */
+  font-size: 1.25rem; /* Ajuste de tamaño para h5 */
 }
 
 h6 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    color: #A0A5B1; /* Gris pastel medio para subtítulos secundarios */
-    font-size: 1.1rem; /* Ajuste de tamaño para h6 */
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  color: #a0a5b1; /* Gris pastel medio para subtítulos secundarios */
+  font-size: 1.1rem; /* Ajuste de tamaño para h6 */
 }
-p{
-    
-    font-size: 1.1rem;
-    color: #464747;
-    
+p {
+  font-size: 1.1rem;
+  color: #464747;
 }
- 
 
 /* Estilo para los botones */
-button, .btn {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-radius: 100px; /* Bordes redondeados aplicados globalmente */
-    padding: 15px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.3s;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+button,
+.btn {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 100px; /* Bordes redondeados aplicados globalmente */
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* Eliminar borde azul en los botones dentro de un formulario */
-button:focus, .btn:focus {
-    outline: none; /* Quita el borde azul */
-    box-shadow: none; /* Elimina el efecto de sombra */
+button:focus,
+.btn:focus {
+  outline: none; /* Quita el borde azul */
+  box-shadow: none; /* Elimina el efecto de sombra */
 }
 
 /* Efecto al pasar el mouse sobre el botón (sobresalir) */
-button:hover, .btn:hover {
-    transform: scale(1.05); /* Hace que el botón sobresalga ligeramente */
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* Agrega más sombra para resaltar */
+button:hover,
+.btn:hover {
+  transform: scale(1.05); /* Hace que el botón sobresalga ligeramente */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* Agrega más sombra para resaltar */
 }
 
 /* Estilo global para enlaces de React (Link) */
 .react-router-dom-link {
-    color: aqua;
-    margin: 20px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    text-decoration: none;
+  color: aqua;
+  margin: 20px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-decoration: none;
 }
 
 .react-router-dom-link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .text-gray-700 {
-    font-weight: bold; /* Esto pondrá en negritas el texto */
+  font-weight: bold; /* Esto pondrá en negritas el texto */
 }
-button:hover, .btn:hover {
-    transform: scale(1.05); /* Hace que el botón sobresalga ligeramente */
-    
+button:hover,
+.btn:hover {
+  transform: scale(1.05); /* Hace que el botón sobresalga ligeramente */
 }
 
 /* Estilo global para los placeholders */
 ::placeholder {
-    color: #ccc; /* Un gris más claro */
-    font-style: italic; /* Opcional, para diferenciarlos aún más */
+  color: #ccc; /* Un gris más claro */
+  font-style: italic; /* Opcional, para diferenciarlos aún más */
 }
 
 /* Soporte para navegadores antiguos */
 ::-webkit-input-placeholder {
-    color: #ccc;
-    font-style: italic;
+  color: #ccc;
+  font-style: italic;
 }
 :-ms-input-placeholder {
-    color: #ccc;
-    font-style: italic;
+  color: #ccc;
+  font-style: italic;
 }

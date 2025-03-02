@@ -1,168 +1,212 @@
 #login-body {
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-image: url('./assets/fondo1.jpg');
-    background-size: cover;
-    background-position: center;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("./assets/fondo1.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
 #login-glass-container {
-    width: 400px;
-    height: 550px;
-    position: relative;
-    z-index: 1;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+  width: 400px;
+  height: 550px;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 #login-glass-container::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.2);
-    z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: -1;
 }
 
 #login-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 #login-title {
-    font-size: 40px;
-    font-weight: 780;
-    color: rgb(255, 255, 255);
-    text-shadow: 1px 1px 2px rgb(0, 0, 0);
-    margin-bottom: 25px;
-    -webkit-text-stroke: 2px rgba(0, 0, 0, 0.164);
+  font-size: 40px;
+  font-weight: 780;
+  color: rgb(255, 255, 255);
+  text-shadow: 1px 1px 2px rgb(0, 0, 0);
+  margin-bottom: 25px;
+  -webkit-text-stroke: 2px rgba(0, 0, 0, 0.164);
 }
 
-#login-email, #login-password {
-    width: 90%;
-    padding: 15px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 12px;
-    background: transparent;
-    border: 3px solid #fff;
-    color: white;
-    font-size: 16px;
-    text-align: center;
+#login-email,
+#login-password {
+  width: 90%;
+  padding: 15px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  border: 3px solid #fff;
+  color: white;
+  font-size: 16px;
+  text-align: center;
 }
 
-#login-email::placeholder, #login-password::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+#login-email::placeholder,
+#login-password::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
-#login-email:focus, #login-password:focus {
-    outline: none;
-    border-color: black;
+#login-email:focus,
+#login-password:focus {
+  outline: none;
+  border-color: black;
 }
 
 #login-button {
-    width: 90%;
-    background: linear-gradient(45deg, #4caf50, #81c784);
-    color: white;
-    padding: 15px;
-    border: none;
-    border-radius: 100px;
-    cursor: pointer;
-    margin-top: 25px;
-    font-size: 16px;
-    transition: 0.3s;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  background: linear-gradient(45deg, #4caf50, #81c784);
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  margin-top: 25px;
+  font-size: 16px;
+  transition: 0.3s;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 #login-button:hover {
-    background: linear-gradient(45deg, #388e3c, #66bb6a);
-    transform: scale(1.05);
+  background: linear-gradient(45deg, #388e3c, #66bb6a);
+  transform: scale(1.05);
 }
 
 #login-no-account {
-    font-size: 16px;
-    color: #ffffff;
-    margin-top: 20px;
-    text-align: center;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  font-size: 16px;
+  color: #ffffff;
+  margin-top: 20px;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 #login-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
 }
-#login-register-text{
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.788);
+#login-register-text {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.788);
 }
 
 #login-remember {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 #login-forgot-password {
-    color: #BFD9F2;
-    text-decoration: none;
-    margin-left: 20px;
-    font-size: 15.7px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    margin-top: 10px;
-    font-weight: bold;
-    
-    
+  color: #bfd9f2;
+  text-decoration: none;
+  margin-left: 20px;
+  font-size: 15.7px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  margin-top: 10px;
+  font-weight: bold;
 }
 
 #login-forgot-password:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 #login-box {
-    max-width: 300px;
-    margin: 0 auto;
-    text-align: center;
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 #login-register-link {
-    color: #BFD9F2;
-    text-decoration: none;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    font-weight: bold;
-    
+  color: #bfd9f2;
+  text-decoration: none;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  font-weight: bold;
 }
-#login-register-link:hover{
-    text-decoration: underline;
+#login-register-link:hover {
+  text-decoration: underline;
 }
 
 /* Estilo para el boton de volver */
 .back-icon {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 40px;
-    color: rgb(35, 133, 245);
-    cursor: pointer;
-    transition: transform 0.3s ease;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 40px;
+  color: rgb(35, 133, 245);
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 .back-icon:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+/* Estilo para el selector de rol con id único */
+#login-role-select {
+  width: 90%;
+  padding: 12px;
+  margin-top: 20px;
+  border: 2px solid #ccc; /* Borde gris */
+  border-radius: 8px;
+  background-color: transparent;
+  color: white; /* Texto blanco */
+  font-size: 16px;
+  text-align: center;
+  appearance: none; /* Elimina el estilo predeterminado del navegador */
+  cursor: pointer;
+}
+
+/* Estilo cuando el selector tiene el foco */
+#login-role-select:focus {
+  outline: none;
+  border-color: black; /* Borde negro cuando está enfocado */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+}
+
+/* Estilo para el texto de la opción predeterminada "Seleccionar rol" */
+#login-role-select option:first-child {
+  color: rgba(255, 255, 255, 0.6); /* Color blanco con opacidad para el texto por defecto */
+}
+
+/* Estilo para las opciones seleccionadas */
+#login-role-select option:checked {
+  color: white; /* Texto blanco cuando se selecciona un rol */
+  background-color: black; /* Fondo negro cuando se selecciona un rol */
+}
+
+/* Opciones dentro del selector */
+#login-role-select option {
+  color: black; /* Texto negro dentro de las opciones */
+  background-color: white; /* Fondo blanco para las opciones */
+}
+
+/* Eliminar el icono de la flecha en IE */
+#login-role-select::-ms-expand {
+  display: none;
 }
