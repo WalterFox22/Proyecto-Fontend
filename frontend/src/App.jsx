@@ -36,7 +36,7 @@ function App() {
             </Route>
 
             {/* RUTAS PRIVADAS*/}
-            <Route element={<PrivateRouteWithRole rolesPermitidos={["admin"]} />}>
+            <Route element={<PrivateRouteWithRole rolesPermitidos={['admin']} />}>
               <Route path="dashboard/*" element={
                   <PrivateRoute>
                     <Routes>

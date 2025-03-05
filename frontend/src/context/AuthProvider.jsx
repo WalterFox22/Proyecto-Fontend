@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
 
         const respuesta = await axios.get(urlA, options);
         console.warn(respuesta);
-        setAuth(respuesta.data); // Guardamos toda la información del usuario
+        setAuth({...respuesta.data.data, role: SelecctRol}); // Guardamos toda la información del usuario
         // Verificamos los roles del usuario
         const rolesUsuario = respuesta.data.roles || [];
         if (rolesUsuario.includes("admin")) {
@@ -55,7 +55,7 @@ const AuthProvider = ({ children }) => {
         const respuesta = await axios.get(urlC, options);
         console.warn(respuesta);
 
-        setAuth(respuesta.data); // Guardamos toda la información del usuario
+        setAuth({...respuesta.data, role: SelecctRol}); // Guardamos toda la información del usuario
         // Verificamos los roles del usuario
         const rolesUsuario = respuesta.data.roles || [];
         if (rolesUsuario.includes("conductor")) {

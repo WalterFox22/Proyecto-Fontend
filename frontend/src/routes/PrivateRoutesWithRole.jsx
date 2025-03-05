@@ -3,9 +3,11 @@ import { Navigate } from 'react-router-dom';
 import AuthContext from '../context/AuthProvider';
 
 export default function PrivateRouteWithRole({ children, rolesPermitidos }) {
-    const { auth } = useContext(AuthContext);
-    const rolUsuario = auth?.role || localStorage.getItem('role'); // Obtiene el rol del contexto o del localStorage
+    const {auth} = useContext(AuthContext)
+    const rolUsuario = auth?.roles || localStorage.getItem("role"); // Obtiene el rol del contexto o del localStorage
 
+    console.log("Rol del usuario:", rolUsuario);
+    console.log("Roles permitidos:", rolesPermitidos);
     // Si el usuario no tiene un rol válido, redirigir a login
     if (!rolUsuario) {
         return <Navigate to="/login" replace />;

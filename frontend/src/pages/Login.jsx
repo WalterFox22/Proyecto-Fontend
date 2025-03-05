@@ -45,15 +45,15 @@ const Login = () => {
         password,
         role: role, // Enviar el rol seleccionado
       });
-
+      console.log(respuesta)
       localStorage.setItem('token', respuesta.data.token);
       localStorage.setItem('role', role); // Guardar el rol en localStorage
 
       setAuth(respuesta.data);
-      toast.success(respuesta?.data?.msg);
+      toast.success(respuesta?.data?.data?.msg);
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response.data.msg);
+      toast.error(error.response?.data?.msg);
     } finally {
       setLoading(false);
     }

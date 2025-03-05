@@ -11,6 +11,7 @@ const Dashboard = () => {
 
   const { auth, loading } = useContext(AuthContext);
   const autenticado = localStorage.getItem("token");
+  
 
   useEffect(() => {
     if (!loading) {
