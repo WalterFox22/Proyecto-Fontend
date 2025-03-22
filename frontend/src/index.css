@@ -103,9 +103,18 @@ button:hover,
 .text-gray-700 {
   font-weight: bold; /* Esto pondrá en negritas el texto */
 }
+
 button:hover,
 .btn:hover {
   transform: scale(1.05); /* Hace que el botón sobresalga ligeramente */
+}
+
+/* Botones con id específico para texto en minúscula o normal */
+button#no-uppercase,
+.btn#no-uppercase {
+  text-transform: none; /* Mantiene el texto como está escrito */
+  font-weight: 750; /* Ligero ajuste de grosor */
+  letter-spacing: 0px; /* Elimina el espaciado extra */
 }
 
 /* Estilo global para los placeholders */

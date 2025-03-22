@@ -2,8 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthProvider";
 import Auth from "./layout/Auth";
-import Register from "./pages/parent/Register";
-
 import { PrivateRoute } from "./routes/PrivateRoutes";
 import Dashboard from "./layout/Dashboard";
 import RecuperarContraseña from "./pages/RecuperarContraseña";
@@ -12,15 +10,18 @@ import RegistroConductor from "./pages/admin/RegistroConductor";
 import ListarCondutor from "./pages/admin/ListarConductor";
 import ActualizarConductor from "./pages/admin/ActualizarConductor";
 import Error404 from "./componets/Error/Error404";
-import Start from "./pages/Start";
 import PrivateRouteWithRole from "./routes/PrivateRoutesWithRole";
-import Inicio from "./pages/driver/Inicio";
+import DashboardDriver from "./layout/DashboardDriver";
+import RegistroEstudinates from "./pages/driver/RegistroEstudiantes";
+import ListarEstudiantes from "./pages/driver/ListarEstudiantes";
+import { EstudientesProvider } from "./context/StudentsProvider";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <AuthProvider>
+          <EstudientesProvider>
           <Routes>
             <Route index element={<Login />} />
             <Route path="/" element={<Auth />}>
@@ -36,42 +37,61 @@ function App() {
             </Route>
 
             {/* RUTAS PRIVADAS*/}
-            <Route element={<PrivateRouteWithRole rolesPermitidos={['admin']} />}>
-              <Route path="dashboard/*" element={
-                  <PrivateRoute>
+            {/** ACCESO SOLO ADMIN */}
+            <Route
+              path="dashboard/*"
+              element={
+                <PrivateRoute>
+                  <PrivateRouteWithRole allowedRoles={["admin"]}>
                     <Routes>
                       <Route element={<Dashboard />}>
                         <Route index element={<Perfil />} />
                         <Route
-                          path="registro/conductores" element={<RegistroConductor />}
+                          path="registro/conductores"
+                          element={<RegistroConductor />}
                         />
                         <Route
-                          path="listar/conductores" element={<ListarCondutor />}
+                          path="listar/conductores"
+                          element={<ListarCondutor />}
                         />
                         <Route
-                          path="buscar/conductor/ruta/:rutaAsignada" element={<ActualizarConductor />}
+                          path="buscar/conductor/ruta/:rutaAsignada"
+                          element={<ActualizarConductor />}
                         />
                       </Route>
                     </Routes>
-                  </PrivateRoute>
-                }
-              />
-            </Route>
+                  </PrivateRouteWithRole>
+                </PrivateRoute>
+              }
+            />
 
-            <Route element={<PrivateRouteWithRole rolesPermitidos={["conductor"]} />}>
-              <Route path="dashboardConductor/*" element={
-                  <PrivateRoute>
+            {/** ACCESO SOLO CONDCUTORES */}
+            <Route
+              path="dashboardConductor/*"
+              element={
+                <PrivateRoute>
+                  <PrivateRouteWithRole allowedRoles={["conductor"]}>
                     <Routes>
-                      <Route element={<Inicio/>}>
+                      <Route element={<DashboardDriver />}>
+                        <Route index element={<Perfil />} />
+                        <Route
+                          path="registrar-estudiantes"
+                          element={<RegistroEstudinates />}
+                        />
+                        <Route
+                          path="lista-estudiantes"
+                          element={<ListarEstudiantes />}
+                        />
                       </Route>
                     </Routes>
-                  </PrivateRoute>
-                }
-              />
-            </Route>
+                  </PrivateRouteWithRole>
+                </PrivateRoute>
+              }
+            />
 
             <Route path="*" element={<Error404 />} />
           </Routes>
+          </EstudientesProvider>
         </AuthProvider>
       </BrowserRouter>
     </>

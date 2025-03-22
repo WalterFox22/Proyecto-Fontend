@@ -153,26 +153,14 @@
   text-decoration: underline;
 }
 
-/* Estilo para el boton de volver */
-.back-icon {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  font-size: 40px;
-  color: rgb(35, 133, 245);
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-.back-icon:hover {
-  transform: scale(1.1);
-}
+
 
 /* Estilo para el selector de rol con id único */
 #login-role-select {
   width: 90%;
   padding: 12px;
   margin-top: 20px;
-  border: 2px solid #ccc; /* Borde gris */
+  border: 3px solid #fff;
   border-radius: 8px;
   background-color: transparent;
   color: white; /* Texto blanco */
@@ -210,3 +198,4 @@
 #login-role-select::-ms-expand {
   display: none;
 }
+

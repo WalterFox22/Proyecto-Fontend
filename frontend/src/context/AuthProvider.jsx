@@ -7,6 +7,7 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   // Verificar si el token ha expirado
@@ -16,12 +17,19 @@ const AuthProvider = ({ children }) => {
     return decoded.exp < currentTime; // Si el tiempo de expiración es menor al actual
   };
 
-  const perfil = async (token) => {
-    console.log(localStorage.getItem("role"));
-    const SelecctRol = localStorage.getItem("role");
-    if ("admin" === SelecctRol) {
-      try {
-        const urlA = `${import.meta.env.VITE_URL_BACKEND}/visualizar/perfil/admin`;
+  // Apartado de actualizar perfil
+  const cargarPerfil = async (token) => {
+    console.warn("Rol seleccionado:", localStorage.getItem("rol"));
+    const SelecctRol = localStorage.getItem("rol");
+    try {
+      let url = "";
+      if (SelecctRol === "admin") {
+        url = `${import.meta.env.VITE_URL_BACKEND}/visualizar/perfil/admin`;
+      } else if (SelecctRol === "conductor") {
+        url = `${import.meta.env.VITE_URL_BACKEND}/perfil/conductor`;
+      }
+
+      if (url) {
         const options = {
           headers: {
             "Content-Type": "application/json",
@@ -29,63 +37,89 @@ const AuthProvider = ({ children }) => {
           },
         };
 
-        const respuesta = await axios.get(urlA, options);
-        console.warn(respuesta);
-        setAuth({...respuesta.data.data, role: SelecctRol}); // Guardamos toda la información del usuario
-        // Verificamos los roles del usuario
-        const rolesUsuario = respuesta.data.roles || [];
-        if (rolesUsuario.includes("admin")) {
-          navigate("/dashboard"); // Redirigimos al dashboard del admin
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    } else if ("conductor" === SelecctRol) {
-      try {
-        const urlC = `${import.meta.env.VITE_URL_BACKEND}/perfil/conductor`;
-        const options = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        };
+        const respuesta = await axios.get(url, options);
+        setAuth({ ...respuesta.data.doc }); // Actualiza el estado auth con el rol
+        //setAuth({ ...respuesta.data, role: SelecctRol }); // Actualiza el estado auth con el rol
 
-        const respuesta = await axios.get(urlC, options);
-        console.warn(respuesta);
-
-        setAuth({...respuesta.data, role: SelecctRol}); // Guardamos toda la información del usuario
-        // Verificamos los roles del usuario
-        const rolesUsuario = respuesta.data.roles || [];
-        if (rolesUsuario.includes("conductor")) {
-          navigate("/dashboardConductor"); // Redirigimos al dashboard del conductor
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
+        console.warn("Perfil cargado:", respuesta);
+      } else {
+        console.error("Rol no reconocido:", SelecctRol);
+        throw new Error("Rol desconocido");
       }
+    } catch (error) {
+      console.error("Error al obtener el perfil:", error);
+      setError("Error al obtener el perfil. Por favor, intente nuevamente.");
+      localStorage.removeItem("token");
+      navigate("/login", { replace: true }); // Reemplaza para evitar bucles
+    } finally {
+      setLoading(false);
     }
   };
-
   useEffect(() => {
     const token = localStorage.getItem("token");
-
+    const rol= localStorage.getItem('rol')
     if (token) {
       if (isTokenExpired(token)) {
-        localStorage.removeItem("token"); // Limpiamos el token si está expirado
-        setLoading(false); // Dejamos de mostrar la pantalla de carga
+        localStorage.removeItem("token");
+      localStorage.removeItem("rol");
+      setLoading(false);
+      navigate("/login", { replace: true });
       } else {
-        perfil(token); // Si el token es válido, obtenemos los datos del perfil
+        console.log("Token válido. Cargando perfil...");
+        cargarPerfil(token);
       }
     } else {
-      setLoading(false); // Si no hay token, dejamos de mostrar la carga
+      console.warn("No hay token. Redirigiendo a login...");
+    setLoading(false);
+    navigate("/login", { replace: true });
     }
   }, []);
 
+  // Actualizar el password
+  const UpdatePassword = async (datos) => {
+    const token = localStorage.getItem("token");
+    const SelecctRol = localStorage.getItem("rol");
+
+    try {
+      let url = "";
+      if (SelecctRol === "admin") {
+        url = `${
+          import.meta.env.VITE_URL_BACKEND
+        }/actualizar/contrasenia/admin`;
+      } else if (SelecctRol === "conductor") {
+        url = `${
+          import.meta.env.VITE_URL_BACKEND
+        }/actualizar/contrasenia/conductor`;
+      }
+      if (url) {
+        const options = {
+          headers: {
+            method: "PATCH",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const respuesta = await axios.patch(url, datos, options);
+        return { respuesta: respuesta.data.msg, tipo: true };
+      }
+    } catch (error) {
+      console.log(error);
+      return { respuesta: error.response.data.msg, tipo: false };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ auth, setAuth, loading, setLoading }}>
+    <AuthContext.Provider
+      value={{
+        auth,
+        setAuth,
+        UpdatePassword,
+        cargarPerfil,
+        loading,
+        setLoading,
+        error,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

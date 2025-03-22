@@ -22,7 +22,7 @@ const ListarCondutor = () => {
             <Row className="justify-content-center">
                 <Col xs={12}>  {/* Ahora la columna ocupa todo el ancho en todos los tamaños de pantalla */}
                     {/* BarraListar ocupa todo el ancho dentro de la columna */}
-                    {auth.nombre ? (
+                    {auth.conductor.nombre ? (
                         <BarraListar />
                     ) : (
                         <Loading />

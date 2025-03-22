@@ -20,17 +20,20 @@ const FormularioRegistro = () => {
     rutaAsignada: Yup.string()
     .matches(/^\d+$/, 'La ruta debe ser solo un número')
     .required('La ruta asignada es obligatoria'),
+    cooperativa:Yup.string()
+    .matches(/^[A-Za-z\s]+$/, 'La cooperativa solo puede contener letras y espacios. No colocar tildes')
+    .required('La cooperativa es obligatorio'),
     sectoresRuta: Yup.string()
-    .matches(/^[A-Za-z\s]+$/, 'El sector solo puede contener letras y espacios')
+    .matches(/^[A-Za-z\s]+$/, 'El sector solo puede contener letras y espacios. No colocar tildes')
     .required('El sector de la ruta es obligatorio'),
     telefono: Yup.string()
       .required('El teléfono es obligatorio')
       .max(10,'El teléfono no debe superar los 10 dígitos')
       .matches(/^\d{10}$/, 'El teléfono debe tener 10 dígitos'),
     placaAutomovil: Yup.string()
-      .required('La placa del automóvil es obligatoria')
-      .max(7, 'La placa no debe tener más de 7 caracteres')
-      .matches(/^[A-Za-z0-9]{7}$/, 'La placa debe tener 7 caracteres (letras y números)'),
+    .required('La placa del automóvil es obligatoria')
+    .max(8, 'La placa no debe tener más de 8 caracteres, igual como en la placa')
+    .matches(/^[A-Z]{3}-\d{4}$/, 'La placa debe tener 3 letras, un guión y 4 números'),
     cedula: Yup.string()
       .required('La cédula es obligatoria')
       .matches(/^\d{10}$/, 'La cédula debe tener 10 dígitos')
@@ -110,6 +113,7 @@ const FormularioRegistro = () => {
           placaAutomovil: '',
           cedula: '',
           email: '',
+          cooperativa:'',
           institucion: 'Unidad Educativa Particular Emaús',
           generoConductor: '',
         }}
@@ -152,6 +156,20 @@ const FormularioRegistro = () => {
                 isInvalid={touched.apellido && errors.apellido}
               />
               <Form.Control.Feedback type="invalid">{errors.apellido}</Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group controlId="cooperativa" className="mb-3">
+              <Form.Label style={{ fontWeight: 'bold' }}>Cooperativa</Form.Label>
+              <Form.Control
+                type="text"
+                name="cooperativa"
+                value={values.cooperativa}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Ingrese la cooperativa"
+                isInvalid={touched.cooperativa && errors.cooperativa}
+              />
+              <Form.Control.Feedback type="invalid">{errors.cooperativa}</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="rutaAsignada" className="mb-3">
@@ -204,7 +222,7 @@ const FormularioRegistro = () => {
                 value={values.placaAutomovil}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                placeholder="Ingrese las placas (solo 7 dígitos)"
+                placeholder="Ingrese las placas. Ejemplo: PHT-8888 "
                 isInvalid={touched.placaAutomovil && errors.placaAutomovil}
               />
               <Form.Control.Feedback type="invalid">{errors.placaAutomovil}</Form.Control.Feedback>

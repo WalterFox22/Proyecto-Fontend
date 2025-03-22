@@ -1,45 +1,39 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Link,
-  Navigate,
-  Outlet,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
-import {
-  Container,
-  Row,
-  Col,
-  Navbar,
-  Nav,
-  Image,
-  Button,
-} from "react-bootstrap";
+import {Link,Navigate,Outlet,useLocation,useNavigate,} from "react-router-dom";
+import {Container,
+Row,Col,Navbar,Nav,Image,Button,} from "react-bootstrap";
 import AuthContext from "../context/AuthProvider";
 import LogoAdmin from "../assets/Admin.png";
 import Loading from "../componets/Loading/Loading";
 
-const Dashboard = () => {
-  {
-    /** */
-  }
+const DashboardDriver = () => {
   const location = useLocation();
   const urlActual = location.pathname;
+  const navigate = useNavigate();
 
   const { auth, loading } = useContext(AuthContext);
   const autenticado = localStorage.getItem("token");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!loading) {
-      // Se puede hacer alguna lógica aquí si es necesario cuando la carga termina.
+    console.log("Loading:", loading);
+    console.log("Authenticated:", autenticado);
+    console.log("Auth:", auth);
+    console.log("Rol:", auth.rol);
+    if (!loading && !autenticado) {
+      setError("No se pudo autenticar. Por favor, inicie sesión nuevamente.");
+      navigate("/login");
     }
-  }, [loading]);
+  }, [loading, autenticado, auth]);
 
   if (loading) {
-    return <Loading />; // Mostramos un mensaje de carga o un spinner aquí
+    return <Loading />;
   }
 
-  // Verificamos si el usuario no está autenticado y lo redirigimos a login
+  if (error) {
+    return <div className="alert alert-danger">{error}</div>;
+  }
+
   if (!autenticado) {
     return <Navigate to="/login" />;
   }
@@ -58,7 +52,7 @@ const Dashboard = () => {
           lg={2}
           className="text-light p-3 d-flex flex-column"
           style={{
-            backgroundColor: "#560C23",
+            backgroundColor: "#008080",
             minHeight: "100vh",
             maxWidth: "250px",
             width: "100%",
@@ -96,36 +90,38 @@ const Dashboard = () => {
           <Nav className="flex-column">
             <Nav.Link
               as={Link}
-              to="/dashboard"
+              to="/dashboardConductor"
               className={
-                urlActual === "/dashboard"
+                urlActual === "/dashboardConductor"
                   ? "active text-light bg-secondary rounded p-2"
                   : "text-light"
               }
             >
               Perfil del Usuario
             </Nav.Link>
+
             <Nav.Link
               as={Link}
-              to="/dashboard/registro/conductores"
+              to="/dashboardConductor/registrar-estudiantes"
               className={
-                urlActual === "/dashboard/registro/conductores"
+                urlActual === "/dashboardConductor/registrar-estudiantes"
                   ? "active text-light bg-secondary rounded p-2"
                   : "text-light"
               }
             >
-              Registrar Conductor
+              Registrar Estudiantes
             </Nav.Link>
+
             <Nav.Link
               as={Link}
-              to="/dashboard/listar/conductores"
+              to="/dashboardConductor/lista-estudiantes"
               className={
-                urlActual === "/dashboard/listar/conductores"
+                urlActual === "/dashboardConductor/lista-estudiantes"
                   ? "active text-light bg-secondary rounded p-2"
                   : "text-light"
               }
             >
-              Lista de Conductores
+              Lista de Estudiantes
             </Nav.Link>
           </Nav>
         </Col>
@@ -176,4 +172,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardDriver;

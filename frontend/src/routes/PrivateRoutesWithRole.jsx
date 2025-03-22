@@ -1,23 +1,16 @@
-import { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
-import AuthContext from '../context/AuthProvider';
+import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../context/AuthProvider";
 
-export default function PrivateRouteWithRole({ children, rolesPermitidos }) {
-    const {auth} = useContext(AuthContext)
-    const rolUsuario = auth?.roles || localStorage.getItem("role"); // Obtiene el rol del contexto o del localStorage
+const PrivateRouteWithRole = ({ children, allowedRoles }) => {
+  const { auth } = useContext(AuthContext);
+  const userRole = auth?.rol || auth.roles || auth.role;
 
-    console.log("Rol del usuario:", rolUsuario);
-    console.log("Roles permitidos:", rolesPermitidos);
-    // Si el usuario no tiene un rol válido, redirigir a login
-    if (!rolUsuario) {
-        return <Navigate to="/login" replace />;
-    }
+  if (!userRole) {
+    return <Navigate to="/login" />;
+  }
 
-    // Si el rol del usuario no está en la lista de roles permitidos, redirigir
-    if (!rolesPermitidos.includes(rolUsuario)) {
-        return <Navigate to="/login" replace />;
-    }
+  return allowedRoles.includes(userRole) ? children : <Navigate to="/login" />;
+};
 
-    // Si el usuario tiene permisos, renderiza la ruta protegida
-    return children;
-}
+export default PrivateRouteWithRole;
