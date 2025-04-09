@@ -4,7 +4,7 @@ import AuthContext from "../context/AuthProvider";
 
 const PrivateRouteWithRole = ({ children, allowedRoles }) => {
   const { auth } = useContext(AuthContext);
-  const userRole = auth?.rol || auth.roles || auth.role;
+  const userRole = auth?.rol;
 
   if (!userRole) {
     return <Navigate to="/login" />;

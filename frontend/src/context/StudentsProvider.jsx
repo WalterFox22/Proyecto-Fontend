@@ -39,6 +39,18 @@ const EstudientesProvider = ({ children }) => {
     }
   };
 
+  const UpdateEstudiantes= async (id)=>{
+    const token=localStorage.getItem('token')
+    try {
+      const url=`${import.meta.env.VITE_URL_BACKEND}/actualizar/estudiante/${id}`
+      
+      
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
   return (
     <EstudientesContext.Provider
       value={{
@@ -49,6 +61,7 @@ const EstudientesProvider = ({ children }) => {
         estudiantes,
         setEstudiantes,
         RegistrarEstudiantes,
+        UpdateEstudiantes,
       }}
     >
       {children}

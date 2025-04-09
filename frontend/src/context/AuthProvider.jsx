@@ -38,9 +38,17 @@ const AuthProvider = ({ children }) => {
         };
 
         const respuesta = await axios.get(url, options);
-        setAuth({ ...respuesta.data.doc }); // Actualiza el estado auth con el rol
+        //setAuth({ ...respuesta.data.conductor }); // Actualiza el estado auth con el rol
         //setAuth({ ...respuesta.data, role: SelecctRol }); // Actualiza el estado auth con el rol
-
+        // Verifica si la respuesta contiene los datos esperados
+        if (respuesta.data) {
+          // Actualiza el estado `auth` con los datos del perfil
+          setAuth({ ...respuesta.data, rol: SelecctRol } || {...respuesta.data.conductor, rol: SelecctRol}); // Incluye el rol en el estado
+          console.warn("Perfil cargado correctamente:", respuesta.data);
+        } else {
+          console.error("La respuesta no contiene datos válidos:", respuesta);
+          throw new Error("Datos del perfil no encontrados");
+        }
         console.warn("Perfil cargado:", respuesta);
       } else {
         console.error("Rol no reconocido:", SelecctRol);
@@ -57,21 +65,20 @@ const AuthProvider = ({ children }) => {
   };
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const rol= localStorage.getItem('rol')
     if (token) {
       if (isTokenExpired(token)) {
         localStorage.removeItem("token");
-      localStorage.removeItem("rol");
-      setLoading(false);
-      navigate("/login", { replace: true });
+        localStorage.removeItem("rol");
+        setLoading(false);
+        navigate("/login", { replace: true });
       } else {
         console.log("Token válido. Cargando perfil...");
         cargarPerfil(token);
       }
     } else {
       console.warn("No hay token. Redirigiendo a login...");
-    setLoading(false);
-    navigate("/login", { replace: true });
+      setLoading(false);
+      navigate("/login", { replace: true });
     }
   }, []);
 

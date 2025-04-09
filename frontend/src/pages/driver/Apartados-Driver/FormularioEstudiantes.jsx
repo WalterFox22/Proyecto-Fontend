@@ -6,7 +6,7 @@ import AuthContext from "../../../context/AuthProvider";
 
 const FormularioEstudiante = () => {
   const { RegistrarEstudiantes } = useContext(EstudientesContext);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1); // Logica para el manejo del formulario de multples pasos
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
@@ -25,8 +25,10 @@ const FormularioEstudiante = () => {
     });
   };
 
+  // Se establece los parametros para la logica del formulario multiple 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,6 +86,7 @@ const FormularioEstudiante = () => {
     }
   };
 
+  // Se establece el numero de formulario que se va a tener en miltiples pasos para mostrar en la barra de progreso
   const progress = (step / 3) * 100;
 
   return (
@@ -189,6 +192,7 @@ const FormularioEstudiante = () => {
                   </option>
                 </Form.Select>
               </Form.Group>
+              
               <Form.Group className="mb-2">
                 <Form.Label>Paralelo</Form.Label>
                 <Form.Select

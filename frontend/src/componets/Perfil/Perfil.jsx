@@ -125,16 +125,16 @@ const Perfil = () => {
 
   // LOGICA PARA ACTUALIZAR PERFIL
   const [formPerfil, setFormPerfil] = useState({
-    telefono: auth.conductor.telefono || "",
-    placaAutomovil: auth.conductor.placaAutomovil || "",
-    email: auth.conductor.email || "",
-    foto: auth.conductor.foto || "", // Nueva propiedad
-    rutaAsignada: auth.conductor.rutaAsignada || "",
-    sectoresRuta: auth.conductor.sectoresRuta ||"", 
+    telefono: auth.telefono || "",
+    placaAutomovil: auth.placaAutomovil || "",
+    email: auth.email || "",
+    foto: auth.foto || "", // Nueva propiedad
+    rutaAsignada: auth.rutaAsignada || "",
+    sectoresRuta: auth.sectoresRuta ||"", 
       
   });
 
-  const [preview, setPreview] = useState(auth.conductor.foto || ""); // Preview de la imagen
+  const [preview, setPreview] = useState(auth.foto || ""); // Preview de la imagen
 
   const handleChangePerfil = (e) => {
     setFormPerfil({

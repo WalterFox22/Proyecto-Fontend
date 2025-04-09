@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {Link,Navigate,Outlet,useLocation,useNavigate,} from "react-router-dom";
-import {Container,
-Row,Col,Navbar,Nav,Image,Button,} from "react-bootstrap";
+import {Container,Row,Col,Navbar,Nav,Image,Button,} from "react-bootstrap";
 import AuthContext from "../context/AuthProvider";
 import LogoAdmin from "../assets/Admin.png";
 import Loading from "../componets/Loading/Loading";
@@ -15,6 +14,14 @@ const DashboardDriver = () => {
   const autenticado = localStorage.getItem("token");
   const [error, setError] = useState(null);
 
+  // redireccion al ultimo URL que estuvo tras dar F5
+  useEffect(() => {
+    if (autenticado && location.pathname !== "/login") {
+      localStorage.setItem("lastVisitedPath", location.pathname);
+    }
+  }, [autenticado, location.pathname]);
+
+  {/** 
   useEffect(() => {
     console.log("Loading:", loading);
     console.log("Authenticated:", autenticado);
@@ -34,9 +41,12 @@ const DashboardDriver = () => {
     return <div className="alert alert-danger">{error}</div>;
   }
 
+  
+
   if (!autenticado) {
     return <Navigate to="/login" />;
   }
+    */}
 
   return (
     <Container
@@ -62,7 +72,7 @@ const DashboardDriver = () => {
           <h2 className="text-center fw-bold">U.E EMAUS</h2>
           <div className="text-center my-4">
             <Image
-              src={auth.conductor.fotografiaDelConductor}
+              src={auth?.fotografiaDelConductor || auth?.conductor.fotografiaDelConductor}
               className="img-fluid border border-secondary"
               style={{
                 width: "160px", // Asegura que el ancho sea fijo
@@ -76,14 +86,14 @@ const DashboardDriver = () => {
                 className="bg-success rounded-circle d-inline-block me-2"
                 style={{ width: 10, height: 10 }}
               ></span>
-              Bienvenido - {auth?.conductor.nombre || "Usuario desconocido"}
+              Bienvenido - {auth?.nombre ||auth?.conductor.nombre || "Usuario desconocido"}
             </p>
             <p
               className="text-slate-400 text-center my-4 text-sm"
               style={{ color: "white" }}
             >
               {" "}
-              Rol - {auth?.rol}
+              Rol - {auth?.rol ||auth?.conductor.rol}
             </p>
           </div>
           <hr />
@@ -140,7 +150,7 @@ const DashboardDriver = () => {
               className="me-3"
               style={{ color: "black", fontSize: "18px" }}
             >
-              Usuario - {auth?.conductor.nombre}
+              Usuario - {auth?.nombre || auth?.conductor.nombre}
             </Navbar.Text>
             <Image
               src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"
@@ -153,7 +163,11 @@ const DashboardDriver = () => {
               variant="danger"
               as={Link}
               to="/login"
-              onClick={() => localStorage.removeItem("token")}
+              onClick={() => {
+                localStorage.removeItem("token") 
+                localStorage.removeItem("lastVisitedPath");
+              } }
+              
             >
               Salir
             </Button>

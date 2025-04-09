@@ -18,12 +18,12 @@ const PerfilConductor = () => {
     // Restablecer el formulario del perfil si se cierra el modal sin guardar
     if (modalType === "perfil") {
       setFormPerfil({
-        telefono: auth.conductor.telefono || "",
-        placaAutomovil: auth.conductor.placaAutomovil || "",
-        email: auth.conductor.email || "",
-        foto: auth.conductor.foto || "", // Nueva propiedad
+        telefono: auth.telefono || "",
+        placaAutomovil: auth.placaAutomovil || "",
+        email: auth.email || "",
+        foto: auth.foto || "", // Nueva propiedad
       });
-      setPreview(auth.conductor.foto || ""); // Restablecer el preview de la imagen
+      setPreview(auth.foto || ""); // Restablecer el preview de la imagen
     }
   };
 
@@ -118,13 +118,13 @@ const PerfilConductor = () => {
 
   // LOGICA PARA ACTUALIZAR PERFIL
   const [formPerfil, setFormPerfil] = useState({
-    telefono: auth.conductor.telefono || "",
-    placaAutomovil: auth.conductor.placaAutomovil || "",
-    email: auth.conductor.email || "",
-    foto: auth.conductor.foto || "", // Nueva propiedad
+    telefono: auth.telefono || "",
+    placaAutomovil: auth.placaAutomovil || "",
+    email: auth.email || "",
+    foto: auth.foto || "", // Nueva propiedad
   });
 
-  const [preview, setPreview] = useState(auth.conductor.foto || ""); // Preview de la imagen
+  const [preview, setPreview] = useState(auth.foto || ""); // Preview de la imagen
 
   const handleChangePerfil = (e) => {
     setFormPerfil({
@@ -237,34 +237,34 @@ const PerfilConductor = () => {
               {/* Asegúrate de que auth tiene los valores antes de renderizarlos */}
               <div style={{ fontSize: "2rem", lineHeight: "1.6" }}>
                 <p>
-                  <strong>Nombre del Conductor:</strong> {auth.conductor.nombre}
+                  <strong>Nombre del Conductor:</strong> {auth.nombre || auth?.conductor.nombre}
                 </p>
                 <p>
-                  <strong>Apellido:</strong> {auth.conductor.apellido}
+                  <strong>Apellido:</strong> {auth.apellido || auth?.conductor.apellido}
                 </p>
                 <p>
-                  <strong>Teléfono:</strong> {auth.conductor.telefono}
+                  <strong>Teléfono:</strong> {auth.telefono || auth?.conductor.telefono}
                 </p>
                 <p>
-                  <strong>Email:</strong> {auth.conductor.email}
+                  <strong>Email:</strong> {auth.email || auth?.conductor.email}
                 </p>
                 <p>
-                  <strong>Institución:</strong> {auth.conductor.institucion}
+                  <strong>Institución:</strong> {auth.institucion || auth?.conductor.institucion}
                 </p>
                 <p>
-                  <strong>Cooperativa:</strong> {auth.conductor.cooperativa}
+                  <strong>Cooperativa:</strong> {auth.cooperativa || auth?.conductor.cooperativa}
                 </p>
                 <p>
                   <strong>Sector de su ruta:</strong>{" "}
-                  {auth.conductor.sectoresRuta}
+                  {auth.sectoresRuta || auth?.conductor.sectoresRuta}
                 </p>
                 <p>
                   <strong>Ruta de transporte:</strong>{" "}
-                  {auth.conductor.rutaAsignada}
+                  {auth.rutaAsignada || auth?.conductor.rutaAsignada}
                 </p>
                 <p>
                   <strong>N° de estudiantes a cargo:</strong>{" "}
-                  {auth.conductor.estudiantesRegistrados?.length || 0}
+                  {auth.estudiantesRegistrados?.length  || auth?.conductor.estudiantesRegistrados?.length || 0}
                 </p>
               </div>
             </div>
@@ -497,3 +497,4 @@ const PerfilConductor = () => {
 };
 
 export default PerfilConductor;
+
