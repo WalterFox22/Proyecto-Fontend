@@ -39,17 +39,16 @@ const EstudientesProvider = ({ children }) => {
     }
   };
 
-  const UpdateEstudiantes= async (id)=>{
-    const token=localStorage.getItem('token')
+  const UpdateEstudiantes = async (id) => {
+    const token = localStorage.getItem("token");
     try {
-      const url=`${import.meta.env.VITE_URL_BACKEND}/actualizar/estudiante/${id}`
-      
-      
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/actualizar/estudiante/${id}`;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-
-  }
+  };
 
   return (
     <EstudientesContext.Provider

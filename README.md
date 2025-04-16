@@ -65,7 +65,8 @@ Para la realización del frontend, el sistema está dividido en secciones destin
 
 | Color             | Hex                                                                |
 | ----------------- | ------------------------------------------------------------------ |
-| Color Principal | #560C23 |
+| Color Principal Admin| #560C23 |
+| Color Principal Conductor| #008080 |
 | Color Secundario |  #f8f8f8 |
 
 
