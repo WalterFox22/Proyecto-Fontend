@@ -14,6 +14,8 @@ const EstudientesProvider = ({ children }) => {
     setModal(!modal);
   };
 
+  //
+
   const RegistrarEstudiantes = async (datos) => {
     const token = localStorage.getItem("token");
     const SelecctRol = localStorage.getItem("rol");
