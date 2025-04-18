@@ -25,7 +25,7 @@ const ListadeEstudiantes = () => {
         },
       };
       const respuesta = await axios.get(url, options);
-      setEstudiantes(respuesta.data.estudiantes);
+      setEstudiantes(respuesta.data.listaCompleta); // Cambiar a listaCompleta
     } catch (error) {
       console.log(error);
       setError(
@@ -120,9 +120,11 @@ const ListadeEstudiantes = () => {
   };
 
   // Filtrar los estudiantes solo por la cedula
-  const estudiantesFiltrados = estudiantes.filter((estudiantes) =>
-    String(estudiantes.cedula).toLowerCase().includes(cedula.toLowerCase())
-  );
+  const estudiantesFiltrados = Array.isArray(estudiantes)
+    ? estudiantes.filter((estudiantes) =>
+        String(estudiantes.cedula).toLowerCase().includes(cedula.toLowerCase())
+      )
+    : []; // Asegurarse de que estudiantesFiltrados sea un array
 
   // Función para manejar la búsqueda cuando presionas "Enter"
   const handleSearchSubmit = (e) => {
@@ -139,8 +141,6 @@ const ListadeEstudiantes = () => {
   useEffect(() => {
     setError(null); // Esto borra el mensaje de error cuando se empieza a escribir
   }, [cedula]);
-
-
 
   // ACTUALIZAR EL ESTIDIANTE POR PANTALLA EMERGENTE
   const [show, setShow] = useState(false);
@@ -163,8 +163,8 @@ const ListadeEstudiantes = () => {
       [e.target.name]: e.target.value,
     });
   };
-  
-  //Apartado para la pantalla emergente 
+
+  //Apartado para la pantalla emergente
   const handleClose = () => setShow(false);
   const handleShow = (estudiante) => {
     setFormUpdate({
@@ -186,7 +186,9 @@ const ListadeEstudiantes = () => {
     try {
       console.log("Datos enviados al backend:", formUpdate); // Verifica los datos
       const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/actualizar/estudiante/${selectedEstudianteId}`;
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/actualizar/estudiante/${selectedEstudianteId}`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -194,7 +196,7 @@ const ListadeEstudiantes = () => {
         },
       };
       const response = await axios.patch(url, formUpdate, options);
-      console.log("datos de respuesta", response)
+      console.log("datos de respuesta", response);
       if (response.data) {
         Swal.fire("Éxito", "Estudiante actualizado correctamente", "success");
         handleClose();
@@ -203,15 +205,18 @@ const ListadeEstudiantes = () => {
     } catch (error) {
       if (error.response && error.response.data.errors) {
         console.error("Errores de validación:", error.response.data.errors);
-        Swal.fire("Error", "Errores de validación: " + error.response.data.errors.map(err => err.msg).join(", "), "error");
+        Swal.fire(
+          "Error",
+          "Errores de validación: " +
+            error.response.data.errors.map((err) => err.msg).join(", "),
+          "error"
+        );
       } else {
         console.error("Error desconocido:", error);
         Swal.fire("Error", "Ocurrió un error desconocido", "error");
       }
     }
   };
-
-
 
   return (
     <>
@@ -270,12 +275,12 @@ const ListadeEstudiantes = () => {
       )}
 
       {/* Mostrar mensaje si no hay estudiantes*/}
-      {estudiantes.length === 0 && !error && (
+      {Array.isArray(estudiantes) && estudiantes.length === 0 && !error && (
         <Mensaje tipo={false}>{"No existen registros"}</Mensaje>
       )}
 
       {/* Tabla de los estudiantes registrados */}
-      {estudiantes.length > 0 && (
+      {Array.isArray(estudiantes) && estudiantes.length > 0 && (
         <Card className="shadow-lg rounded-lg border-0 mt-3">
           <Card.Body>
             <Table
@@ -353,7 +358,6 @@ const ListadeEstudiantes = () => {
           </Card.Body>
         </Card>
       )}
-
 
       {/* Modal para Actualizar Estudiantes */}
       <Modal show={show} onHide={handleClose} centered>
