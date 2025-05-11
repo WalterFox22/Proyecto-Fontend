@@ -68,7 +68,7 @@ const Dashboard = () => {
           <h2 className="text-center fw-bold">U.E EMAUS</h2>
           <div className="text-center my-4">
             <Image
-              src={auth.conductor.fotografiaDelConductor}
+              src={auth.fotografiaDelConductor}
               className="img-fluid border border-secondary"
               style={{
                 width: "160px", // Asegura que el ancho sea fijo
@@ -82,7 +82,7 @@ const Dashboard = () => {
                 className="bg-success rounded-circle d-inline-block me-2"
                 style={{ width: 10, height: 10 }}
               ></span>
-              Bienvenido - {auth?.conductor.nombre || "Usuario desconocido"}
+              Bienvenido - {auth?.nombre || "Usuario desconocido"}
             </p>
             <p
               className="text-slate-400 text-center my-4 text-sm"
@@ -127,6 +127,18 @@ const Dashboard = () => {
             >
               Lista de Conductores
             </Nav.Link>
+
+            <Nav.Link
+              as={Link}
+              to="/dashboard/listar/conductores/temporales"
+              className={
+                urlActual === "/dashboard/listar/conductores/temporales"
+                  ? "active text-light bg-secondary rounded p-2"
+                  : "text-light"
+              }
+            >
+              Conductores Temporales
+            </Nav.Link>
           </Nav>
         </Col>
 
@@ -144,7 +156,7 @@ const Dashboard = () => {
               className="me-3"
               style={{ color: "black", fontSize: "18px" }}
             >
-              Usuario - {auth?.conductor.nombre}
+              Usuario - {auth?.nombre}
             </Navbar.Text>
             <Image
               src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"

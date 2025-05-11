@@ -43,7 +43,12 @@ const AuthProvider = ({ children }) => {
         // Verifica si la respuesta contiene los datos esperados
         if (respuesta.data) {
           // Actualiza el estado `auth` con los datos del perfil
-          setAuth({ ...respuesta.data, rol: SelecctRol } || {...respuesta.data.conductor, rol: SelecctRol}); // Incluye el rol en el estado
+          setAuth(
+            { ...respuesta.data.administrador, rol: SelecctRol } || {
+              ...respuesta.data.conductor,
+              rol: SelecctRol,
+            }
+          ); // Incluye el rol en el estado
           console.warn("Perfil cargado correctamente:", respuesta.data);
         } else {
           console.error("La respuesta no contiene datos válidos:", respuesta);

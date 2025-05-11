@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Table, Card, Form, Button } from "react-bootstrap";
 import Delete from "../assets/borrar1.png";
 import Update from "../assets/actualizar.png";
+import AddAdmin from '../assets/admin-replace.png'
+import Replace from '../assets/remplazo.png'
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -77,7 +79,7 @@ const BarraListar = () => {
       const respuesta = await axios.get(url, options);
 
       if (respuesta.data && respuesta.data.conductor) {
-        setConductores(respuesta.data.conductor);
+        setConductores(Array.isArray(respuesta.data.conductor) ? respuesta.data.conductor : [respuesta.data.conductor]);
       } else {
         setConductores([]);
         setError("No se encontraron conductores para la ruta especificada");
@@ -89,13 +91,20 @@ const BarraListar = () => {
   };
 
   // Filtrar los conductores solo por la ruta asignada
-  const conductoresFiltrados = conductores.filter((conductor) =>
-    String(conductor.rutaAsignada)
-      .toLowerCase()
-      .includes(rutaAsignada.toLowerCase())
+  const conductoresFiltrados = Array.isArray(conductores)
+  ? conductores.filter((conductor) =>
+      String(conductor.rutaAsignada)
+        .toLowerCase()
+        .includes(rutaAsignada.toLowerCase())
+    )
+  : [conductores].filter((conductor) =>
+      String(conductor.rutaAsignada)
+        .toLowerCase()
+        .includes(rutaAsignada.toLowerCase())
   );
 
   // Borrar Conductor de la base de datos
+  /* 
   const handleDelete = async (id) => {
     try {
       // Alerta de enviar antes de eliminar para evitar errores
@@ -142,6 +151,7 @@ const BarraListar = () => {
       console.log(error);
     }
   };
+  */
 
   // Función para manejar el cambio en la barra de búsqueda
   const handleSearchChange = (e) => {
@@ -191,6 +201,7 @@ const BarraListar = () => {
 
             // Si la barra de búsqueda está vacía, mostramos toda la lista
             if (!value) {
+              setError(null);
               listarConductores(); // Llama a la función para cargar todos los conductores
             }
           }}
@@ -283,8 +294,8 @@ const BarraListar = () => {
                         src={Update}
                         alt="Update"
                         style={{
-                          height: "20px",
-                          width: "20px",
+                          height: "30px",
+                          width: "30px",
                           marginRight: "7px",
                           cursor: "pointer",
                         }}
@@ -295,7 +306,7 @@ const BarraListar = () => {
                           )
                         }
                       />
-
+                      {/** 
                       <img
                         src={Delete}
                         alt="Delete"
@@ -310,6 +321,32 @@ const BarraListar = () => {
                           handleDelete(conductor._id);
                         }}
                       />
+                      */}
+                      <img
+                        src={AddAdmin}
+                        alt="AddAdmin"
+                        style={{
+                          height: "30px",
+                          width: "30px",
+                          marginRight: "7px",
+                          cursor: "pointer",
+                        }}
+                        className="cursor-pointer inline-block"
+                        
+                      />
+                      <img
+                        src={Replace}
+                        alt="Replace"
+                        style={{
+                          height: "30px",
+                          width: "30px",
+                          marginRight: "7px",
+                          cursor: "pointer",
+                        }}
+                        className="cursor-pointer inline-block"
+                        
+                      />
+
                     </td>
                   </tr>
                 ))}

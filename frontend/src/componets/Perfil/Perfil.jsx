@@ -20,14 +20,14 @@ const Perfil = () => {
     // Restablecer el formulario del perfil si se cierra el modal sin guardar
   if (modalType === "perfil") {
     setFormPerfil({
-      telefono: auth.conductor.telefono || "",
-      placaAutomovil: auth.conductor.placaAutomovil || "",
-      email: auth.conductor.email || "",
-      foto: auth.conductor.foto || "",
-      rutaAsignada: auth.conductor.rutaAsignada || "",
-      sectoresRuta: auth.conductor.sectoresRuta || "",
+      telefono: auth.telefono || "",
+      placaAutomovil: auth.placaAutomovil || "",
+      email: auth.email || "",
+      foto: auth.foto || "",
+      rutaAsignada: auth.rutaAsignada || "",
+      sectoresRuta: auth.sectoresRuta || "",
     });
-    setPreview(auth.conductor.foto || ""); // Restablecer el preview de la imagen
+    setPreview(auth.foto || ""); // Restablecer el preview de la imagen
   }
 
   }
@@ -253,19 +253,19 @@ const Perfil = () => {
                 {/* Asegúrate de que auth tiene los valores antes de renderizarlos */}
                 <div style={{ fontSize: "2rem", lineHeight: "1.6" }}>
                   <p>
-                    <strong>Nombre:</strong> {auth.conductor.nombre}
+                    <strong>Nombre:</strong> {auth.nombre}
                   </p>
                   <p>
-                    <strong>Apellido:</strong> {auth.conductor.apellido}
+                    <strong>Apellido:</strong> {auth.apellido}
                   </p>
                   <p>
-                    <strong>Teléfono:</strong> {auth.conductor.telefono}
+                    <strong>Teléfono:</strong> {auth.telefono}
                   </p>
                   <p>
-                    <strong>Email:</strong> {auth.conductor.email}
+                    <strong>Email:</strong> {auth.email}
                   </p>
                   <p>
-                    <strong>Institución:</strong> {auth.conductor.institucion}
+                    <strong>Institución:</strong> {auth.institucion}
                   </p>
                 </div>
               </div>

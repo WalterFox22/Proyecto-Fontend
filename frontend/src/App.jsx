@@ -15,6 +15,7 @@ import DashboardDriver from "./layout/DashboardDriver";
 import RegistroEstudinates from "./pages/driver/RegistroEstudiantes";
 import ListarEstudiantes from "./pages/driver/ListarEstudiantes";
 import { EstudientesProvider } from "./context/StudentsProvider";
+import ListarCondutorTemp from "./pages/admin/ListarConductoresTemp";
 
 function App() {
   return (
@@ -58,6 +59,11 @@ function App() {
                           path="buscar/conductor/ruta/:rutaAsignada"
                           element={<ActualizarConductor />}
                         />
+                        <Route
+                          path="listar/conductores/temporales"
+                          element={<ListarCondutorTemp/>}
+                        />
+                        
                       </Route>
                     </Routes>
                   </PrivateRouteWithRole>

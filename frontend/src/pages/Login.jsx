@@ -9,7 +9,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth, cargarPerfil } = useContext(AuthContext); // Importar cargarPerfil
 
   const [form, setForm] = useState({
     email: "",
@@ -39,6 +39,9 @@ const Login = () => {
       localStorage.setItem("rol", rol); // Guardar el rol en localStorage
 
       setAuth(respuesta.data);
+
+      // Cargar el perfil inmediatamente después del inicio de sesión
+      await cargarPerfil(token);
 
       toast.success(
         respuesta?.data?.msg_login_conductor ||
