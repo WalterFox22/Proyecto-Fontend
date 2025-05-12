@@ -34,7 +34,9 @@ const Login = () => {
       const url = `${import.meta.env.VITE_URL_BACKEND}/login`;
       const respuesta = await axios.post(url, form);
       console.log(respuesta);
-      const { token, rol } = respuesta.data;
+      const { token, rol, redirigir, msg } = respuesta.data;
+
+
       localStorage.setItem("token", token);
       localStorage.setItem("rol", rol); // Guardar el rol en localStorage
 
@@ -59,6 +61,15 @@ const Login = () => {
           error.response?.data?.msg ||
           error.response?.data?.msg_autenticacion ||
           "Error desconocido";
+
+        // Validar si el mensaje es "Debe cambiar su contraseña antes de continuar."
+      if (errorMessage === "Debe cambiar su contraseña antes de continuar.") {
+        console.log("Redirigiendo a FirstPassword..."); // Confirmar que entra aquí
+        toast.info(errorMessage, { position: "top-right", autoClose: 3000 });
+        navigate("/cambiar/contraseña/firt"); // Redirige a FirstPassword
+        return;
+      }
+
         toast.error(errorMessage, { position: "top-right", autoClose: 3000 });
       } else {
         // Si el error es de conexión o no hay respuesta del backend

@@ -139,6 +139,19 @@ const Dashboard = () => {
             >
               Conductores Temporales
             </Nav.Link>
+
+            <Nav.Link
+              as={Link}
+              to="/dashboard/registro/nuevo/admin"
+              className={
+                urlActual === "/dashboard/registro/nuevo/admin"
+                  ? "active text-light bg-secondary rounded p-2"
+                  : "text-light"
+              }
+            >
+              Registrar Administrador
+            </Nav.Link>
+
           </Nav>
         </Col>
 

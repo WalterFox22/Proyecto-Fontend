@@ -16,6 +16,8 @@ import RegistroEstudinates from "./pages/driver/RegistroEstudiantes";
 import ListarEstudiantes from "./pages/driver/ListarEstudiantes";
 import { EstudientesProvider } from "./context/StudentsProvider";
 import ListarCondutorTemp from "./pages/admin/ListarConductoresTemp";
+import RegistrarAdmin from "./pages/admin/RegistrarAdmin";
+import FirstPassword from "./pages/FirstPassword";
 
 function App() {
   return (
@@ -30,6 +32,11 @@ function App() {
               <Route
                 path="recuperacion/contrasenia"
                 element={<RecuperarContraseña />}
+              />
+
+              <Route
+                path="cambiar/contraseña/firt"
+                element={<FirstPassword/>}
               />
 
               {/** <Route path='registro/representantes' element={<Register/>}/> */}
@@ -62,6 +69,10 @@ function App() {
                         <Route
                           path="listar/conductores/temporales"
                           element={<ListarCondutorTemp/>}
+                        />
+                        <Route
+                          path="registro/nuevo/admin"
+                          element={<RegistrarAdmin/>}
                         />
                         
                       </Route>

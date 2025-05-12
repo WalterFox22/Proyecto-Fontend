@@ -120,6 +120,27 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Registrar nuevo administardor
+
+  const NewAdmin = async (dato) => {
+    const token = localStorage.getItem("token");
+    const Rolpermitido = localStorage.getItem("rol");
+    try {
+      if (Rolpermitido === "admin") {
+        const url = `${import.meta.env.VITE_URL_BACKEND}/registro/nuevo/admin`;
+        const options = {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const respuesta = await axios.post(url, dato, options);
+        setAuth([respuesta.data.administrador]);
+        return respuesta.data.administrador;
+      }
+    } catch (error) {}
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -130,6 +151,7 @@ const AuthProvider = ({ children }) => {
         loading,
         setLoading,
         error,
+        NewAdmin
       }}
     >
       {children}
