@@ -237,34 +237,34 @@ const PerfilConductor = () => {
               {/* Asegúrate de que auth tiene los valores antes de renderizarlos */}
               <div style={{ fontSize: "2rem", lineHeight: "1.6" }}>
                 <p>
-                  <strong>Nombre del Conductor:</strong> {auth.nombre || auth?.conductor.nombre}
+                  <strong>Nombre del Conductor:</strong> {auth?.nombre}
                 </p>
                 <p>
-                  <strong>Apellido:</strong> {auth.apellido || auth?.conductor.apellido}
+                  <strong>Apellido:</strong> {auth.apellido}
                 </p>
                 <p>
-                  <strong>Teléfono:</strong> {auth.telefono || auth?.conductor.telefono}
+                  <strong>Teléfono:</strong> {auth.telefono}
                 </p>
                 <p>
-                  <strong>Email:</strong> {auth.email || auth?.conductor.email}
+                  <strong>Email:</strong> {auth.email}
                 </p>
                 <p>
-                  <strong>Institución:</strong> {auth.institucion || auth?.conductor.institucion}
+                  <strong>Institución:</strong> {auth.institucion}
                 </p>
                 <p>
-                  <strong>Cooperativa:</strong> {auth.cooperativa || auth?.conductor.cooperativa}
+                  <strong>Cooperativa:</strong> {auth.cooperativa}
                 </p>
                 <p>
                   <strong>Sector de su ruta:</strong>{" "}
-                  {auth.sectoresRuta || auth?.conductor.sectoresRuta}
+                  {auth.sectoresRuta }
                 </p>
                 <p>
                   <strong>Ruta de transporte:</strong>{" "}
-                  {auth.rutaAsignada || auth?.conductor.rutaAsignada}
+                  {auth.rutaAsignada }
                 </p>
                 <p>
                   <strong>N° de estudiantes a cargo:</strong>{" "}
-                  {auth.estudiantesRegistrados?.length  || auth?.conductor.estudiantesRegistrados?.length || 0}
+                  {auth.estudiantesRegistrados?.length }
                 </p>
               </div>
             </div>

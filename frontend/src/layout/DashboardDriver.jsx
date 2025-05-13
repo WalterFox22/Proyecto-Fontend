@@ -72,7 +72,7 @@ const DashboardDriver = () => {
           <h2 className="text-center fw-bold">U.E EMAUS</h2>
           <div className="text-center my-4">
             <Image
-              src={auth?.fotografiaDelConductor || auth?.conductor.fotografiaDelConductor}
+              src={auth?.fotografiaDelConductor}
               className="img-fluid border border-secondary"
               style={{
                 width: "160px", // Asegura que el ancho sea fijo
@@ -86,14 +86,14 @@ const DashboardDriver = () => {
                 className="bg-success rounded-circle d-inline-block me-2"
                 style={{ width: 10, height: 10 }}
               ></span>
-              Bienvenido - {auth?.nombre ||auth?.conductor.nombre || "Usuario desconocido"}
+              Bienvenido - {auth?.nombre || "Usuario desconocido"}
             </p>
             <p
               className="text-slate-400 text-center my-4 text-sm"
               style={{ color: "white" }}
             >
               {" "}
-              Rol - {auth?.rol ||auth?.conductor.rol}
+              Rol - {auth?.rol}
             </p>
           </div>
           <hr />
@@ -150,7 +150,7 @@ const DashboardDriver = () => {
               className="me-3"
               style={{ color: "black", fontSize: "18px" }}
             >
-              Usuario - {auth?.nombre || auth?.conductor.nombre}
+              Usuario - {auth?.nombre }
             </Navbar.Text>
             <Image
               src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"

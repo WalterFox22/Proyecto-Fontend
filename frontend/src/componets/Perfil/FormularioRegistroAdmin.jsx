@@ -57,10 +57,17 @@ const FormularioRegistroAdmin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (Object.values(form).includes("") || !form.foto) {
-      toast.error("Todos los campos deben ser llenados, incluida la foto");
-      return;
+    
+    // Validar campos según la lógica del backend
+    if (
+        Object.values(form).some((value) => value === "" && value !== form.rutaAsignada && value !== form.sectoresRuta) || // Ignorar rutaAsignada y sectoresRuta si asignacionOno es "Sí"
+        !form.foto || // Verifica si la foto no está seleccionada
+        (form.asignacionOno === "No" && (!form.rutaAsignada || !form.sectoresRuta)) // Solo valida ruta y sectores si asignacionOno es "No"
+    ) {
+        toast.error("Todos los campos deben ser llenados, incluida la foto");
+        return;
     }
+
     const formData = new FormData();
     Object.keys(form).forEach((key) => {
       formData.append(key, form[key]);
