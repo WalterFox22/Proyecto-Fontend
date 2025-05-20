@@ -165,10 +165,7 @@ const PerfilConductor = () => {
       const respuesta = await axios.patch(url, formData, options);
       cargarPerfil(token);
       if (respuesta.data.msg_actualizacion_perfil) {
-        toast.success(respuesta.data.msg_actualizacion_perfil, {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        toast.success(respuesta.data.msg_actualizacion_perfil)
         handleCloseModal();
       }
     } catch (error) {
@@ -211,7 +208,6 @@ const PerfilConductor = () => {
   }
   return (
     <>
-      <ToastContainer />
       <Container fluid className="p-3">
         <div className="text-center">
           <h1 className="mb-4">Perfil del Conductor</h1>

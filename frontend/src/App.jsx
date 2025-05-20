@@ -18,6 +18,7 @@ import { EstudientesProvider } from "./context/StudentsProvider";
 import ListarCondutorTemp from "./pages/admin/ListarConductoresTemp";
 import RegistrarAdmin from "./pages/admin/RegistrarAdmin";
 import FirstPassword from "./pages/FirstPassword";
+import RemplazoDisponible from "./pages/admin/RemplazoDisponibles";
 
 function App() {
   return (
@@ -73,6 +74,10 @@ function App() {
                         <Route
                           path="registro/nuevo/admin"
                           element={<RegistrarAdmin/>}
+                        />
+                        <Route
+                          path="/listar/reemplazo/disponibles"
+                          element={<RemplazoDisponible/>}
                         />
                         
                       </Route>

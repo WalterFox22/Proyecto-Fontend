@@ -344,6 +344,7 @@ const BarraListar = () => {
                           cursor: "pointer",
                         }}
                         className="cursor-pointer inline-block"
+                        onClick={()=> navigate('/dashboard/listar/reemplazo/disponibles')}
                         
                       />
 
@@ -355,6 +356,8 @@ const BarraListar = () => {
           </Card.Body>
         </Card>
       )}
+
+
     </>
   );
 };

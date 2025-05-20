@@ -42,13 +42,12 @@ const AuthProvider = ({ children }) => {
         //setAuth({ ...respuesta.data, role: SelecctRol }); // Actualiza el estado auth con el rol
         // Verifica si la respuesta contiene los datos esperados
         if (respuesta.data) {
-          // Actualiza el estado `auth` con los datos del perfil
-          setAuth(
-            { ...respuesta.data.administrador, rol: SelecctRol } || {
-              ...respuesta.data.conductor,
-              rol: SelecctRol,
-            }
-          ); // Incluye el rol en el estado
+          if (respuesta.data.administrador) {
+            setAuth({ ...respuesta.data.administrador, rol: SelecctRol });
+          } else if (respuesta.data.conductor) {
+            setAuth({ ...respuesta.data.conductor, rol: SelecctRol });
+          }
+
           console.warn("Perfil cargado correctamente:", respuesta.data);
         } else {
           console.error("La respuesta no contiene datos válidos:", respuesta);
@@ -151,7 +150,7 @@ const AuthProvider = ({ children }) => {
         loading,
         setLoading,
         error,
-        NewAdmin
+        NewAdmin,
       }}
     >
       {children}
