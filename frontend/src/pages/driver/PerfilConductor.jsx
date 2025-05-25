@@ -165,7 +165,7 @@ const PerfilConductor = () => {
       const respuesta = await axios.patch(url, formData, options);
       cargarPerfil(token);
       if (respuesta.data.msg_actualizacion_perfil) {
-        toast.success(respuesta.data.msg_actualizacion_perfil)
+        toast.success(respuesta.data.msg_actualizacion_perfil);
         handleCloseModal();
       }
     } catch (error) {
@@ -226,7 +226,10 @@ const PerfilConductor = () => {
             >
               <h2
                 className="mb-4 text-center"
-                style={{ fontSize: "2.2rem", fontWeight: "bold" }}
+                style={{
+                  fontSize: "2.2rem",
+                  fontWeight: "bold",
+                }}
               >
                 Información del Perfil
               </h2>
@@ -251,16 +254,14 @@ const PerfilConductor = () => {
                   <strong>Cooperativa:</strong> {auth.cooperativa}
                 </p>
                 <p>
-                  <strong>Sector de su ruta:</strong>{" "}
-                  {auth.sectoresRuta }
+                  <strong>Sector de su ruta:</strong> {auth.sectoresRuta}
                 </p>
                 <p>
-                  <strong>Ruta de transporte:</strong>{" "}
-                  {auth.rutaAsignada }
+                  <strong>Ruta de transporte:</strong> {auth.rutaAsignada}
                 </p>
                 <p>
                   <strong>N° de estudiantes a cargo:</strong>{" "}
-                  {auth.estudiantesRegistrados?.length }
+                  {auth.estudiantesRegistrados?.length}
                 </p>
               </div>
             </div>
@@ -369,14 +370,20 @@ const PerfilConductor = () => {
               <Modal.Footer>
                 <Button
                   variant="success"
-                  style={{ backgroundColor: "#FF3737", border: "none" }}
+                  style={{
+                    backgroundColor: "#FF3737",
+                    border: "none",
+                  }}
                   onClick={handleCloseModal}
                 >
                   Cancelar
                 </Button>
                 <Button
                   variant="success"
-                  style={{ backgroundColor: "#4CAF50", border: "none" }}
+                  style={{
+                    backgroundColor: "#4CAF50",
+                    border: "none",
+                  }}
                   type="submit"
                 >
                   Guardar Cambios
@@ -418,7 +425,10 @@ const PerfilConductor = () => {
                       setShowPasswordAnterior(!showPasswordAnterior)
                     }
                     className="position-absolute end-0 top-50 translate-middle-y me-2"
-                    style={{ cursor: "pointer", color: "#555" }}
+                    style={{
+                      cursor: "pointer",
+                      color: "#555",
+                    }}
                   >
                     {showPasswordAnterior ? <FaEye /> : <FaEyeSlash />}
                   </span>
@@ -439,7 +449,10 @@ const PerfilConductor = () => {
                   <span
                     onClick={() => setShowPasswordActual(!showPasswordActual)}
                     className="position-absolute end-0 top-50 translate-middle-y me-2"
-                    style={{ cursor: "pointer", color: "#555" }}
+                    style={{
+                      cursor: "pointer",
+                      color: "#555",
+                    }}
                   >
                     {showPasswordActual ? <FaEye /> : <FaEyeSlash />}
                   </span>
@@ -460,7 +473,10 @@ const PerfilConductor = () => {
                   <span
                     onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
                     className="position-absolute end-0 top-50 translate-middle-y me-2"
-                    style={{ cursor: "pointer", color: "#555" }}
+                    style={{
+                      cursor: "pointer",
+                      color: "#555",
+                    }}
                   >
                     {showPasswordConfirm ? <FaEye /> : <FaEyeSlash />}
                   </span>
@@ -471,14 +487,20 @@ const PerfilConductor = () => {
               <Modal.Footer>
                 <Button
                   variant="success"
-                  style={{ backgroundColor: "#FF3737", border: "none" }}
+                  style={{
+                    backgroundColor: "#FF3737",
+                    border: "none",
+                  }}
                   onClick={handleCloseModal}
                 >
                   Cancelar
                 </Button>
                 <Button
                   variant="success"
-                  style={{ backgroundColor: "#4CAF50", border: "none" }}
+                  style={{
+                    backgroundColor: "#4CAF50",
+                    border: "none",
+                  }}
                   type="submit"
                 >
                   Guardar Cambios
@@ -493,4 +515,3 @@ const PerfilConductor = () => {
 };
 
 export default PerfilConductor;
-
