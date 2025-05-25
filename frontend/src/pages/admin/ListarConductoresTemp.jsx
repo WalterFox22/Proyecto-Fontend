@@ -2,6 +2,7 @@ import { useContext } from "react";
 import AuthContext from "../../context/AuthProvider";
 import { Col, Container, Row } from "react-bootstrap";
 import BarraListaTemp from "./Extras/BarraListaTemp";
+import BarraConfirmadoRemplazo from "./Extras/BarraConfirmadoRemplazo";
 
 const ListarCondutorTemp = () => {
   const { auth } = useContext(AuthContext);
@@ -13,15 +14,22 @@ const ListarCondutorTemp = () => {
         <h1>Lista de Conductores Temporales</h1>
         <h5>Unidad Educativa Particular Emaús</h5>
         <hr />
-        <p>Este módulo te permite visualizar la lista de conductores Temporales.</p>
+        <p>
+          Este módulo te permite visualizar la lista de conductores Temporales.
+        </p>
       </div>
 
       {/* Contenido principal */}
       <Row className="justify-content-center">
         <Col xs={12}>
-          {auth.rol.includes("admin") ?(
-            <BarraListaTemp />
-          ): (
+          {auth.rol.includes("admin") ? (
+            <>
+              {/* Lista de conductores remplazo disponibles */}
+              <BarraListaTemp />
+              {/* Lista de conductores con remplazos aplicados */}
+              <BarraConfirmadoRemplazo />
+            </>
+          ) : (
             <Loading />
           )}
         </Col>
