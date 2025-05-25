@@ -38,9 +38,6 @@ const AuthProvider = ({ children }) => {
         };
 
         const respuesta = await axios.get(url, options);
-        //setAuth({ ...respuesta.data.conductor }); // Actualiza el estado auth con el rol
-        //setAuth({ ...respuesta.data, role: SelecctRol }); // Actualiza el estado auth con el rol
-        // Verifica si la respuesta contiene los datos esperados
         if (respuesta.data) {
           if (respuesta.data.administrador) {
             setAuth({ ...respuesta.data.administrador, rol: SelecctRol });

@@ -2,10 +2,20 @@ import { useEffect, useState } from "react";
 import Mensaje from "../../componets/Alertas/Mensaje";
 import { Button, Card, Modal, Table } from "react-bootstrap";
 import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
 
 const RemplazoDisponible = () => {
   const [conductores, setConductores] = useState([]);
   const [error, setError] = useState(null);
+  const { navigate } = useNavigate();
+
+  //Logica para obtener el id selccionado para los remplazos
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const idPrincipal = query.get("idPrincipal");
+
   // Estados para los modals
   const [showTipo, setShowTipo] = useState(false);
   const [showPermanente, setShowPermanente] = useState(false);
@@ -14,6 +24,7 @@ const RemplazoDisponible = () => {
   // Puedes guardar el conductor seleccionado si lo necesitas
   const [conductorSeleccionado, setConductorSeleccionado] = useState(null);
 
+  // Logica para obtener la lista de los conductores temporales
   const ListaDisponible = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -54,11 +65,53 @@ const RemplazoDisponible = () => {
     setConductorSeleccionado(conductor);
     setShowTipo(true);
   };
-  
 
+  // Logica para asignar un conductor temporal
+  const ConductorTemp = async () => {
+    if (!conductorSeleccionado || !idPrincipal) {
+      setError(
+        "No se ha seleccionado un conductor o falta el ID del conductor original."
+      );
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      // Reemplaza los parámetros en la URL
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/reemplazo/temporal/${idPrincipal}/${conductorSeleccionado._id}`;
+      const options = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const respuesta = await axios.patch(url, {}, options);
+      // Puedes mostrar un mensaje de éxito aquí
+
+      Swal.fire({
+        icon: "success",
+        title: "¡Éxito!",
+        text: "Reemplazo realizado con éxito.",
+        confirmButtonText: "Aceptar",
+      }).then(() => {
+        navigate("/dashboard/listar/conductores"); // Redirige al login después de aceptar
+      });
+      setShowTemporal(false);
+      // Opcional: recargar la lista de conductores disponibles
+      ListaDisponible();
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.msg_reemplazo ||
+          "Ocurrió un error al realizar el reemplazo temporal."
+      );
+    }
+  };
 
   return (
     <>
+      <ToastContainer />
       {error && (
         <Mensaje tipo={false} className="text-danger">
           {error}
@@ -206,15 +259,7 @@ const RemplazoDisponible = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <Button
-            variant="success"
-            className="me-2"
-            onClick={() => {
-              // Aquí va la lógica para aceptar el reemplazo temporal
-              setShowTemporal(false);
-              // ...tu lógica...
-            }}
-          >
+          <Button variant="success" className="me-2" onClick={ConductorTemp}>
             Aceptar
           </Button>
           <Button variant="secondary" onClick={() => setShowTemporal(false)}>

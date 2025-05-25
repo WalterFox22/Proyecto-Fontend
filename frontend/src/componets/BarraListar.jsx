@@ -344,7 +344,7 @@ const BarraListar = () => {
                           cursor: "pointer",
                         }}
                         className="cursor-pointer inline-block"
-                        onClick={()=> navigate('/dashboard/listar/reemplazo/disponibles')}
+                        onClick={()=> navigate(`/dashboard/listar/reemplazo/disponibles?idPrincipal=${conductor._id}`)}
                         
                       />
 
