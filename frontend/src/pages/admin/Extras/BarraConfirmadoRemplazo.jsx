@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Mensaje from "../../../componets/Alertas/Mensaje";
 import { Card, Table } from "react-bootstrap";
+import Delete from "../../../assets/borrar1.png";
 
 const BarraConfirmadoRemplazo = () => {
   const [conductores, setConductores] = useState([]);
@@ -79,49 +80,33 @@ const BarraConfirmadoRemplazo = () => {
                   <th>Placa Vehicular</th>
                   <th>Cooperativa</th>
                   <th>Correo</th>
-                  <th>Acciones</th>
+                  <th>Remplazo</th>
+                  <th>Cédula</th>
                 </tr>
               </thead>
               <tbody>
-                {conductores.map((conductor, index) => (
-                  <tr
-                    style={{ backgroundColor: "#f8f9fa" }}
-                    key={conductor._id}
-                  >
-                    <td>{index + 1}</td>
-                    <td>{conductor.nombre}</td>
-                    <td>{conductor.apellido}</td>
-                    <td>{conductor.cedula}</td>
-                    <td>{conductor.rutaAsignada}</td>
-                    <td>{conductor.sectoresRuta}</td>
-                    <td>{conductor.placaAutomovil}</td>
-                    <td>{conductor.cooperativa}</td>
-                    <td>{conductor.email}</td>
+                {conductores.map((item, index) => (
+    <tr style={{ backgroundColor: "#f8f9fa" }} key={item.conductorOriginal._id}>
+      <td>{index + 1}</td>
+      <td>{item.conductorOriginal.nombre}</td>
+      <td>{item.conductorOriginal.apellido}</td>
+      <td>{item.conductorOriginal.cedula}</td>
+      <td>{item.conductorOriginal.rutaAsignada}</td>
+      <td>{item.conductorOriginal.sectoresRuta}</td>
+      <td>{item.conductorOriginal.placaAutomovil}</td>
+      <td>{item.conductorOriginal.cooperativa}</td>
+      <td>{item.conductorOriginal.email}</td>
+      <td>
+        {/* Aquí puedes mostrar info del reemplazo si quieres */}
+        {item.reemplazo
+          ? `${item.reemplazo.nombre} ${item.reemplazo.apellido}`
+          : "Sin reemplazo"}
+      </td>
+      <td>{item.conductorOriginal.cedula}</td>
 
-                    <td
-                      className="d-flex justify-content-center align-items-center"
-                      style={{ minWidth: "150px" }}
-                    >
-                      <img
-                        src={Delete}
-                        alt="Delete"
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          marginRight: "7px",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer inline-block"
-                        /** 
-                                    onClick={() => {
-                                      handleDelete(conductor._id);
-                                    }}
-                                      */
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+    </tr>
+  ))}
+</tbody>
             </Table>
           </Card.Body>
         </Card>

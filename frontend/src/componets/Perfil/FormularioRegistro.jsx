@@ -324,8 +324,8 @@ const FormularioRegistro = () => {
                   required
                 >
                   <option value="">Seleccione una opción</option>
-                  <option value="Sí">Sí</option>
-                  <option value="No">No</option>
+                  <option value="Sí">Sí es conductor remplazo</option>
+                  <option value="No">No es conductor remplazo</option>
                 </Form.Select>
               </Form.Group>
               {form.esReemplazo === "No" && (
