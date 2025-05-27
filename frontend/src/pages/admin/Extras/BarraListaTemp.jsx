@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import { Card, Table } from "react-bootstrap";
 import Mensaje from "../../../componets/Alertas/Mensaje";
 import Delete from "../../../assets/borrar1.png";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const BarraListaTemp = () => {
   const [conductores, setConductores] = useState([]);
   const [error, setError] = useState(null);
 
+  //LOGICA PARA VISUALIZAR LA LISTA
   const ListaTemporal = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -44,6 +47,47 @@ const BarraListaTemp = () => {
     ListaTemporal();
   }, []);
 
+  //LOGICA PARA ELIMINAR CONDUCTOR
+  const handleDelete = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Vas a eliminar a un conductor Temporal.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+      });
+
+      if (result.isConfirmed) {
+        const token = localStorage.getItem("token");
+        const url = `${import.meta.env.VITE_URL_BACKEND}/eliminar/reemplazos/disponible/${id}`;
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+
+        await axios.delete(url, { headers });
+        // Mostrar alerta de éxito
+        await Swal.fire({
+          title: "Eliminado",
+          text: "El conductor temporal ha sido eliminado correctamente del sistema.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+        });
+        //Actualiza la tabla con los cambios realizados
+        ListaTemporal();
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.msg_eliminar_reemplazo || "Ocurrió un error al eliminar el conductor temporal."
+      );
+    }
+  };
+
   return (
     <>
       {error && (
@@ -71,8 +115,6 @@ const BarraListaTemp = () => {
                   <th>Nombre</th>
                   <th>Apellido</th>
                   <th>Cédula</th>
-                  <th>Ruta</th>
-                  <th>Sector</th>
                   <th>Placa Vehicular</th>
                   <th>Cooperativa</th>
                   <th>Correo</th>
@@ -89,8 +131,6 @@ const BarraListaTemp = () => {
                     <td>{conductor.nombre}</td>
                     <td>{conductor.apellido}</td>
                     <td>{conductor.cedula}</td>
-                    <td>{conductor.rutaAsignada}</td>
-                    <td>{conductor.sectoresRuta}</td>
                     <td>{conductor.placaAutomovil}</td>
                     <td>{conductor.cooperativa}</td>
                     <td>{conductor.email}</td>
@@ -109,11 +149,9 @@ const BarraListaTemp = () => {
                           cursor: "pointer",
                         }}
                         className="cursor-pointer inline-block"
-                        /** 
-                              onClick={() => {
-                                handleDelete(conductor._id);
-                              }}
-                                */
+                        onClick={() => {
+                          handleDelete(conductor._id);
+                        }}
                       />
                     </td>
                   </tr>
