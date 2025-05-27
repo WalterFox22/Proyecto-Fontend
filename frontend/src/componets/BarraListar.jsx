@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Table, Card, Form, Button } from "react-bootstrap";
+import { Table, Card, Form, Button, Modal } from "react-bootstrap";
 import Delete from "../assets/borrar1.png";
 import Update from "../assets/actualizar.png";
-import AddAdmin from '../assets/admin-replace.png'
-import Replace from '../assets/remplazo.png'
+import AddAdmin from "../assets/admin-replace.png";
+import Replace from "../assets/remplazo.png";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -11,12 +11,16 @@ import Swal from "sweetalert2";
 
 import axios from "axios";
 import Mensaje from "./Alertas/Mensaje";
+import { toast, ToastContainer } from "react-toastify";
 
 const BarraListar = () => {
   const navigate = useNavigate();
   const [conductores, setConductores] = useState([]);
   const [rutaAsignada, setRutaAsignada] = useState(""); // Ruta que se ingresa para búsqueda
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false); // para la seccion del modal
+  const [conductorIdActualizar, setConductorIdActualizar] = useState(null); // para el apartado de actualizar conductor
+
 
   // Efecto para borrar el error cuando cambia la ruta asignada
   useEffect(() => {
@@ -79,7 +83,11 @@ const BarraListar = () => {
       const respuesta = await axios.get(url, options);
 
       if (respuesta.data && respuesta.data.conductor) {
-        setConductores(Array.isArray(respuesta.data.conductor) ? respuesta.data.conductor : [respuesta.data.conductor]);
+        setConductores(
+          Array.isArray(respuesta.data.conductor)
+            ? respuesta.data.conductor
+            : [respuesta.data.conductor]
+        );
       } else {
         setConductores([]);
         setError("No se encontraron conductores para la ruta especificada");
@@ -92,16 +100,16 @@ const BarraListar = () => {
 
   // Filtrar los conductores solo por la ruta asignada
   const conductoresFiltrados = Array.isArray(conductores)
-  ? conductores.filter((conductor) =>
-      String(conductor.rutaAsignada)
-        .toLowerCase()
-        .includes(rutaAsignada.toLowerCase())
-    )
-  : [conductores].filter((conductor) =>
-      String(conductor.rutaAsignada)
-        .toLowerCase()
-        .includes(rutaAsignada.toLowerCase())
-  );
+    ? conductores.filter((conductor) =>
+        String(conductor.rutaAsignada)
+          .toLowerCase()
+          .includes(rutaAsignada.toLowerCase())
+      )
+    : [conductores].filter((conductor) =>
+        String(conductor.rutaAsignada)
+          .toLowerCase()
+          .includes(rutaAsignada.toLowerCase())
+      );
 
   // Borrar Conductor de la base de datos
   /* 
@@ -181,8 +189,73 @@ const BarraListar = () => {
     listarConductores();
   }, []);
 
+
+
+  // LOGICA DE ACTUALIZAR CONDUCTOR
+  const [formPerfil, setFormPerfil] = useState({
+    rutaAsignada: "",
+    sectoresRuta: "",
+  });
+
+  // Abrir modal y cargar datos del conductor seleccionado
+  const handleOpenModal = (conductor) => {
+    setFormPerfil({
+      rutaAsignada: conductor.rutaAsignada || "",
+      sectoresRuta: conductor.sectoresRuta || "",
+    });
+    setConductorIdActualizar(conductor._id);
+    setShowModal(true);
+  };
+
+  // Cerrar modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setFormPerfil({ rutaAsignada: "", sectoresRuta: "" });
+    setConductorIdActualizar(null);
+  };
+
+  // Manejar cambios en el formulario
+  const handleChangePerfil = (e) => {
+    setFormPerfil({
+      ...formPerfil,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const token= localStorage.getItem('token')
+      const url= `${import.meta.env.VITE_URL_BACKEND}/actualizar/conductor/${conductorIdActualizar}`
+      const options = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const respuesta = await axios.patch(url,formPerfil,options)
+
+      Swal.fire({
+        title: "Actualizado",
+        text: respuesta.data.msg_actualizacion_conductor || "Conductor actualizado correctamente.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+      });
+      handleCloseModal();
+      listarConductores();
+
+    } catch (error) {
+      console.log(error)
+      toast.error(error?.response?.data?.msg_actualizacion_conductor || "Error al actualizar el conductor.")
+    }
+  };
+
+  
+
   return (
     <>
+      <ToastContainer/>
       {/* Barra de búsqueda */}
       <Form
         className="d-flex justify-content-center mb-3"
@@ -300,11 +373,9 @@ const BarraListar = () => {
                           cursor: "pointer",
                         }}
                         className="cursor-pointer inline-block"
-                        onClick={() =>
-                          navigate(
-                            `/dashboard/buscar/conductor/ruta/${conductor.rutaAsignada}`
-                          )
-                        }
+                        onClick={() => {
+                          handleOpenModal(conductor);
+                        }}
                       />
                       {/** 
                       <img
@@ -332,7 +403,6 @@ const BarraListar = () => {
                           cursor: "pointer",
                         }}
                         className="cursor-pointer inline-block"
-                        
                       />
                       <img
                         src={Replace}
@@ -344,10 +414,12 @@ const BarraListar = () => {
                           cursor: "pointer",
                         }}
                         className="cursor-pointer inline-block"
-                        onClick={()=> navigate(`/dashboard/listar/reemplazo/disponibles?idPrincipal=${conductor._id}`)}
-                        
+                        onClick={() =>
+                          navigate(
+                            `/dashboard/listar/reemplazo/disponibles?idPrincipal=${conductor._id}`
+                          )
+                        }
                       />
-
                     </td>
                   </tr>
                 ))}
@@ -357,7 +429,50 @@ const BarraListar = () => {
         </Card>
       )}
 
-
+      {/* Modal solo para actualizar rutaAsignada y sectoresRuta */}
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Actualizar Ruta y Sector</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleUpdate}>
+          <Modal.Body>
+            <Form.Group className="mb-3" controlId="rutaAsignada">
+              <Form.Label>Ruta de Transporte</Form.Label>
+              <Form.Control
+                type="text"
+                name="rutaAsignada"
+                value={formPerfil.rutaAsignada}
+                onChange={handleChangePerfil}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="sectoresRuta">
+              <Form.Label>Sector designado</Form.Label>
+              <Form.Control
+                type="text"
+                name="sectoresRuta"
+                value={formPerfil.sectoresRuta}
+                onChange={handleChangePerfil}
+                required
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={handleCloseModal}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="success"
+              type="submit"
+            >
+              Guardar Cambios
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
     </>
   );
 };

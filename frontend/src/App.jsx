@@ -8,7 +8,6 @@ import RecuperarContraseña from "./pages/RecuperarContraseña";
 import Perfil from "./componets/Perfil/Perfil";
 import RegistroConductor from "./pages/admin/RegistroConductor";
 import ListarCondutor from "./pages/admin/ListarConductor";
-import ActualizarConductor from "./pages/admin/ActualizarConductor";
 import Error404 from "./componets/Error/Error404";
 import PrivateRouteWithRole from "./routes/PrivateRoutesWithRole";
 import DashboardDriver from "./layout/DashboardDriver";
@@ -62,10 +61,6 @@ function App() {
                         <Route
                           path="listar/conductores"
                           element={<ListarCondutor />}
-                        />
-                        <Route
-                          path="buscar/conductor/ruta/:rutaAsignada"
-                          element={<ActualizarConductor />}
                         />
                         <Route
                           path="listar/conductores/temporales"
