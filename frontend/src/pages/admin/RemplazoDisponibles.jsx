@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 const RemplazoDisponible = () => {
   const [conductores, setConductores] = useState([]);
   const [error, setError] = useState(null);
-  const { navigate } = useNavigate();
+  const navigate = useNavigate();
 
   //Logica para obtener el id selccionado para los remplazos
   const location = useLocation();
@@ -28,9 +28,7 @@ const RemplazoDisponible = () => {
   const ListaDisponible = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `${
-        import.meta.env.VITE_URL_BACKEND
-      }/listar/reemplazo/disponibles`;
+      const url = `${import.meta.env.VITE_URL_BACKEND}/listar/reemplazo/disponibles`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +67,9 @@ const RemplazoDisponible = () => {
   // Logica para asignar un conductor temporal
   const ConductorTemp = async () => {
     if (!conductorSeleccionado || !idPrincipal) {
-      setError("No se ha seleccionado un conductor o falta el ID del conductor original.");
+      setError(
+        "No se ha seleccionado un conductor o falta el ID del conductor original."
+      );
       return;
     }
     try {
@@ -84,6 +84,7 @@ const RemplazoDisponible = () => {
       };
 
       await axios.patch(url, {}, options);
+      setShowTemporal(false);
       // Puedes mostrar un mensaje de éxito aquí
       Swal.fire({
         icon: "success",
@@ -91,9 +92,8 @@ const RemplazoDisponible = () => {
         text: "Reemplazo  temporal realizado con éxito.",
         confirmButtonText: "Aceptar",
       }).then(() => {
-        navigate("/dashboard/listar/conductores"); // Redirige al login después de aceptar
+        navigate("/dashboard/listar/conductores/temporales"); // Redirige al login después de aceptar
       });
-      setShowTemporal(false);
       // Recargar la lista de conductores disponibles
       ListaDisponible();
     } catch (error) {
@@ -105,14 +105,16 @@ const RemplazoDisponible = () => {
   };
 
   // Logica de remplazar para conductor Permanente
-  const PermanentConductor= async ()=>{
+  const PermanentConductor = async () => {
     if (!conductorSeleccionado || !idPrincipal) {
-      setError("No se ha seleccionado un conductor o falta el ID del conductor original.");
+      setError(
+        "No se ha seleccionado un conductor o falta el ID del conductor original."
+      );
       return;
     }
     try {
-      const token=location.getItem('token')
-      const url=`${import.meta.env.VITE_URL_BACKEND}/reemplazo/permanente/${idPrincipal}/${conductorSeleccionado._id}`
+      const token = localStorage.getItem("token");
+      const url = `${import.meta.env.VITE_URL_BACKEND}/reemplazo/permanente/${idPrincipal}/${conductorSeleccionado._id}`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -121,6 +123,7 @@ const RemplazoDisponible = () => {
       };
 
       await axios.patch(url, {}, options);
+      setShowTemporal(false);
       // Puedes mostrar un mensaje de éxito aquí
       Swal.fire({
         icon: "success",
@@ -128,19 +131,17 @@ const RemplazoDisponible = () => {
         text: "Reemplazo Permanente realizado con éxito.",
         confirmButtonText: "Aceptar",
       }).then(() => {
-        navigate("/dashboard/listar/conductores"); // Redirige al login después de aceptar
+        navigate("/dashboard/listar/conductores");
       });
-      setShowTemporal(false);
       // Recargar la lista de conductores disponibles
       ListaDisponible();
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error(
         error.response?.data?.msg_reemplazo || "Ocurrió un error al realizar el reemplazo Permanente."
       );
     }
-  } 
+  };
 
   return (
     <>
