@@ -45,6 +45,11 @@ const BarraListaTemp = () => {
 
   useEffect(() => {
     ListaTemporal();
+    // Escuchar el evento personalizado para recargar la lista dirigido para la lista de conductor temporal
+    const handler = () => ListaTemporal();
+    window.addEventListener("recargar-lista-temporal", handler);
+    // Limpieza al desmontar
+    return () => window.removeEventListener("recargar-lista-temporal", handler);
   }, []);
 
   //LOGICA PARA ELIMINAR CONDUCTOR
@@ -63,7 +68,9 @@ const BarraListaTemp = () => {
 
       if (result.isConfirmed) {
         const token = localStorage.getItem("token");
-        const url = `${import.meta.env.VITE_URL_BACKEND}/eliminar/reemplazos/disponible/${id}`;
+        const url = `${
+          import.meta.env.VITE_URL_BACKEND
+        }/eliminar/reemplazos/disponible/${id}`;
         const headers = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -83,7 +90,8 @@ const BarraListaTemp = () => {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.msg_eliminar_reemplazo || "Ocurrió un error al eliminar el conductor temporal."
+        error.response?.data?.msg_eliminar_reemplazo ||
+          "Ocurrió un error al eliminar el conductor temporal."
       );
     }
   };

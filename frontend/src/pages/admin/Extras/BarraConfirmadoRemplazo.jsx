@@ -12,7 +12,9 @@ const BarraConfirmadoRemplazo = () => {
   const ListaConductoresRemplazados = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/listar/conductores/conreemplazo`;
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/listar/conductores/conreemplazo`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +36,8 @@ const BarraConfirmadoRemplazo = () => {
     } catch (error) {
       setConductores([]);
       setError(
-        error.response?.data?.msg || "Ocurrió un error al cargar los conductores. Intente nuevamente."
+        error.response?.data?.msg ||
+          "Ocurrió un error al cargar los conductores. Intente nuevamente."
       );
     }
   };
@@ -47,7 +50,9 @@ const BarraConfirmadoRemplazo = () => {
   const handleActivarDriver = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/activar/conductor/original/${id}`;
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/activar/conductor/original/${id}`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -66,6 +71,8 @@ const BarraConfirmadoRemplazo = () => {
         });
         // Recargar la lista de conductores para reflejar el cambio
         ListaConductoresRemplazados();
+        // Dispara el evento para recargar la lista temporal en BarraListaTemp.jsx
+        window.dispatchEvent(new Event("recargar-lista-temporal"));
       }
     } catch (error) {
       console.log(error);
