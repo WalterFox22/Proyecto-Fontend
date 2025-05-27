@@ -15,7 +15,7 @@ const FormularioEstudiante = () => {
     paralelo: "",
     cedula: "",
     ubicacionDomicilio: "",
-    ManianaOTarde: "",
+    turno: "",
   });
 
   const handleChange = (e) => {
@@ -59,7 +59,7 @@ const FormularioEstudiante = () => {
           paralelo: "",
           cedula: "",
           ubicacionDomicilio: "",
-          ManianaOTarde: "",
+          turno: "",
         });
         setStep(1); // Regresar al paso 1
       } else if (resultado.error) {
@@ -229,18 +229,19 @@ const FormularioEstudiante = () => {
           {step === 3 && (
             <>
               <Form.Group className="mb-2">
-                <Form.Label>Horario de Recorrido</Form.Label>
-                <Form.Select
-                  name="ManianaOTarde"
-                  value={form.ManianaOTarde}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Seleccione un paralelo</option>
-                  <option value="Mañana">Mañana</option>
-                  <option value="Tarde">Tarde</option>
-                </Form.Select>
-              </Form.Group>
+      <Form.Label>Horario de Recorrido</Form.Label>
+      <Form.Select
+        name="turno" // Cambiado de ManianaOTarde a turno
+        value={form.turno}
+        onChange={handleChange}
+        required
+      >
+        <option value="">Seleccione un turno</option>
+        <option value="Mañana">Mañana</option>
+        <option value="Tarde">Tarde</option>
+        <option value="Completo">Completo</option>
+      </Form.Select>
+    </Form.Group>
               <Form.Group className="mb-2">
                 <Form.Label>Direccion del Domicilio</Form.Label>
                 <Form.Control
