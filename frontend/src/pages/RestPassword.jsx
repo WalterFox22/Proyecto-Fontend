@@ -49,7 +49,7 @@ const ResetPassword = () => {
       return;
     }
     try {
-      const url = `${import.meta.env.VITE_URL_BACKEND}/recuperacion/nueva-password/${token}`;
+      const url = `${import.meta.env.VITE_URL_BACKEND}/nueva/contrasenia/${token}`;
       const { data } = await axios.post(url, {
         passwordActual,
         passwordActualConfirm,
