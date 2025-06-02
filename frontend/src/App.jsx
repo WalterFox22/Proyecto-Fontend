@@ -34,16 +34,14 @@ function App() {
                 path="recuperacion/contrasenia"
                 element={<RecuperarContraseña />}
               />
-
               <Route
                 path="cambiar/contraseña/firt"
                 element={<FirstPassword/>}
               />
               <Route
-                path="cambiar/contraseña"
+                path="reset-contraseña/:token"
                 element={<ResetPassword/>}
               />
-
               <Route path="*" element={<Error404 />} />
             </Route>
 

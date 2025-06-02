@@ -79,7 +79,7 @@ const AuthProvider = ({ children }) => {
     } else {
       console.warn("No hay token. Redirigiendo a login...");
       setLoading(false);
-      navigate("/login", { replace: true });
+      //navigate("/login", { replace: true });
     }
   }, []);
 
