@@ -50,7 +50,7 @@ const ResetPassword = () => {
     }
     try {
       const url = `${import.meta.env.VITE_URL_BACKEND}/nueva/contrasenia/${token}`;
-      const { data } = await axios.post(url, {
+      const { data } = await axios.patch(url, {
         passwordActual,
         passwordActualConfirm,
       });
