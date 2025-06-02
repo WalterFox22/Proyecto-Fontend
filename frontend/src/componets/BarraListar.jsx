@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Table, Card, Form, Button, Modal } from "react-bootstrap";
 import Delete from "../assets/borrar1.png";
 import Update from "../assets/actualizar.png";
 import AddAdmin from "../assets/admin-replace.png";
 import Replace from "../assets/remplazo.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
-//import Delete  from '../assets/remover.png';
-
 import axios from "axios";
 import Mensaje from "./Alertas/Mensaje";
 import { toast, ToastContainer } from "react-toastify";
+import AuthContext from "../context/AuthProvider";
 
 const BarraListar = () => {
+  const{ auth } =useContext(AuthContext)
   const navigate = useNavigate();
   const [conductores, setConductores] = useState([]);
   const [rutaAsignada, setRutaAsignada] = useState(""); // Ruta que se ingresa para búsqueda
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false); // para la seccion del modal
   const [conductorIdActualizar, setConductorIdActualizar] = useState(null); // para el apartado de actualizar conductor
-
 
   // Efecto para borrar el error cuando cambia la ruta asignada
   useEffect(() => {
@@ -189,8 +187,6 @@ const BarraListar = () => {
     listarConductores();
   }, []);
 
-
-
   // LOGICA DE ACTUALIZAR CONDUCTOR
   const [formPerfil, setFormPerfil] = useState({
     rutaAsignada: "",
@@ -225,8 +221,10 @@ const BarraListar = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const token= localStorage.getItem('token')
-      const url= `${import.meta.env.VITE_URL_BACKEND}/actualizar/conductor/${conductorIdActualizar}`
+      const token = localStorage.getItem("token");
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/actualizar/conductor/${conductorIdActualizar}`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -234,28 +232,117 @@ const BarraListar = () => {
         },
       };
 
-      const respuesta = await axios.patch(url,formPerfil,options)
+      const respuesta = await axios.patch(url, formPerfil, options);
 
       Swal.fire({
         title: "Actualizado",
-        text: respuesta.data.msg_actualizacion_conductor || "Conductor actualizado correctamente.",
+        text:
+          respuesta.data.msg_actualizacion_conductor ||
+          "Conductor actualizado correctamente.",
         icon: "success",
         confirmButtonColor: "#3085d6",
       });
       handleCloseModal();
       listarConductores();
-
     } catch (error) {
-      console.log(error)
-      toast.error(error?.response?.data?.msg_actualizacion_conductor || "Error al actualizar el conductor.")
+      console.log(error);
+      toast.error(
+        error?.response?.data?.msg_actualizacion_conductor ||
+          "Error al actualizar el conductor."
+      );
     }
   };
 
-  
+  // ASIGNAR PRIVILEGIOS DE ADMINISTRADOR
+  const handleAddAdmin = async (id) => {
+    try {
+    let eliminacionAdminSaliente = undefined;
+    let confirmResult = null;
+
+    if (auth.esConductor === "No") {
+      confirmResult = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Vas a asignar los privilegios de Administrador al conductor seleccionado.\nEscoja una opción:",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, asignar privilegios",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        input: "radio",
+        inputOptions: {
+          Sí: "Eliminar información del admin saliente",
+          No: "Mantener información del admin saliente",
+        },
+        inputValidator: (value) => {
+          if (!value) {
+            return "Debes seleccionar una opción";
+          }
+        },
+      });
+      eliminacionAdminSaliente = confirmResult.value;
+      if (!eliminacionAdminSaliente) {
+        // Si no seleccionó opción, no continuar
+        return;
+      }
+    } else if(auth.esConductor ==="Sí") {
+      confirmResult = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Vas a asignar los privilegios de Administrador al conductor seleccionado.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, asignar privilegios",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+      });
+    }
+
+    if (confirmResult.isConfirmed) {
+      const token = localStorage.getItem("token");
+      const url = `${import.meta.env.VITE_URL_BACKEND}/asignar/privilegios/admin/${id}`;
+      const options = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      // Siempre enviar un objeto, aunque esté vacío
+      const body = eliminacionAdminSaliente !== undefined ? { eliminacionAdminSaliente } : {};
+
+      // Log para depuración
+      console.log("Enviando PATCH a:", url);
+      console.log("Body:", body);
+
+      const respuesta = await axios.patch(url, body, options);
+
+      Swal.fire({
+        title: "Éxito",
+        text: respuesta.data.msg || "Privilegios asignados correctamente.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+      }).then(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("rol");
+        navigate("/login");
+      });
+    }
+  } catch (error) {
+    // Mostrar mensaje exacto del backend si existe
+    const msg =
+      error?.response?.data?.msg_actualizacion_conductor ||
+      error?.response?.data?.msg ||
+      "Error al asignar privilegios de administrador.";
+    toast.error(msg);
+
+    // Log para depuración
+    console.error("Error al asignar admin:", error?.response?.data || error);
+  }
+  };
 
   return (
     <>
-      <ToastContainer/>
+      <ToastContainer />
       {/* Barra de búsqueda */}
       <Form
         className="d-flex justify-content-center mb-3"
@@ -403,6 +490,9 @@ const BarraListar = () => {
                           cursor: "pointer",
                         }}
                         className="cursor-pointer inline-block"
+                        onClick={() => {
+                          handleAddAdmin(conductor._id);
+                        }}
                       />
                       <img
                         src={Replace}
@@ -458,21 +548,17 @@ const BarraListar = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={handleCloseModal}
-            >
+            <Button variant="secondary" onClick={handleCloseModal}>
               Cancelar
             </Button>
-            <Button
-              variant="success"
-              type="submit"
-            >
+            <Button variant="success" type="submit">
               Guardar Cambios
             </Button>
           </Modal.Footer>
         </Form>
       </Modal>
+
+      {/* MODAL PARA ASIGNAR PRIVILEGIOS DE ADMIN */}
     </>
   );
 };

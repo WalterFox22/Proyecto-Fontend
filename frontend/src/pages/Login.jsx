@@ -148,8 +148,7 @@ const Login = () => {
                   </span>
                 </div>
 
-                {/* Mostrar el link solo si el rol es "conductor" */}
-                {form.role === "conductor" && (
+                
                   <div id="login-options">
                     <Link
                       to="/recuperacion/contrasenia"
@@ -158,7 +157,7 @@ const Login = () => {
                       Olvidaste tu contraseña?
                     </Link>
                   </div>
-                )}
+                
                 <button id="login-button" className="btn btn-success">
                   Ingresar
                 </button>

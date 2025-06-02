@@ -40,7 +40,7 @@ const AuthProvider = ({ children }) => {
         const respuesta = await axios.get(url, options);
         if (respuesta.data) {
           if (respuesta.data.administrador) {
-            setAuth({ ...respuesta.data.administrador, rol: SelecctRol });
+            setAuth({ ...respuesta.data.administrador, rol: SelecctRol, esConductor: respuesta.data.esConductor });
           } else if (respuesta.data.conductor) {
             setAuth({ ...respuesta.data.conductor, rol: SelecctRol });
           }

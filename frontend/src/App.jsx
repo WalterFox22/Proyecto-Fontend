@@ -18,6 +18,7 @@ import ListarCondutorTemp from "./pages/admin/ListarConductoresTemp";
 import RegistrarAdmin from "./pages/admin/RegistrarAdmin";
 import FirstPassword from "./pages/FirstPassword";
 import RemplazoDisponible from "./pages/admin/RemplazoDisponibles";
+import ResetPassword from "./pages/RestPassword";
 
 function App() {
   return (
@@ -38,8 +39,10 @@ function App() {
                 path="cambiar/contraseña/firt"
                 element={<FirstPassword/>}
               />
-
-              {/** <Route path='registro/representantes' element={<Register/>}/> */}
+              <Route
+                path="cambiar/contraseña"
+                element={<ResetPassword/>}
+              />
 
               <Route path="*" element={<Error404 />} />
             </Route>
