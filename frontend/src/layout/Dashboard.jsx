@@ -1,23 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Link,
-  Navigate,
-  Outlet,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
-import {
-  Container,
-  Row,
-  Col,
-  Navbar,
-  Nav,
-  Image,
-  Button,
-} from "react-bootstrap";
+import {Link,Navigate,Outlet,useLocation,useNavigate,} from "react-router-dom";
+import {Container,Row,Col,Navbar,Nav,Image,Button,} from "react-bootstrap";
 import AuthContext from "../context/AuthProvider";
 import LogoAdmin from "../assets/Admin.png";
 import Loading from "../componets/Loading/Loading";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
 
 const Dashboard = () => {
   {
@@ -26,7 +15,7 @@ const Dashboard = () => {
   const location = useLocation();
   const urlActual = location.pathname;
 
-  const { auth, loading } = useContext(AuthContext);
+  const { auth, loading, setAuth } = useContext(AuthContext);
   const autenticado = localStorage.getItem("token");
 
   useEffect(() => {
@@ -36,13 +25,57 @@ const Dashboard = () => {
   }, [loading]);
 
   if (loading) {
-    return <Loading />; // Mostramos un mensaje de carga o un spinner aquí
+    return <Loading />;
   }
 
   // Verificamos si el usuario no está autenticado y lo redirigimos a login
   if (!autenticado) {
     return <Navigate to="/login" />;
   }
+
+  // LOGICA PARA HACER CONDUCTOR AL ADMIN
+  const handleMakeDriver = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const url = `${import.meta.env.VITE_URL_BACKEND}/aumentar/privilegios/conductor`;
+      const options = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const respuesta = await axios.patch(url, {}, options);
+      Swal.fire({
+        icon: "success",
+        title: "Éxito",
+        text:
+          respuesta.data.msg_añadir_privilegios ||
+          "Ya posee usted privilegios de conductor",
+      });
+      // Actualiza el estado local para ocultar el botón
+      setAuth({ ...auth, esConductor: "Si" });
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.msg_ceder_privilegios
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.response.data.msg_ceder_privilegios,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al intentar aumentar privilegios.",
+        });
+      }
+      console.log(error);
+    }
+  };
 
   return (
     <Container
@@ -85,13 +118,33 @@ const Dashboard = () => {
               Bienvenido - {auth?.nombre || "Usuario desconocido"}
             </p>
             <p
-              className="text-slate-400 text-center my-4 text-sm"
-              style={{ color: "white" }}
+              className="text-slate-400 text-center text-sm"
+              style={{ color: "white", marginBottom: "0.5rem" }}
             >
               {" "}
               Rol - {auth?.rol}
             </p>
           </div>
+          {auth.esConductor === "No" && (
+            <div
+              className="d-flex justify-content-center mb-2"
+              style={{ marginTop: "-0.5rem" }}
+            >
+              <Button
+                size="sm"
+                style={{
+                  backgroundColor: "#F5E6E8",
+                  color: "#560C23",
+                  border: "none",
+                  minWidth: "110px",
+                  fontWeight: "bold",
+                }}
+                onClick={handleMakeDriver}
+              >
+                Ser Conductor
+              </Button>
+            </div>
+          )}
           <hr />
           <Nav className="flex-column">
             <Nav.Link
@@ -151,7 +204,6 @@ const Dashboard = () => {
             >
               Registrar Administrador
             </Nav.Link>
-
           </Nav>
         </Col>
 
