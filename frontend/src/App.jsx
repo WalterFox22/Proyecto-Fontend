@@ -19,6 +19,7 @@ import RegistrarAdmin from "./pages/admin/RegistrarAdmin";
 import FirstPassword from "./pages/FirstPassword";
 import RemplazoDisponible from "./pages/admin/RemplazoDisponibles";
 import ResetPassword from "./pages/RestPassword";
+import ConfirmEmail from "./pages/ConfirmEmail";
 
 function App() {
   return (
@@ -41,6 +42,10 @@ function App() {
               <Route
                 path="reset-contraseña/:token"
                 element={<ResetPassword/>}
+              />
+              <Route
+                path="confirmar-email/:token"
+                element={<ConfirmEmail/>}
               />
               <Route path="*" element={<Error404 />} />
             </Route>

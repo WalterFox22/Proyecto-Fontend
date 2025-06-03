@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Row, Col, Container, Button, Modal, Form } from "react-bootstrap";
 import AuthContext from "../../context/AuthProvider";
 import PerfilConductor from "../../pages/driver/PerfilConductor";
 import { toast, ToastContainer } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
-import NoUser from'../../assets/NoUser.avif'
+import NoUser from "../../assets/NoUser.avif";
 
 const Perfil = () => {
   const { auth } = useContext(AuthContext);
@@ -14,23 +14,7 @@ const Perfil = () => {
   //Acciones para mostrar la pantalla emergente
   const [modalType, setModalType] = useState(null);
   const handleShowModal = (type) => setModalType(type);
-
-  const handleCloseModal = () => {
-    setModalType(null);
-    // Restablecer el formulario del perfil si se cierra el modal sin guardar
-  if (modalType === "perfil") {
-    setFormPerfil({
-      telefono: auth.telefono || "",
-      placaAutomovil: auth.placaAutomovil || "",
-      email: auth.email || "",
-      foto: auth.foto || "",
-      rutaAsignada: auth.rutaAsignada || "",
-      sectoresRuta: auth.sectoresRuta || "",
-    });
-    setPreview(auth.foto || ""); // Restablecer el preview de la imagen
-  }
-
-  }
+  const handleCloseModal = () => setModalType(null);
 
   // Accione para poder visualizar el password al ingresar
   const [showPasswordAnterior, setShowPasswordAnterior] = useState(false);
@@ -39,8 +23,6 @@ const Perfil = () => {
 
   const { UpdatePassword, cargarPerfil } = useContext(AuthContext);
   const [mensaje, setMensaje] = useState({});
-
-  
 
   //Logica para actualizar el Password
   const [form, setForm] = useState({
@@ -124,17 +106,32 @@ const Perfil = () => {
   };
 
   // LOGICA PARA ACTUALIZAR PERFIL
+  // ...existing code...
   const [formPerfil, setFormPerfil] = useState({
     telefono: auth.telefono || "",
+    cedula: auth.cedula || "",
+    cooperativa: auth.cooperativa || "",
     placaAutomovil: auth.placaAutomovil || "",
     email: auth.email || "",
-    foto: auth.foto || "", // Nueva propiedad
-    rutaAsignada: auth.rutaAsignada || "",
-    sectoresRuta: auth.sectoresRuta ||"", 
-      
+    foto: auth.foto || "",
   });
 
   const [preview, setPreview] = useState(auth.foto || ""); // Preview de la imagen
+
+  // Actualiza el formulario cada vez que se abre el modal de perfil
+  useEffect(() => {
+    if (modalType === "perfil") {
+      setFormPerfil({
+        telefono: auth.telefono || "",
+        cedula: auth.cedula || "",
+        cooperativa: auth.cooperativa || "",
+        placaAutomovil: auth.placaAutomovil || "",
+        email: auth.email || "",
+        foto: auth.foto || "",
+      });
+      setPreview(auth.foto || "");
+    }
+  }, [modalType, auth]);
 
   const handleChangePerfil = (e) => {
     setFormPerfil({
@@ -155,12 +152,12 @@ const Perfil = () => {
     }
 
     const formData = new FormData();
-    formData.append("placaAutomovil", formPerfil.placaAutomovil);
     formData.append("telefono", formPerfil.telefono);
+    formData.append("cedula", formPerfil.cedula);
+    formData.append("cooperativa", formPerfil.cooperativa);
+    formData.append("placaAutomovil", formPerfil.placaAutomovil);
     formData.append("email", formPerfil.email);
-    formData.append("rutaAsignada", formPerfil.rutaAsignada)
-    formData.append("sectoresRuta",formPerfil.sectoresRuta)
-    formData.append("fotografiaDelConductor", formPerfil.foto); // Agregar la imagen
+    formData.append("fotografiaDelConductor", formPerfil.foto);
 
     try {
       const token = localStorage.getItem("token");
@@ -283,8 +280,8 @@ const Perfil = () => {
                     color: "white",
                     border: "none",
                     borderRadius: "5px",
-                  marginTop: "10px",
-                  padding: "0px 6px", // Ajustar relleno
+                    marginTop: "10px",
+                    padding: "0px 6px", // Ajustar relleno
                   }}
                 >
                   Actualizar Perfil
@@ -302,8 +299,8 @@ const Perfil = () => {
                     color: "white",
                     border: "none",
                     borderRadius: "5px",
-                  marginTop: "10px",
-                  padding: "0px 6px", // Ajustar relleno
+                    marginTop: "10px",
+                    padding: "0px 6px", // Ajustar relleno
                   }}
                 >
                   Actualizar Contraseña
@@ -333,37 +330,33 @@ const Perfil = () => {
                     onChange={handleChangePerfil}
                   />
                 </Form.Group>
+                <Form.Group className="mb-3" controlId="cedula">
+                  <Form.Label>Cédula</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="cedula"
+                    value={formPerfil.cedula}
+                    onChange={handleChangePerfil}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="cooperativa">
+                  <Form.Label>Cooperativa</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="cooperativa"
+                    value={formPerfil.cooperativa}
+                    onChange={handleChangePerfil}
+                  />
+                </Form.Group>
                 <Form.Group className="mb-3" controlId="placaAutomovil">
-                  <Form.Label>Placa del Vehiculo</Form.Label>
+                  <Form.Label>Placa del Vehículo</Form.Label>
                   <Form.Control
                     type="text"
                     name="placaAutomovil"
                     value={formPerfil.placaAutomovil}
                     onChange={handleChangePerfil}
-                    placeholder="Ingrese las placas. Ejemplo: PHT-8888 "
                   />
                 </Form.Group>
-
-                <Form.Group className="mb-3" controlId="rutaAsignada">
-                  <Form.Label>Ruta de Transporte</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="rutaAsignada"
-                    value={formPerfil.rutaAsignada}
-                    onChange={handleChangePerfil}
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="sectoresRuta">
-                  <Form.Label>Sector designado</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="sectoresRuta"
-                    value={formPerfil.sectoresRuta}
-                    onChange={handleChangePerfil}
-                  />
-                </Form.Group>
-
                 <Form.Group className="mb-3" controlId="telefono">
                   <Form.Label>Teléfono</Form.Label>
                   <Form.Control
@@ -397,16 +390,18 @@ const Perfil = () => {
                 </Form.Group>
 
                 <Modal.Footer>
-                  <Button 
-                  variant="success"
-                  style={{ backgroundColor: "#FF3737", border: "none" }}
-                  onClick={handleCloseModal}>
+                  <Button
+                    variant="success"
+                    style={{ backgroundColor: "#FF3737", border: "none" }}
+                    onClick={handleCloseModal}
+                  >
                     Cancelar
                   </Button>
-                  <Button 
-                  variant="success"
-                  style={{ backgroundColor: "#4CAF50", border: "none" }} 
-                  type="submit">
+                  <Button
+                    variant="success"
+                    style={{ backgroundColor: "#4CAF50", border: "none" }}
+                    type="submit"
+                  >
                     Guardar Cambios
                   </Button>
                 </Modal.Footer>
@@ -500,16 +495,18 @@ const Perfil = () => {
 
                 {/* Botones dentro del formulario */}
                 <Modal.Footer>
-                  <Button 
-                  variant="success"
-                  style={{ backgroundColor: "#FF3737", border: "none" }}
-                  onClick={handleCloseModal}>
+                  <Button
+                    variant="success"
+                    style={{ backgroundColor: "#FF3737", border: "none" }}
+                    onClick={handleCloseModal}
+                  >
                     Cancelar
                   </Button>
-                  <Button 
-                  variant="success"
-                  style={{ backgroundColor: "#4CAF50", border: "none" }} 
-                  type="submit">
+                  <Button
+                    variant="success"
+                    style={{ backgroundColor: "#4CAF50", border: "none" }}
+                    type="submit"
+                  >
                     Guardar Cambios
                   </Button>
                 </Modal.Footer>
