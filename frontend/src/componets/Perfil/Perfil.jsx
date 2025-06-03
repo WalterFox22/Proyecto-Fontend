@@ -6,11 +6,14 @@ import { toast, ToastContainer } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import NoUser from "../../assets/NoUser.avif";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Perfil = () => {
   const { auth } = useContext(AuthContext);
   console.log(auth);
 
+  const navigate = useNavigate();
   //Acciones para mostrar la pantalla emergente
   const [modalType, setModalType] = useState(null);
   const handleShowModal = (type) => setModalType(type);
@@ -106,17 +109,16 @@ const Perfil = () => {
   };
 
   // LOGICA PARA ACTUALIZAR PERFIL
-  // ...existing code...
   const [formPerfil, setFormPerfil] = useState({
     telefono: auth.telefono || "",
     cedula: auth.cedula || "",
     cooperativa: auth.cooperativa || "",
     placaAutomovil: auth.placaAutomovil || "",
     email: auth.email || "",
-    foto: auth.foto || "",
+    foto: auth.fotografiaDelConductor || "",
   });
 
-  const [preview, setPreview] = useState(auth.foto || ""); // Preview de la imagen
+  const [preview, setPreview] = useState(auth.fotografiaDelConductor || ""); // Preview de la imagen
 
   // Actualiza el formulario cada vez que se abre el modal de perfil
   useEffect(() => {
@@ -127,9 +129,9 @@ const Perfil = () => {
         cooperativa: auth.cooperativa || "",
         placaAutomovil: auth.placaAutomovil || "",
         email: auth.email || "",
-        foto: auth.foto || "",
+        foto: auth.fotografiaDelConductor || "",
       });
-      setPreview(auth.foto || "");
+      setPreview(auth.fotografiaDelConductor || "");
     }
   }, [modalType, auth]);
 
@@ -174,11 +176,29 @@ const Perfil = () => {
       const respuesta = await axios.patch(url, formData, options);
       cargarPerfil(token);
       if (respuesta.data.msg_actualizacion_perfil) {
-        toast.success(respuesta.data.msg_actualizacion_perfil, {
-          position: "top-right",
-          autoClose: 3000,
-        });
         handleCloseModal();
+        if (
+          respuesta.data.msg_actualizacion_perfil ===
+          "Se ha enviado un enlace de confirmación al nuevo correo electrónico"
+        ) {
+          Swal.fire({
+            icon: "success",
+            title: "Perfil actualizado",
+            text: respuesta.data.msg_actualizacion_perfil,
+            confirmButtonText: "Ir a Login",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+          }).then(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("rol");
+            navigate("/login");
+          });
+        } else {
+          toast.success(respuesta.data.msg_actualizacion_perfil, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        }
       }
     } catch (error) {
       console.log(error);
