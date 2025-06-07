@@ -1,49 +1,54 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Container } from "react-bootstrap";
-import EmailGift from "../assets/Emal_animation.webm";
-import ErrorEmailGift from '../assets/ErrorEmail_animation.webm'
-import Loading from "../componets/Loading/Loading";
-import Button from '../Styles/Syles-Button/ButtonConfrmEmail';
+import { useEffect, useRef, useState } from "react";
+import { Container} from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import UnlockUser from "../assets/Carrito.webm";
+import Button from "../Styles/Syles-Button/ButtonRestUser";
 import gsap from "gsap";
 import SplitType from "split-type";
+import Loading from "../componets/Loading/Loading";
+import ErrorRestGift from '../assets/ErrorEmail_animation.webm'
 
-const MENSAJE_EXITO = "¡Listo, tu correo ya está confirmado! Puedes iniciar sesión cuando quieras.";
-const MENSAJE_ERROR = "El enlace no es válido o ha expirado. Por favor revisa tu correo e inténtalo nuevamente.";
+const MENSAJE_EXITO =
+  "¡Desbloqueo exitoso! Gracias por confirmar, su cuenta está lista para usarse.";
+const MENSAJE_ERROR =
+  "Enlace inválido o expirado. No se pudo completar el desbloqueo.";
 
-const ConfirmEmail = () => {
+const RestUser = () => {
   const { token } = useParams();
-  //const [mensaje, setMensaje] = useState("");
+  const [mensaje, setMensaje] = useState("");
   const [loading, setLoading] = useState(true);
   const [tipo, setTipo] = useState("success");
   const mensajeRef = useRef(null);
 
   useEffect(() => {
-    const confirmarEmail = async () => {
+    const confirmarUserActivo = async () => {
       try {
-        const url = `${import.meta.env.VITE_URL_BACKEND}/cambio/email/${token}`;
+        const url = `${
+          import.meta.env.VITE_URL_BACKEND
+        }/besbloquear/token/${token}`;
         const { data } = await axios.get(url);
-        //setMensaje(data.msg);
+        setMensaje(data.msg_desbloque);
         setTipo("success");
       } catch (error) {
-        /*setMensaje(
-          error.response?.data?.msg ||
-            "Ocurrió un error al confirmar el correo electrónico"
+        setMensaje(
+          error.response?.data?.msg_desbloque ||
+            "Ocurrió un error al confirmar la reactivacion del Usuario"
         );
-        */
         setTipo("danger");
       } finally {
         setLoading(false);
       }
     };
-    confirmarEmail();
+    confirmarUserActivo();
   }, [token]);
-  
+
 
   useEffect(() => {
     if (!loading && mensajeRef.current) {
-      const split = new SplitType(mensajeRef.current, { types: "words, chars" });
+      const split = new SplitType(mensajeRef.current, {
+        types: "words, chars",
+      });
       gsap.from(split.chars, {
         opacity: 0,
         y: 30,
@@ -53,12 +58,11 @@ const ConfirmEmail = () => {
       });
     }
   }, [loading, tipo]);
-
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "#CEDBF2",
+        background: "#ecf2c0",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -72,7 +76,7 @@ const ConfirmEmail = () => {
           borderRadius: "18px",
           boxShadow: "0 4px 32px 0 rgba(0,0,0,0.18)",
           padding: "2.5rem 1.2rem",
-          maxWidth: "420px"
+          maxWidth: "420px",
         }}
       >
         <h1
@@ -83,14 +87,19 @@ const ConfirmEmail = () => {
             letterSpacing: "1px",
             fontSize: "2.1rem",
             textShadow: "0 2px 8px #0002",
-            textAlign: "center"
+            textAlign: "center",
           }}
         >
-          Confirmación de Correo
+          Desbloqueo de Cuenta
         </h1>
         <video
-          src={tipo==="success" ? EmailGift : ErrorEmailGift}
-          style={{ width: "169px", height: "auto", objectFit: "contain", marginBottom: "1.5rem" }}
+          src={tipo === "success" ? UnlockUser : ErrorRestGift}
+          style={{
+            width: "169px",
+            height: "auto",
+            objectFit: "contain",
+            marginBottom: "1.5rem",
+          }}
           autoPlay
           loop
           muted
@@ -104,19 +113,18 @@ const ConfirmEmail = () => {
               color: "#000000",
               fontSize: "1.18rem",
               textAlign: "center",
-              marginBottom: "1.5rem",
-              fontWeight: 500,
-              minHeight: "30px"
+              marginBottom: "2rem",
+              fontWeight: 700,
+              minHeight: "30px",
             }}
           >
             {tipo === "success" ? MENSAJE_EXITO : MENSAJE_ERROR}
           </div>
         )}
-        
-          <Button  />
+        <Button />
       </Container>
     </div>
   );
 };
 
-export default ConfirmEmail;
+export default RestUser;

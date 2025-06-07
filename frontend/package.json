@@ -25,6 +25,7 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^7.1.1",
     "react-toastify": "^11.0.2",
+    "split-type": "^0.3.4",
     "styled-components": "^6.1.14",
     "sweetalert2": "^11.15.10",
     "yup": "^1.6.1"

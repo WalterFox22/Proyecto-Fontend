@@ -5,6 +5,8 @@ import { toast, ToastContainer } from "react-toastify";
 import Loading from "../componets/Loading/Loading";
 import Mensaje from "../componets/Alertas/Mensaje";
 import axios from "axios";
+import Button1 from '../Styles/Syles-Button/ButtonRestPassword'
+import Button2 from '../Styles/Syles-Button/ButtonRestUserLogin'
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -14,6 +16,7 @@ const ResetPassword = () => {
   const [passwordActual, setPasswordActual] = useState("");
   const [passwordActualConfirm, setPasswordActualConfirm] = useState("");
 
+ 
   useEffect(() => {
     const comprobarToken = async () => {
       try {
@@ -68,6 +71,8 @@ const ResetPassword = () => {
 
   if (loading) return <Loading />;
 
+
+
   return (
     <>
       <ToastContainer />
@@ -95,21 +100,12 @@ const ResetPassword = () => {
               onChange={(e) => setPasswordActualConfirm(e.target.value)}
             />
           </Form.Group>
-          <Button
-            variant="success"
-            className="mt-1"
-            style={{ backgroundColor: "#32CD32", border: "none" }}
-            type="submit"
-          >
-            Enviar
-          </Button>
+          <Button1/>
         </Form>
       ) : (
         <div className="text-center">
         <Mensaje tipo={false}>El enlace no es válido o ha expirado.</Mensaje>
-        <Button variant="primary" onClick={() => navigate("/login")} className="mt-3">
-          Volver al Login
-        </Button>
+        <Button2/>
       </div>
       )}
     </>
