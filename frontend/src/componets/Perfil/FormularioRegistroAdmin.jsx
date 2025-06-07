@@ -78,7 +78,8 @@ const FormularioRegistroAdmin = () => {
       const respuesta = await NewAdmin(formData);
       if (respuesta) {
         toast.success("Administrador registrado con éxito");
-
+        localStorage.removeItem('token')
+        localStorage.removeItem("rol");
         // Limpiar los campos del formulario y regresar al paso 1
         setForm({
           nombre: "",
