@@ -21,6 +21,7 @@ import RemplazoDisponible from "./pages/admin/RemplazoDisponibles";
 import ResetPassword from "./pages/RestPassword";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import RestUser from "./pages/RestUser";
+import Reportes from "./pages/admin/Reportes";
 
 function App() {
   return (
@@ -84,6 +85,10 @@ function App() {
                         <Route
                           path="/listar/reemplazo/disponibles"
                           element={<RemplazoDisponible/>}
+                        />
+                        <Route
+                          path='/reportes-generales'
+                          element={<Reportes/>}
                         />
                         
                       </Route>

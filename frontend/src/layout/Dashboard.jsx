@@ -204,6 +204,19 @@ const Dashboard = () => {
             >
               Registrar Administrador
             </Nav.Link>
+
+            <Nav.Link
+              as={Link}
+              to="/dashboard/reportes-generales"
+              className={
+                urlActual === "/dashboard/reportes-generales"
+                  ? "active text-light bg-secondary rounded p-2"
+                  : "text-light"
+              }
+            >
+              Reportes
+            </Nav.Link>
+            
           </Nav>
         </Col>
 
