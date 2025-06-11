@@ -3,7 +3,7 @@ import ListaReportes from "./Extras/ListaReportes";
 
 const Reportes = () => {
   return (
-    <Container fluid className="p-3">
+    <Container fluid className="p-3 px-0">
       {/* Encabezado */}
       <div className="text-center mb-4">
         <h1>Reportes del sistema</h1>

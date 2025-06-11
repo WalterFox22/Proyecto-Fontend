@@ -1,6 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {Container,Row,Col,Form,Button,Table,Card} from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Table,
+  Card,
+} from "react-bootstrap";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import Mensaje from "../../../componets/Alertas/Mensaje";
@@ -36,7 +44,9 @@ const ListaReportes = () => {
     setDetalleError(null);
     try {
       const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/info/completa/reemplazos`;
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/info/completa/reemplazos`;
       let body = { informacionHaVisualizar: opcion };
       if (opcion === "Listado de estudiantes de un conductor") {
         if (!busquedaRuta) {
@@ -150,13 +160,16 @@ const ListaReportes = () => {
     : null;
 
   return (
-    <Container fluid className="py-3">
+    // Add 'position-relative' to the container if your dashboard is absolutely/fixed positioned
+    // This makes sure the content respects the available space.
+    // Also, added 'overflow-hidden' to prevent horizontal scroll from this component.
+    <Container fluid className="py-3 px-0 overflow-hidden">
       <Row className="mb-2 justify-content-center">
         <Col xs={12} md={10} lg={8} xl={7}>
           <h4 className="mb-3 text-center">Resumen General del Sistema</h4>
           <div
             className="d-flex justify-content-center align-items-center"
-            style={{ minHeight: "350px", overflowX: "auto" }}
+            style={{ minHeight: "350px" }}
           >
             <div
               style={{
@@ -164,11 +177,13 @@ const ListaReportes = () => {
                 maxWidth: "450px",
                 height: "350px",
                 margin: "0 auto",
-                minWidth: "250px",
+                position: "relative", // Ensures the chart respects its parent's bounds
               }}
             >
               {loadingCantidades ? (
-                <Mensaje tipo={false} className="mt-3">Cargando gráfico</Mensaje>
+                <Mensaje tipo={false} className="mt-3">
+                  Cargando gráfico
+                </Mensaje>
               ) : chartData ? (
                 <Doughnut
                   data={chartData}
@@ -204,22 +219,15 @@ const ListaReportes = () => {
       <Row>
         <Col xs={12} md={12} lg={10} xl={9} className="mx-auto">
           <Form>
-            <Form.Group className="mb-3 d-flex align-items-center gap-2">
-              {" "}
-              {/* Agregado mb-3 para espaciado */}
-              <Form.Label className="mb-0" style={{ whiteSpace: "nowrap" }}>
+            <Form.Group className="mb-3 d-flex flex-wrap align-items-center gap-2">
+              <Form.Label className="mb-0 text-break w-100">
                 Selecciona el tipo de reporte detallado:
               </Form.Label>
               <Form.Select
                 value={opcion}
                 onChange={handleSelect}
-                style={{
-                  width: "auto",
-                  minWidth: 220,
-                  maxWidth: 350,
-                  display: "inline-block",
-                }}
-                className="me-2"
+                className="w-100"
+                style={{ maxWidth: "100%" }}
               >
                 <option value="">-- Selecciona una opción --</option>
                 {opcionesReporte.map((op) => (
@@ -230,9 +238,7 @@ const ListaReportes = () => {
               </Form.Select>
             </Form.Group>
             {opcion === "Listado de estudiantes de un conductor" && (
-              <Form.Group className="mb-3 d-flex align-items-center gap-2">
-                {" "}
-                {/* Cambiado mt-3 a mb-3 */}
+              <Form.Group className="mb-3 d-flex flex-wrap align-items-center gap-2">
                 <Form.Label className="mb-0" style={{ whiteSpace: "nowrap" }}>
                   Ruta a buscar
                 </Form.Label>
@@ -241,26 +247,24 @@ const ListaReportes = () => {
                   placeholder="Ejemplo: 11"
                   value={busquedaRuta}
                   onChange={(e) => setBusquedaRuta(e.target.value)}
-                  style={{
-                    width: "auto",
-                    minWidth: 120,
-                    maxWidth: 200,
-                    display: "inline-block",
-                  }}
+                  // Removed fixed width styles, letting Bootstrap handle responsiveness more.
+                  // Added 'flex-grow-1' to allow it to take available space within flex container.
+                  className="flex-grow-1"
+                  style={{ maxWidth: "200px" }} // Keep a max-width
                 />
               </Form.Group>
             )}
             {opcion && (
               <div className="d-flex justify-content-center">
                 <Button
-                  className="mb-2 px-4 " // Añadido mb-3 para espaciado con la tabla
+                  className="mb-2 px-4"
                   variant="success"
                   onClick={ReporteTablas}
                   disabled={loadingDetalle}
                   style={{
                     width: "auto",
                     minWidth: 150,
-                    display: "inline-block",
+                    // display: "inline-block", // This is usually handled by Bootstrap's flex or block display
                   }}
                 >
                   {loadingDetalle ? "Cargando..." : "Generar Reporte"}
@@ -276,16 +280,20 @@ const ListaReportes = () => {
           {/* Renderizado dinámico de tablas/listas */}
           {detalle.length > 0 && (
             <Card className="shadow-lg rounded-lg border-0 mt-2">
-              <Card.Body style={{ maxHeight: "60vh", overflowY: "auto" }}>
+              <Card.Body>
+                {/* The 'table-responsive' class provided by Bootstrap is the key
+                    to prevent horizontal scroll on tables. It creates a scrollbar
+                    only for the table when it overflows. */}
                 <div className="table-responsive">
                   {opcion === "Listado de estudiantes de un conductor" ? (
                     <Table
                       striped
                       bordered
                       hover
-                      responsive="sm" // Usa responsive con un breakpoint si es necesario, o solo responsive
+                      // responsive="sm" // If you use 'responsive' without a breakpoint, it applies to all breakpoints.
+                      // 'responsive' alone is generally sufficient for most cases to add scrollbars when needed.
+                      // If you want it to be responsive starting from a specific breakpoint, e.g., 'sm', then use 'responsive="sm"'.
                       className="table-sm text-center"
-                      style={{ minWidth: "400px" }}
                     >
                       <thead>
                         <tr
@@ -323,9 +331,9 @@ const ListaReportes = () => {
                       striped
                       bordered
                       hover
-                      responsive
+                      responsive // This is crucial for horizontal scrolling of tables
                       className="table-sm text-center"
-                      style={{ minWidth: "700px" }}
+                      // Removed `minWidth` from here, let `responsive` handle it.
                     >
                       <thead>
                         <tr
@@ -348,6 +356,12 @@ const ListaReportes = () => {
                       <tbody>
                         {detalle.map((item, idx) => (
                           <tr key={item._id || idx}>
+                            {/* It's generally better to explicitly map each column to its respective data
+                                rather than Object.values(item).map, as the order of keys in an object
+                                is not guaranteed unless using ES2015+ Map or specific ordering.
+                                For now, I'll keep your existing logic but it's a point to consider
+                                for robustness.
+                            */}
                             {Object.values(item).map((val, i) => (
                               <td key={i}>
                                 {typeof val === "object"
