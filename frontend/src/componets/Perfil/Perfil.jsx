@@ -8,6 +8,7 @@ import axios from "axios";
 import NoUser from "../../assets/NoUser.avif";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import Mensaje from "../Alertas/Mensaje";
 
 const Perfil = () => {
   const { auth } = useContext(AuthContext);
@@ -74,27 +75,63 @@ const Perfil = () => {
 
     try {
       const resultado = await UpdatePassword(form);
-      setMensaje(resultado);
-      if (resultado.tipo) {
-        toast.success("Contraseña actualizada correctamente", {
-          position: "top-right",
-          autoClose: 3000,
+      if (resultado.msg_actualizacion_contrasenia) {
+        const exito =
+          resultado.msg_actualizacion_contrasenia.includes(
+            "satisfactoriamente"
+          );
+        setMensaje({
+          respuesta: resultado.msg_actualizacion_contrasenia,
+          tipo: exito,
         });
-      } else {
-        // Iterar sobre los errores del backend y mostrarlos con toast.error
-        if (resultado.errors && Array.isArray(resultado.errors)) {
-          resultado.errors.forEach((error) => {
-            toast.error(error.msg, {
-              position: "top-right",
-              autoClose: 3000,
-            });
-          });
-        } else {
-          toast.error("Ocurrió un error inesperado", {
+        if (exito) {
+          toast.success(resultado.msg_actualizacion_contrasenia, {
             position: "top-right",
             autoClose: 3000,
           });
+          // Limpiar campos y cerrar modal después del toast
+          setTimeout(() => {
+            setMensaje({});
+            setForm({
+              passwordActual: "",
+              passwordAnterior: "",
+              passwordActualConfirm: "",
+            });
+            handleCloseModal();
+          }, 3000);
+        } else {
+          toast.error(resultado.msg_actualizacion_contrasenia, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          setTimeout(() => {
+            setMensaje({});
+          }, 3000);
         }
+      } else if (resultado.msg) {
+        setMensaje({
+          respuesta: resultado.msg,
+          tipo: false,
+        });
+        toast.error(resultado.msg, {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setTimeout(() => {
+          setMensaje({});
+        }, 3000);
+      } else {
+        setMensaje({
+          respuesta: "Ocurrió un error inesperado",
+          tipo: false,
+        });
+        toast.error("Ocurrió un error inesperado", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setTimeout(() => {
+          setMensaje({});
+        }, 3000);
       }
     } catch (error) {
       toast.error("Error al procesar la solicitud", {
@@ -451,7 +488,7 @@ const Perfil = () => {
             <Modal.Body>
               {/* Asegúrate de que el formulario envuelve correctamente los elementos */}
               <Form onSubmit={handleSubmit}>
-                {Object.keys(mensaje).length > 0 && (
+                {mensaje.respuesta && (
                   <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
                 )}
 

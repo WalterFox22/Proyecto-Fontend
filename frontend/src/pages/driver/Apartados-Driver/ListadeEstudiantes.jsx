@@ -7,10 +7,10 @@ import Maps from "../../../assets/Maps.png";
 import Swal from "sweetalert2";
 import AuthContext from "../../../context/AuthProvider";
 import axios from "axios";
-import '../Styles-Drivers/ListadeEstudiantes.css'
+import "../Styles-Drivers/ListadeEstudiantes.css";
 
 const ListadeEstudiantes = () => {
-  const {auth}=useContext(AuthContext)
+  const { auth } = useContext(AuthContext);
   const { cargarPerfil } = useContext(AuthContext);
   const [estudiantes, setEstudiantes] = useState([]);
   const [error, setError] = useState(null);
@@ -28,13 +28,29 @@ const ListadeEstudiantes = () => {
         },
       };
       const respuesta = await axios.get(url, options);
-      console.log(respuesta)
-      setEstudiantes(respuesta.data.listaCompleta); // Cambiar a listaCompleta
-    } catch (error) {
-      console.log(error);
-      setError(
-        "Ocurrió un error al cargar los estudiantes. Intente nuevamente."
+      console.log(respuesta);
+      setEstudiantes(
+        Array.isArray(respuesta.data.listaCompleta)
+          ? respuesta.data.listaCompleta
+          : []
       );
+      setError(null);
+    } catch (error) {
+      // Si el backend responde 404 y el mensaje es de lista vacía, vacía la tabla y NO muestres error
+      if (
+        error.response &&
+        error.response.status === 404 &&
+        error.response.data &&
+        error.response.data.msg_lista_estudiantes
+      ) {
+        setEstudiantes([]); // Vacía la tabla
+        setError(null); // No mostrar mensaje de error
+      } else {
+        console.log(error);
+        setError(
+          "Ocurrió un error al cargar los estudiantes. Intente nuevamente."
+        );
+      }
     }
   };
   useEffect(() => {
@@ -69,6 +85,9 @@ const ListadeEstudiantes = () => {
         // recibimos la respuesta del backend
         await axios.delete(url, { headers });
 
+        // Limpiar error antes de recargar
+        setError(null);
+
         // Mostrar alerta de éxito
         Swal.fire({
           title: "Eliminado",
@@ -77,7 +96,7 @@ const ListadeEstudiantes = () => {
           confirmButtonColor: "#3085d6",
         });
         //Actualiza la tabla con los cambios realizados
-        RegistroDeListaEstudiantes();
+        await RegistroDeListaEstudiantes();
       }
     } catch (error) {
       console.log(error);
@@ -151,14 +170,10 @@ const ListadeEstudiantes = () => {
   const [selectedEstudianteId, setSelectedEstudianteId] = useState(null); // Para guardar la informacion del id del estudiante seleccionado
 
   const [formUpdate, setFormUpdate] = useState({
-    nombre: "",
-    apellido: "",
     nivelEscolar: "",
-    genero: "",
     paralelo: "",
-    cedula: "",
     ubicacionDomicilio: "",
-    recoCompletoOMedio: "",
+    turno: "",
   });
 
   const handleChange = (e) => {
@@ -172,14 +187,10 @@ const ListadeEstudiantes = () => {
   const handleClose = () => setShow(false);
   const handleShow = (estudiante) => {
     setFormUpdate({
-      nombre: estudiante.nombre || "",
-      apellido: estudiante.apellido || "",
       nivelEscolar: estudiante.nivelEscolar || "",
-      genero: estudiante.genero || "",
       paralelo: estudiante.paralelo || "",
-      cedula: estudiante.cedula || "",
       ubicacionDomicilio: estudiante.ubicacionDomicilio || "",
-      recoCompletoOMedio: estudiante.recoCompletoOMedio || "",
+      turno: estudiante.turno || "",
     });
     setSelectedEstudianteId(estudiante._id); // Guardar el ID del estudiante seleccionado
     setShow(true); // Abrir el modal
@@ -207,29 +218,34 @@ const ListadeEstudiantes = () => {
         RegistroDeListaEstudiantes(); // Actualiza la lista de estudiantes
       }
     } catch (error) {
-      if (error.response && error.response.data.errors) {
-        console.error("Errores de validación:", error.response.data.errors);
-        Swal.fire(
-          "Error",
+      // Centraliza el manejo de errores
+      const data = error.response?.data;
+      let mensaje = "Ocurrió un error desconocido";
+      if (data?.errors) {
+        mensaje =
           "Errores de validación: " +
-            error.response.data.errors.map((err) => err.msg).join(", "),
-          "error"
-        );
-      } else {
-        console.error("Error desconocido:", error);
-        Swal.fire("Error", "Ocurrió un error desconocido", "error");
+          data.errors.map((err) => err.msg).join(", ");
+      } else if (data?.msg_actualizar_estudiantes) {
+        mensaje = data.msg_actualizar_estudiantes;
+      } else if (data?.msg) {
+        mensaje = data.msg;
       }
+      console.error("Error al actualizar:", error);
+      Swal.fire("Error", mensaje, "error");
     }
   };
 
-  const OpenMaps=(url)=>{
+  const OpenMaps = (url) => {
     if (url) {
-    window.open(url, "_blank");
-  } else {
-    Swal.fire("Sin ubicación", "No hay dirección de Google Maps registrada.", "info");
-  }
-  }
-
+      window.open(url, "_blank");
+    } else {
+      Swal.fire(
+        "Sin ubicación",
+        "No hay dirección de Google Maps registrada.",
+        "info"
+      );
+    }
+  };
 
   return (
     <>
@@ -347,7 +363,9 @@ const ListadeEstudiantes = () => {
                             cursor: "pointer",
                           }}
                           className="cursor-pointer inline-block icon-action"
-                          onClick={() => OpenMaps(estudiantes.ubicacionDomicilio)}
+                          onClick={() =>
+                            OpenMaps(estudiantes.ubicacionDomicilio)
+                          }
                         />
                       ) : (
                         <>
@@ -389,7 +407,9 @@ const ListadeEstudiantes = () => {
                               cursor: "pointer",
                             }}
                             className="cursor-pointer inline-block icon-action"
-                            onClick={() => OpenMaps(estudiantes.ubicacionDomicilio)}
+                            onClick={() =>
+                              OpenMaps(estudiantes.ubicacionDomicilio)
+                            }
                           />
                         </>
                       )}
@@ -410,53 +430,6 @@ const ListadeEstudiantes = () => {
         <Modal.Body>
           {/* Asegúrate de que el formulario envuelve correctamente los elementos */}
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-2">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control
-                type="text"
-                name="nombre"
-                value={formUpdate.nombre}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Apellido</Form.Label>
-              <Form.Control
-                type="text"
-                name="apellido"
-                value={formUpdate.apellido}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-2">
-              <Form.Label>Genero</Form.Label>
-              <Form.Select
-                as="select"
-                name="genero"
-                value={formUpdate.genero}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione un género</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-                <option value="Prefiero no decirlo">Prefiero no decirlo</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Cedula</Form.Label>
-              <Form.Control
-                type="text"
-                name="cedula"
-                value={formUpdate.cedula}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
             <Form.Group className="mb-2">
               <Form.Label>Nivel Escolar</Form.Label>
               <Form.Select
@@ -507,16 +480,17 @@ const ListadeEstudiantes = () => {
             </Form.Group>
 
             <Form.Group className="mb-2">
-              <Form.Label>Formato de Recorrido</Form.Label>
+              <Form.Label>Turno de Recorrido</Form.Label>
               <Form.Select
-                name="recoCompletoOMedio"
-                value={formUpdate.recoCompletoOMedio}
+                name="turno"
+                value={formUpdate.turno}
                 onChange={handleChange}
                 required
               >
                 <option value="">Seleccione un Formato</option>
+                <option value="Mañana">Mañana</option>
+                <option value="Tarde">Tarde</option>
                 <option value="Completo">Completo</option>
-                <option value="Medio">Medio</option>
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-2">

@@ -40,7 +40,11 @@ const AuthProvider = ({ children }) => {
         const respuesta = await axios.get(url, options);
         if (respuesta.data) {
           if (respuesta.data.administrador) {
-            setAuth({ ...respuesta.data.administrador, rol: SelecctRol, esConductor: respuesta.data.esConductor });
+            setAuth({
+              ...respuesta.data.administrador,
+              rol: SelecctRol,
+              esConductor: respuesta.data.esConductor,
+            });
           } else if (respuesta.data.conductor) {
             setAuth({ ...respuesta.data.conductor, rol: SelecctRol });
           }
@@ -108,11 +112,15 @@ const AuthProvider = ({ children }) => {
           },
         };
         const respuesta = await axios.patch(url, datos, options);
-        return { respuesta: respuesta.data.msg, tipo: true };
+        return respuesta.data;
       }
     } catch (error) {
       console.log(error);
-      return { respuesta: error.response.data.msg, tipo: false };
+      // Retorna el error tal como lo envía el backend
+      if (error.response && error.response.data) {
+        return error.response.data;
+      }
+      return { msg_actualizacion_contrasenia: "Ocurrió un error inesperado" };
     }
   };
 
