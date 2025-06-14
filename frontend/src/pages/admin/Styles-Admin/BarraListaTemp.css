@@ -1,0 +1,8 @@
+/* Puedes poner esto en tu archivo App.css o similar */
+.icon-action {
+  transition: transform 0.2s;
+}
+
+.icon-action:hover {
+  transform: scale(1.2);
+}

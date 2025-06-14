@@ -7,6 +7,7 @@ import Maps from "../../../assets/Maps.png";
 import Swal from "sweetalert2";
 import AuthContext from "../../../context/AuthProvider";
 import axios from "axios";
+import '../Styles-Drivers/ListadeEstudiantes.css'
 
 const ListadeEstudiantes = () => {
   const {auth}=useContext(AuthContext)
@@ -345,7 +346,7 @@ const ListadeEstudiantes = () => {
                             marginRight: "7px",
                             cursor: "pointer",
                           }}
-                          className="cursor-pointer inline-block"
+                          className="cursor-pointer inline-block icon-action"
                           onClick={() => OpenMaps(estudiantes.ubicacionDomicilio)}
                         />
                       ) : (
@@ -359,7 +360,7 @@ const ListadeEstudiantes = () => {
                               marginRight: "7px",
                               cursor: "pointer",
                             }}
-                            className="cursor-pointer inline-block"
+                            className="cursor-pointer inline-block icon-action"
                             onClick={() => handleShow(estudiantes)}
                           />
 
@@ -372,7 +373,7 @@ const ListadeEstudiantes = () => {
                               marginRight: "7px",
                               cursor: "pointer",
                             }}
-                            className="cursor-pointer inline-block"
+                            className="cursor-pointer inline-block icon-action"
                             onClick={() => {
                               handleDelete(estudiantes._id);
                             }}
@@ -387,7 +388,7 @@ const ListadeEstudiantes = () => {
                               marginRight: "7px",
                               cursor: "pointer",
                             }}
-                            className="cursor-pointer inline-block"
+                            className="cursor-pointer inline-block icon-action"
                             onClick={() => OpenMaps(estudiantes.ubicacionDomicilio)}
                           />
                         </>

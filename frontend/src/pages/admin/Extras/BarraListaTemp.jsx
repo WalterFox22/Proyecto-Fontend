@@ -5,6 +5,7 @@ import Mensaje from "../../../componets/Alertas/Mensaje";
 import Delete from "../../../assets/borrar1.png";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import '../Styles-Admin/BarraListaTemp.css'
 
 const BarraListaTemp = () => {
   const [conductores, setConductores] = useState([]);
@@ -168,7 +169,7 @@ const BarraListaTemp = () => {
                           marginRight: "7px",
                           cursor: "pointer",
                         }}
-                        className="cursor-pointer inline-block"
+                        className="cursor-pointer inline-block icon-action"
                         onClick={() => {
                           handleDelete(conductor._id);
                         }}

@@ -10,6 +10,7 @@ import axios from "axios";
 import Mensaje from "./Alertas/Mensaje";
 import { toast, ToastContainer } from "react-toastify";
 import AuthContext from "../context/AuthProvider";
+import '../pages/admin/Styles-Admin/BarraListar.css'
 
 const BarraListar = () => {
   const{ auth } =useContext(AuthContext)
@@ -459,7 +460,7 @@ const BarraListar = () => {
                           marginRight: "7px",
                           cursor: "pointer",
                         }}
-                        className="cursor-pointer inline-block"
+                        className="cursor-pointer inline-block icon-action"
                         onClick={() => {
                           handleOpenModal(conductor);
                         }}
@@ -489,7 +490,7 @@ const BarraListar = () => {
                           marginRight: "7px",
                           cursor: "pointer",
                         }}
-                        className="cursor-pointer inline-block"
+                        className="cursor-pointer inline-block icon-action"
                         onClick={() => {
                           handleAddAdmin(conductor._id);
                         }}
@@ -503,7 +504,7 @@ const BarraListar = () => {
                           marginRight: "7px",
                           cursor: "pointer",
                         }}
-                        className="cursor-pointer inline-block"
+                        className="cursor-pointer inline-block icon-action"
                         onClick={() =>
                           navigate(
                             `/dashboard/listar/reemplazo/disponibles?idPrincipal=${conductor._id}`
