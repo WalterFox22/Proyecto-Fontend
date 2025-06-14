@@ -276,10 +276,19 @@ const Perfil = () => {
                     <strong>Apellido:</strong> {auth.apellido}
                   </p>
                   <p>
+                    <strong>Cédula:</strong> {auth.cedula}
+                  </p>
+                  <p>
                     <strong>Teléfono:</strong> {auth.telefono}
                   </p>
                   <p>
                     <strong>Email:</strong> {auth.email}
+                  </p>
+                  <p>
+                    <strong>Cooperativa:</strong> {auth.cooperativa}
+                  </p>
+                  <p>
+                    <strong>Placa del Automóvil:</strong> {auth.placaAutomovil}
                   </p>
                   <p>
                     <strong>Institución:</strong> {auth.institucion}

@@ -245,13 +245,16 @@ const PerfilConductor = () => {
                   <strong>Teléfono:</strong> {auth.telefono}
                 </p>
                 <p>
+                  <strong>Cédula:</strong> {auth.cedula}
+                </p>
+                <p>
                   <strong>Email:</strong> {auth.email}
                 </p>
                 <p>
-                  <strong>Institución:</strong> {auth.institucion}
+                  <strong>Cooperativa:</strong> {auth.cooperativa}
                 </p>
                 <p>
-                  <strong>Cooperativa:</strong> {auth.cooperativa}
+                  <strong>Placa del Automóvil:</strong> {auth.placaAutomovil}
                 </p>
                 <p>
                   <strong>Sector de su ruta:</strong> {auth.sectoresRuta}
@@ -261,7 +264,10 @@ const PerfilConductor = () => {
                 </p>
                 <p>
                   <strong>N° de estudiantes a cargo:</strong>{" "}
-                  {auth.estudiantesRegistrados?.length}
+                  {auth.numeroEstudiantes}
+                </p>
+                <p>
+                  <strong>Institución:</strong> {auth.institucion}
                 </p>
               </div>
             </div>
