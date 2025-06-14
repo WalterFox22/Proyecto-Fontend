@@ -1,6 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
-import {Link,Navigate,Outlet,useLocation,useNavigate,} from "react-router-dom";
-import {Container,Row,Col,Navbar,Nav,Image,Button,} from "react-bootstrap";
+import {
+  Link,
+  Navigate,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  Navbar,
+  Nav,
+  Image,
+  Button,
+} from "react-bootstrap";
 import AuthContext from "../context/AuthProvider";
 import LogoAdmin from "../assets/Admin.png";
 import Loading from "../componets/Loading/Loading";
@@ -21,7 +35,8 @@ const DashboardDriver = () => {
     }
   }, [autenticado, location.pathname]);
 
-  {/** 
+  {
+    /** 
   useEffect(() => {
     console.log("Loading:", loading);
     console.log("Authenticated:", autenticado);
@@ -46,7 +61,8 @@ const DashboardDriver = () => {
   if (!autenticado) {
     return <Navigate to="/login" />;
   }
-    */}
+    */
+  }
 
   return (
     <Container
@@ -110,18 +126,19 @@ const DashboardDriver = () => {
               Perfil del Usuario
             </Nav.Link>
 
-            <Nav.Link
-              as={Link}
-              to="/dashboardConductor/registrar-estudiantes"
-              className={
-                urlActual === "/dashboardConductor/registrar-estudiantes"
-                  ? "active text-light bg-secondary rounded p-2"
-                  : "text-light"
-              }
-            >
-              Registrar Estudiantes
-            </Nav.Link>
-
+            {auth.esReemplazo !== "Sí" && (
+              <Nav.Link
+                as={Link}
+                to="/dashboardConductor/registrar-estudiantes"
+                className={
+                  urlActual === "/dashboardConductor/registrar-estudiantes"
+                    ? "active text-light bg-secondary rounded p-2"
+                    : "text-light"
+                }
+              >
+                Registrar Estudiantes
+              </Nav.Link>
+            )}
             <Nav.Link
               as={Link}
               to="/dashboardConductor/lista-estudiantes"
@@ -150,7 +167,7 @@ const DashboardDriver = () => {
               className="me-3"
               style={{ color: "black", fontSize: "18px" }}
             >
-              Usuario - {auth?.nombre }
+              Usuario - {auth?.nombre}
             </Navbar.Text>
             <Image
               src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"
@@ -164,10 +181,9 @@ const DashboardDriver = () => {
               as={Link}
               to="/login"
               onClick={() => {
-                localStorage.removeItem("token") 
+                localStorage.removeItem("token");
                 localStorage.removeItem("lastVisitedPath");
-              } }
-              
+              }}
             >
               Salir
             </Button>

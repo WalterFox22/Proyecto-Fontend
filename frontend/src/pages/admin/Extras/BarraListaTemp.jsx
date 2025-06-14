@@ -36,10 +36,20 @@ const BarraListaTemp = () => {
         );
       }
     } catch (err) {
-      console.error(err);
-      setError(
-        "Ocurrió un error al cargar los conductores. Intente nuevamente."
-      );
+      // Si el error es 400 y el mensaje es "No se han encontrado conductores de reemplazo"
+      if (
+        err.response &&
+        err.response.status === 400 &&
+        err.response.data?.msg_listar_conductores_reemplazo
+      ) {
+        setConductores([]); // Vacía la tabla
+        setError(null); // No mostrar mensaje de error
+      } else {
+        console.error(err);
+        setError(
+          "Ocurrió un error al cargar los conductores. Intente nuevamente."
+        );
+      }
     }
   };
 
@@ -77,6 +87,10 @@ const BarraListaTemp = () => {
         };
 
         await axios.delete(url, { headers });
+        // Espera 500ms antes de recargar la lista
+        setTimeout(() => {
+          ListaTemporal();
+        }, 500);
         // Mostrar alerta de éxito
         await Swal.fire({
           title: "Eliminado",
@@ -84,8 +98,6 @@ const BarraListaTemp = () => {
           icon: "success",
           confirmButtonColor: "#3085d6",
         });
-        //Actualiza la tabla con los cambios realizados
-        ListaTemporal();
       }
     } catch (error) {
       console.log(error);

@@ -3,11 +3,13 @@ import Mensaje from "../../../componets/Alertas/Mensaje";
 import { Button, Card, Form, Modal, Table } from "react-bootstrap";
 import Delete from "../../../assets/borrar1.png";
 import Update from "../../../assets/actualizar.png";
+import Maps from "../../../assets/Maps.png";
 import Swal from "sweetalert2";
 import AuthContext from "../../../context/AuthProvider";
 import axios from "axios";
 
 const ListadeEstudiantes = () => {
+  const {auth}=useContext(AuthContext)
   const { cargarPerfil } = useContext(AuthContext);
   const [estudiantes, setEstudiantes] = useState([]);
   const [error, setError] = useState(null);
@@ -25,6 +27,7 @@ const ListadeEstudiantes = () => {
         },
       };
       const respuesta = await axios.get(url, options);
+      console.log(respuesta)
       setEstudiantes(respuesta.data.listaCompleta); // Cambiar a listaCompleta
     } catch (error) {
       console.log(error);
@@ -218,6 +221,15 @@ const ListadeEstudiantes = () => {
     }
   };
 
+  const OpenMaps=(url)=>{
+    if (url) {
+    window.open(url, "_blank");
+  } else {
+    Swal.fire("Sin ubicación", "No hay dirección de Google Maps registrada.", "info");
+  }
+  }
+
+
   return (
     <>
       {/* Barra de búsqueda */}
@@ -295,11 +307,11 @@ const ListadeEstudiantes = () => {
                   <th>N°</th>
                   <th>Nombre</th>
                   <th>Apellido</th>
+                  <th>Cedula</th>
                   <th>Nivel Escolar</th>
                   <th>Paralelo</th>
-                  <th>Recorrido</th>
+                  <th>Turno</th>
                   <th>Institucion</th>
-                  <th>Cedula</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -313,43 +325,73 @@ const ListadeEstudiantes = () => {
                     <td>{index + 1}</td>
                     <td>{estudiantes.nombre}</td>
                     <td>{estudiantes.apellido}</td>
+                    <td>{estudiantes.cedula}</td>
                     <td>{estudiantes.nivelEscolar}</td>
                     <td>{estudiantes.paralelo}</td>
-                    <td>{estudiantes.recoCompletoOMedio}</td>
+                    <td>{estudiantes.turno}</td>
                     <td>{estudiantes.institucion}</td>
-                    <td>{estudiantes.cedula}</td>
 
                     <td
                       className="d-flex justify-content-center align-items-center"
                       style={{ minWidth: "150px" }}
                     >
-                      <img
-                        src={Update}
-                        alt="Update"
-                        style={{
-                          height: "20px",
-                          width: "20px",
-                          marginRight: "7px",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer inline-block"
-                        onClick={() => handleShow(estudiantes)}
-                      />
+                      {auth.esReemplazo === "Sí" ? (
+                        <img
+                          src={Maps}
+                          alt="Maps"
+                          style={{
+                            height: "30px",
+                            width: "30px",
+                            marginRight: "7px",
+                            cursor: "pointer",
+                          }}
+                          className="cursor-pointer inline-block"
+                          onClick={() => OpenMaps(estudiantes.ubicacionDomicilio)}
+                        />
+                      ) : (
+                        <>
+                          <img
+                            src={Update}
+                            alt="Update"
+                            style={{
+                              height: "30px",
+                              width: "30px",
+                              marginRight: "7px",
+                              cursor: "pointer",
+                            }}
+                            className="cursor-pointer inline-block"
+                            onClick={() => handleShow(estudiantes)}
+                          />
 
-                      <img
-                        src={Delete}
-                        alt="Delete"
-                        style={{
-                          height: "20px",
-                          width: "20px",
-                          marginRight: "7px",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer inline-block"
-                        onClick={() => {
-                          handleDelete(estudiantes._id);
-                        }}
-                      />
+                          <img
+                            src={Delete}
+                            alt="Delete"
+                            style={{
+                              height: "30px",
+                              width: "30px",
+                              marginRight: "7px",
+                              cursor: "pointer",
+                            }}
+                            className="cursor-pointer inline-block"
+                            onClick={() => {
+                              handleDelete(estudiantes._id);
+                            }}
+                          />
+
+                          <img
+                            src={Maps}
+                            alt="Maps"
+                            style={{
+                              height: "30px",
+                              width: "30px",
+                              marginRight: "7px",
+                              cursor: "pointer",
+                            }}
+                            className="cursor-pointer inline-block"
+                            onClick={() => OpenMaps(estudiantes.ubicacionDomicilio)}
+                          />
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
