@@ -105,7 +105,7 @@ const RecuperarContra = () => {
                   color: "black",
                 }} // Título "Welcome" en negro
               >
-                Recuperacion de Contraseña
+                Recuperación de Contraseña
               </h1>
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">

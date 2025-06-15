@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import {Form,Button,ProgressBar,Container,} from "react-bootstrap";
+import { Form, Button, ProgressBar, Container } from "react-bootstrap";
 import EstudientesContext from "../../../context/StudentsProvider";
 import { toast, ToastContainer } from "react-toastify";
 import AuthContext from "../../../context/AuthProvider";
@@ -25,10 +25,9 @@ const FormularioEstudiante = () => {
     });
   };
 
-  // Se establece los parametros para la logica del formulario multiple 
+  // Se establece los parametros para la logica del formulario multiple
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -120,7 +119,7 @@ const FormularioEstudiante = () => {
               </Form.Group>
 
               <Form.Group className="mb-2">
-                <Form.Label>Genero</Form.Label>
+                <Form.Label>Género</Form.Label>
                 <Form.Select
                   as="select"
                   name="genero"
@@ -137,7 +136,7 @@ const FormularioEstudiante = () => {
                 </Form.Select>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Cedula</Form.Label>
+                <Form.Label>Cédula</Form.Label>
                 <Form.Control
                   type="text"
                   name="cedula"
@@ -192,7 +191,7 @@ const FormularioEstudiante = () => {
                   </option>
                 </Form.Select>
               </Form.Group>
-              
+
               <Form.Group className="mb-2">
                 <Form.Label>Paralelo</Form.Label>
                 <Form.Select
@@ -229,21 +228,21 @@ const FormularioEstudiante = () => {
           {step === 3 && (
             <>
               <Form.Group className="mb-2">
-      <Form.Label>Horario de Recorrido</Form.Label>
-      <Form.Select
-        name="turno" // Cambiado de ManianaOTarde a turno
-        value={form.turno}
-        onChange={handleChange}
-        required
-      >
-        <option value="">Seleccione un turno</option>
-        <option value="Mañana">Mañana</option>
-        <option value="Tarde">Tarde</option>
-        <option value="Completo">Completo</option>
-      </Form.Select>
-    </Form.Group>
+                <Form.Label>Horario de Recorrido</Form.Label>
+                <Form.Select
+                  name="turno" // Cambiado de ManianaOTarde a turno
+                  value={form.turno}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Seleccione un turno</option>
+                  <option value="Mañana">Mañana</option>
+                  <option value="Tarde">Tarde</option>
+                  <option value="Completo">Completo</option>
+                </Form.Select>
+              </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Direccion del Domicilio</Form.Label>
+                <Form.Label>Dirección del Domicilio</Form.Label>
                 <Form.Control
                   type="url"
                   name="ubicacionDomicilio"

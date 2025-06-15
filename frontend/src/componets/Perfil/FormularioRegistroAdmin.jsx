@@ -158,7 +158,7 @@ const FormularioRegistroAdmin = () => {
               </Form.Group>
 
               <Form.Group className="mb-2">
-                <Form.Label>Genero</Form.Label>
+                <Form.Label>Género</Form.Label>
                 <Form.Select
                   as="select"
                   name="generoConductor"
@@ -175,7 +175,7 @@ const FormularioRegistroAdmin = () => {
                 </Form.Select>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Cedula</Form.Label>
+                <Form.Label>Cédula</Form.Label>
                 <Form.Control
                   type="text"
                   name="cedula"
@@ -209,7 +209,7 @@ const FormularioRegistroAdmin = () => {
               </Form.Group>
 
               <Form.Group className="mb-2">
-                <Form.Label>Placa del Automovil</Form.Label>
+                <Form.Label>Placa del Automóvil</Form.Label>
                 <Form.Control
                   type="text"
                   name="placaAutomovil"

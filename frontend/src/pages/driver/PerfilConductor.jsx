@@ -376,7 +376,7 @@ const PerfilConductor = () => {
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="placaAutomovil">
-                <Form.Label>Placa del Vehiculo</Form.Label>
+                <Form.Label>Placa del Vehículo</Form.Label>
                 <Form.Control
                   type="text"
                   name="placaAutomovil"
@@ -509,7 +509,7 @@ const PerfilConductor = () => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="passwordConfirm">
-                <Form.Label>Confirmar Nueva Contraseña</Form.Label>
+                <Form.Label>Confirmar nueva Contraseña</Form.Label>
                 <div className="position-relative">
                   <Form.Control
                     type={showPasswordConfirm ? "text" : "password"}

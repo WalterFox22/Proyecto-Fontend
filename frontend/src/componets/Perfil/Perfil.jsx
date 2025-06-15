@@ -537,7 +537,7 @@ const Perfil = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="passwordConfirm">
-                  <Form.Label>Confirmar Nueva Contraseña</Form.Label>
+                  <Form.Label>Confirmar nueva Contraseña</Form.Label>
                   <div className="position-relative">
                     <Form.Control
                       type={showPasswordConfirm ? "text" : "password"}

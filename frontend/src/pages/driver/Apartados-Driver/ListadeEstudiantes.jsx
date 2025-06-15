@@ -324,11 +324,11 @@ const ListadeEstudiantes = () => {
                   <th>N°</th>
                   <th>Nombre</th>
                   <th>Apellido</th>
-                  <th>Cedula</th>
+                  <th>Cédula</th>
                   <th>Nivel Escolar</th>
                   <th>Paralelo</th>
                   <th>Turno</th>
-                  <th>Institucion</th>
+                  <th>Institución</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
