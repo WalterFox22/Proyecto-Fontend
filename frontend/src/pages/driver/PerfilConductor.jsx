@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import AuthContext from "../../context/AuthProvider";
 import Mensaje from "../../componets/Alertas/Mensaje";
@@ -21,7 +21,7 @@ const PerfilConductor = () => {
         telefono: auth.telefono || "",
         placaAutomovil: auth.placaAutomovil || "",
         email: auth.email || "",
-        foto: auth.foto || "", // Nueva propiedad
+        fotografiaDelConductor: auth.fotografiaDelConductor || "", // Nueva propiedad
       });
       setPreview(auth.foto || ""); // Restablecer el preview de la imagen
     }
@@ -155,6 +155,20 @@ const PerfilConductor = () => {
   });
 
   const [preview, setPreview] = useState(auth.fotografiaDelConductor || ""); // Preview de la imagen
+
+  // Sincroniza los datos del perfil cada vez que se abre el modal
+  useEffect(() => {
+    if (modalType === "perfil") {
+      setFormPerfil({
+        telefono: auth.telefono || "",
+        placaAutomovil: auth.placaAutomovil || "",
+        email: auth.email || "",
+        fotografiaDelConductor: auth.fotografiaDelConductor || "",
+      });
+      setPreview(auth.fotografiaDelConductor || "");
+    }
+  }, [modalType, auth]);
+
 
   const handleChangePerfil = (e) => {
     setFormPerfil({
