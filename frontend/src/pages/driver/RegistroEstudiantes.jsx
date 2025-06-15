@@ -6,10 +6,10 @@ const RegistroEstudinates = () => {
     <Container fluid className="p-3">
       {/* Encabezado */}
       <div className="text-center mb-0">
-        <h1>Registro Conductor</h1>
+        <h1>Registro de Estudiantes</h1>
         <hr />
         <p className="mb-1"> {/* Agregado mb-3 para ajustar el espacio */}
-          Este módulo te permite visualizar y actualizar al conductor.</p>
+          Este módulo te permite registrar un nuevo estudiante.</p>
       </div>
 
       {/* Contenido principal */}

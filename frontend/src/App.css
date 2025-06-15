@@ -179,7 +179,7 @@
 
 /* Estilo para el texto de la opción predeterminada "Seleccionar rol" */
 #login-role-select option:first-child {
-  color: rgba(255, 255, 255, 0.6); /* Color blanco con opacidad para el texto por defecto */
+  color: rgb(0, 0, 0); /* Color blanco con opacidad para el texto por defecto */
 }
 
 /* Estilo para las opciones seleccionadas */

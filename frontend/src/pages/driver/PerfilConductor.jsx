@@ -151,10 +151,10 @@ const PerfilConductor = () => {
     telefono: auth.telefono || "",
     placaAutomovil: auth.placaAutomovil || "",
     email: auth.email || "",
-    foto: auth.foto || "", // Nueva propiedad
+    fotografiaDelConductor: auth.fotografiaDelConductor || "", // Nueva propiedad
   });
 
-  const [preview, setPreview] = useState(auth.foto || ""); // Preview de la imagen
+  const [preview, setPreview] = useState(auth.fotografiaDelConductor || ""); // Preview de la imagen
 
   const handleChangePerfil = (e) => {
     setFormPerfil({
@@ -166,7 +166,7 @@ const PerfilConductor = () => {
   const handleSubmitPerfil = async (e) => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
-    if (Object.values(formPerfil).includes("") || !formPerfil.foto) {
+    if (Object.values(formPerfil).includes("") || !formPerfil.fotografiaDelConductor) {
       toast.error("Todos los campos deben ser llenados, incluida la foto", {
         position: "top-right",
         autoClose: 3000,
@@ -178,7 +178,7 @@ const PerfilConductor = () => {
     formData.append("placaAutomovil", formPerfil.placaAutomovil);
     formData.append("telefono", formPerfil.telefono);
     formData.append("email", formPerfil.email);
-    formData.append("fotografiaDelConductor", formPerfil.foto); // Agregar la imagen
+    formData.append("fotografiaDelConductor", formPerfil.fotografiaDelConductor); // Agregar la imagen
 
     try {
       const token = localStorage.getItem("token");
@@ -218,7 +218,7 @@ const PerfilConductor = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result); // Muestra la imagen en el preview
-        setFormPerfil({ ...formPerfil, foto: file }); // Guarda el archivo en el estado
+        setFormPerfil({ ...formPerfil, fotografiaDelConductor: file }); // Guarda el archivo en el estado
       };
       reader.readAsDataURL(file);
     }

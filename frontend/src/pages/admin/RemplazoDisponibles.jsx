@@ -146,6 +146,14 @@ const RemplazoDisponible = () => {
   return (
     <>
       <ToastContainer />
+      {/* Encabezado */}
+      <div className="text-center mb-0">
+        <h1>Lista de Conductores Reemplazo</h1>
+        <hr />
+        <p className="mb-1">
+          Este módulo te permite seleccionar un conductor para realizar un reemplazo.
+        </p>
+      </div>
       {error && (
         <Mensaje tipo={false} className="text-danger">
           {error}
