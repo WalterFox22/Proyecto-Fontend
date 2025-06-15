@@ -38,6 +38,83 @@ const ListaReportes = () => {
   const [busquedaRuta, setBusquedaRuta] = useState("");
   const [loadingDetalle, setLoadingDetalle] = useState(false);
 
+  // Configuración de columnas por tipo de reporte
+  const columnasPorReporte = {
+    "Reemplazo temporal": [
+      { key: "fecha", label: "Fecha" },
+      { key: "accion", label: "Acción" },
+      { key: "tipoReemplazo", label: "Tipo Reemplazo" },
+      { key: "apellidoConductor", label: "Apellido Conductor" },
+      { key: "nombreConductor", label: "Nombre Conductor" },
+      { key: "apellidoConductorReemplazo", label: "Apellido Reemplazo" },
+      { key: "nombreConductorReemplazo", label: "Nombre Reemplazo" },
+      { key: "rutaHaCubrir", label: "Ruta a Cubrir" },
+      { key: "numeroDeEstudiantesAsignados", label: "N° Estudiantes" },
+    ],
+    "Reemplazo permanente": [
+      { key: "fecha", label: "Fecha" },
+      { key: "accion", label: "Acción" },
+      { key: "tipoReemplazo", label: "Tipo Reemplazo" },
+      { key: "apellidoConductor", label: "Apellido Conductor" },
+      { key: "nombreConductor", label: "Nombre Conductor" },
+      { key: "apellidoConductorReemplazo", label: "Apellido Reemplazo" },
+      { key: "nombreConductorReemplazo", label: "Nombre Reemplazo" },
+      { key: "rutaHaCubrir", label: "Ruta a Cubrir" },
+      { key: "numeroDeEstudiantesAsignados", label: "N° Estudiantes" },
+    ],
+    "Activación de conductores originales": [
+      { key: "fecha", label: "Fecha" },
+      { key: "accion", label: "Acción" },
+      { key: "apellidoConductor", label: "Apellido Conductor" },
+      { key: "nombreConductor", label: "Nombre Conductor" },
+      { key: "apellidoConductorReemplazo", label: "Apellido Reemplazo" },
+      { key: "nombreConductorReemplazo", label: "Nombre Reemplazo" },
+      { key: "numeroDeEstudiantesAsignados", label: "N° Estudiantes" },
+    ],
+    "Reemplazo Activos": [
+      // Conductor original
+      { key: "apellido", label: "Apellido" },
+      { key: "nombre", label: "Nombre" },
+      { key: "cooperativa", label: "Cooperativa" },
+      { key: "institucion", label: "Institución" },
+      { key: "placaAutomovil", label: "Placa Automóvil" },
+      { key: "rutaAsignada", label: "Ruta Asignada" },
+      { key: "sectoresRuta", label: "Sectores Ruta" },
+      { key: "numeroEstudiantes", label: "N° Estudiantes" },
+      // Reemplazo
+      { key: "reemplazoApellido", label: "Apellido Reemplazo" },
+      { key: "reemplazoNombre", label: "Nombre Reemplazo" },
+      { key: "reemplazoPlaca", label: "Placa Reemplazo" },
+    ],
+    "Listado de estudiantes de un conductor": [
+      { key: "apellido", label: "Apellido" },
+      { key: "nombre", label: "Nombre" },
+      { key: "cedula", label: "Cédula" },
+      { key: "institucion", label: "Institución" },
+      { key: "nivelEscolar", label: "Nivel Escolar" },
+      { key: "paralelo", label: "Paralelo" },
+      { key: "ruta", label: "Ruta" },
+      { key: "turno", label: "Turno" },
+    ],
+  };
+
+  // Función para mapear la data de Reemplazo Activos a columnas planas
+  const mapReemplazoActivos = (item) => ({
+    apellido: item.conductorOriginal?.apellido || "",
+    nombre: item.conductorOriginal?.nombre || "",
+    cooperativa: item.conductorOriginal?.cooperativa || "",
+    institucion: item.conductorOriginal?.institucion || "",
+    placaAutomovil: item.conductorOriginal?.placaAutomovil || "",
+    rutaAsignada: item.conductorOriginal?.rutaAsignada || "",
+    sectoresRuta: Array.isArray(item.conductorOriginal?.sectoresRuta)
+      ? item.conductorOriginal.sectoresRuta.join(", ")
+      : item.conductorOriginal?.sectoresRuta || "",
+    numeroEstudiantes: item.conductorOriginal?.numeroEstudiantes || "",
+    reemplazoApellido: item.reemplazo?.apellido || "",
+    reemplazoNombre: item.reemplazo?.nombre || "",
+    reemplazoPlaca: item.reemplazo?.placaAutomovil || "",
+  });
+
   const ReporteTablas = async () => {
     setLoadingDetalle(true);
     setDetalle([]);
@@ -64,6 +141,7 @@ const ListaReportes = () => {
       };
 
       const respuesta = await axios.post(url, body, options);
+      console.log("Data recibida para", opcion, respuesta.data);
       // Determinar qué propiedad contiene la data
       if (opcion === "Reemplazo temporal")
         setDetalle(respuesta.data.infoReemplazosTemporales || []);
@@ -160,9 +238,6 @@ const ListaReportes = () => {
     : null;
 
   return (
-    // Add 'position-relative' to the container if your dashboard is absolutely/fixed positioned
-    // This makes sure the content respects the available space.
-    // Also, added 'overflow-hidden' to prevent horizontal scroll from this component.
     <Container fluid className="py-3 px-0 overflow-hidden">
       <Row className="mb-2 justify-content-center">
         <Col xs={12} md={10} lg={8} xl={7}>
@@ -247,8 +322,6 @@ const ListaReportes = () => {
                   placeholder="Ejemplo: 11"
                   value={busquedaRuta}
                   onChange={(e) => setBusquedaRuta(e.target.value)}
-                  // Removed fixed width styles, letting Bootstrap handle responsiveness more.
-                  // Added 'flex-grow-1' to allow it to take available space within flex container.
                   className="flex-grow-1"
                   style={{ maxWidth: "200px" }} // Keep a max-width
                 />
@@ -264,7 +337,6 @@ const ListaReportes = () => {
                   style={{
                     width: "auto",
                     minWidth: 150,
-                    // display: "inline-block", // This is usually handled by Bootstrap's flex or block display
                   }}
                 >
                   {loadingDetalle ? "Cargando..." : "Generar Reporte"}
@@ -281,18 +353,13 @@ const ListaReportes = () => {
           {detalle.length > 0 && (
             <Card className="shadow-lg rounded-lg border-0 mt-2">
               <Card.Body>
-                {/* The 'table-responsive' class provided by Bootstrap is the key
-                    to prevent horizontal scroll on tables. It creates a scrollbar
-                    only for the table when it overflows. */}
                 <div className="table-responsive">
-                  {opcion === "Listado de estudiantes de un conductor" ? (
+                  {/* Listado de estudiantes */}
+                  {opcion === "Listado de estudiantes de un conductor" && (
                     <Table
                       striped
                       bordered
                       hover
-                      // responsive="sm" // If you use 'responsive' without a breakpoint, it applies to all breakpoints.
-                      // 'responsive' alone is generally sufficient for most cases to add scrollbars when needed.
-                      // If you want it to be responsive starting from a specific breakpoint, e.g., 'sm', then use 'responsive="sm"'.
                       className="table-sm text-center"
                     >
                       <thead>
@@ -302,38 +369,32 @@ const ListaReportes = () => {
                             color: "#ffffff",
                           }}
                         >
-                          <th>Nombre</th>
-                          <th>Apellido</th>
-                          <th>Nivel Escolar</th>
-                          <th>Paralelo</th>
-                          <th>Turno</th>
-                          <th>Cédula</th>
+                          {columnasPorReporte[opcion].map((col) => (
+                            <th key={col.key}>{col.label}</th>
+                          ))}
                         </tr>
                       </thead>
                       <tbody>
                         {detalle.map((est) => (
-                          <tr
-                            style={{ backgroundColor: "#f8f9fa" }}
-                            key={est._id}
-                          >
-                            <td>{est.nombre}</td>
-                            <td>{est.apellido}</td>
-                            <td>{est.nivelEscolar}</td>
-                            <td>{est.paralelo}</td>
-                            <td>{est.turno}</td>
-                            <td>{est.cedula}</td>
+                          <tr key={est._id}>
+                            {columnasPorReporte[opcion].map((col) => (
+                              <td key={col.key}>{est[col.key]}</td>
+                            ))}
                           </tr>
                         ))}
                       </tbody>
                     </Table>
-                  ) : (
+                  )}
+
+                  {/* Reemplazo temporal, permanente, activación */}
+                  {(opcion === "Reemplazo temporal" ||
+                    opcion === "Reemplazo permanente" ||
+                    opcion === "Activación de conductores originales") && (
                     <Table
                       striped
                       bordered
                       hover
-                      responsive // This is crucial for horizontal scrolling of tables
                       className="table-sm text-center"
-                      // Removed `minWidth` from here, let `responsive` handle it.
                     >
                       <thead>
                         <tr
@@ -342,35 +403,54 @@ const ListaReportes = () => {
                             color: "#ffffff",
                           }}
                         >
-                          <th>Id</th>
-                          <th>Nombre</th>
-                          <th>Apellido</th>
-                          <th>Acción</th>
-                          <th>Nombre Remplazo</th>
-                          <th>Apellido Remplazo</th>
-                          <th>N° estudiantes</th>
-                          <th>Fecha</th>
-                          {/* Agrega o quita columnas según tu necesidad */}
+                          {columnasPorReporte[opcion].map((col) => (
+                            <th key={col.key}>{col.label}</th>
+                          ))}
                         </tr>
                       </thead>
                       <tbody>
                         {detalle.map((item, idx) => (
                           <tr key={item._id || idx}>
-                            {/* It's generally better to explicitly map each column to its respective data
-                                rather than Object.values(item).map, as the order of keys in an object
-                                is not guaranteed unless using ES2015+ Map or specific ordering.
-                                For now, I'll keep your existing logic but it's a point to consider
-                                for robustness.
-                            */}
-                            {Object.values(item).map((val, i) => (
-                              <td key={i}>
-                                {typeof val === "object"
-                                  ? JSON.stringify(val)
-                                  : val}
-                              </td>
+                            {columnasPorReporte[opcion].map((col) => (
+                              <td key={col.key}>{item[col.key]}</td>
                             ))}
                           </tr>
                         ))}
+                      </tbody>
+                    </Table>
+                  )}
+
+                  {/* Reemplazo Activos: tabla combinada */}
+                  {opcion === "Reemplazo Activos" && detalle.length > 0 && (
+                    <Table
+                      striped
+                      bordered
+                      hover
+                      className="table-sm text-center"
+                    >
+                      <thead>
+                        <tr
+                          style={{
+                            backgroundColor: "#1f2833",
+                            color: "#ffffff",
+                          }}
+                        >
+                          {columnasPorReporte[opcion].map((col) => (
+                            <th key={col.key}>{col.label}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {detalle.map((item, idx) => {
+                          const flat = mapReemplazoActivos(item);
+                          return (
+                            <tr key={idx}>
+                              {columnasPorReporte[opcion].map((col) => (
+                                <td key={col.key}>{flat[col.key]}</td>
+                              ))}
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </Table>
                   )}
