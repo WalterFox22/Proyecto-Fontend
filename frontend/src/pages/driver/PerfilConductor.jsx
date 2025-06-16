@@ -19,11 +19,10 @@ const PerfilConductor = () => {
     if (modalType === "perfil") {
       setFormPerfil({
         telefono: auth.telefono || "",
-        placaAutomovil: auth.placaAutomovil || "",
         email: auth.email || "",
         fotografiaDelConductor: auth.fotografiaDelConductor || "", // Nueva propiedad
       });
-      setPreview(auth.foto || ""); // Restablecer el preview de la imagen
+      setPreview(auth.fotografiaDelConductor || ""); // Restablecer el preview de la imagen
     }
   };
 
@@ -149,7 +148,6 @@ const PerfilConductor = () => {
   // LOGICA PARA ACTUALIZAR PERFIL
   const [formPerfil, setFormPerfil] = useState({
     telefono: auth.telefono || "",
-    placaAutomovil: auth.placaAutomovil || "",
     email: auth.email || "",
     fotografiaDelConductor: auth.fotografiaDelConductor || "", // Nueva propiedad
   });
@@ -161,14 +159,12 @@ const PerfilConductor = () => {
     if (modalType === "perfil") {
       setFormPerfil({
         telefono: auth.telefono || "",
-        placaAutomovil: auth.placaAutomovil || "",
         email: auth.email || "",
         fotografiaDelConductor: auth.fotografiaDelConductor || "",
       });
       setPreview(auth.fotografiaDelConductor || "");
     }
   }, [modalType, auth]);
-
 
   const handleChangePerfil = (e) => {
     setFormPerfil({
@@ -180,7 +176,10 @@ const PerfilConductor = () => {
   const handleSubmitPerfil = async (e) => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
-    if (Object.values(formPerfil).includes("") || !formPerfil.fotografiaDelConductor) {
+    if (
+      Object.values(formPerfil).includes("") ||
+      !formPerfil.fotografiaDelConductor
+    ) {
       toast.error("Todos los campos deben ser llenados, incluida la foto", {
         position: "top-right",
         autoClose: 3000,
@@ -189,10 +188,12 @@ const PerfilConductor = () => {
     }
 
     const formData = new FormData();
-    formData.append("placaAutomovil", formPerfil.placaAutomovil);
     formData.append("telefono", formPerfil.telefono);
     formData.append("email", formPerfil.email);
-    formData.append("fotografiaDelConductor", formPerfil.fotografiaDelConductor); // Agregar la imagen
+    formData.append(
+      "fotografiaDelConductor",
+      formPerfil.fotografiaDelConductor
+    ); // Agregar la imagen
 
     try {
       const token = localStorage.getItem("token");
@@ -373,16 +374,6 @@ const PerfilConductor = () => {
                   name="email"
                   value={formPerfil.email}
                   onChange={handleChangePerfil}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="placaAutomovil">
-                <Form.Label>Placa del Vehículo</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="placaAutomovil"
-                  value={formPerfil.placaAutomovil}
-                  onChange={handleChangePerfil}
-                  placeholder="Ingrese las placas. Ejemplo: PHT-8888 "
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="telefono">

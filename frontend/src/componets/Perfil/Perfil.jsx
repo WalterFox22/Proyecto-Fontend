@@ -153,6 +153,8 @@ const Perfil = () => {
     placaAutomovil: auth.placaAutomovil || "",
     email: auth.email || "",
     foto: auth.fotografiaDelConductor || "",
+    nombre: auth.nombre || "",
+    apellido: auth.apellido || "",
   });
 
   const [preview, setPreview] = useState(auth.fotografiaDelConductor || ""); // Preview de la imagen
@@ -167,6 +169,8 @@ const Perfil = () => {
         placaAutomovil: auth.placaAutomovil || "",
         email: auth.email || "",
         foto: auth.fotografiaDelConductor || "",
+        nombre: auth.nombre || "",
+        apellido: auth.apellido || "",
       });
       setPreview(auth.fotografiaDelConductor || "");
     }
@@ -196,6 +200,8 @@ const Perfil = () => {
     formData.append("cooperativa", formPerfil.cooperativa);
     formData.append("placaAutomovil", formPerfil.placaAutomovil);
     formData.append("email", formPerfil.email);
+    formData.append("nombre", formPerfil.nombre);
+    formData.append("apellido", formPerfil.apellido);
     formData.append("fotografiaDelConductor", formPerfil.foto);
 
     try {
@@ -387,6 +393,24 @@ const Perfil = () => {
             </Modal.Header>
             <Modal.Body>
               <Form onSubmit={handleSubmitPerfil}>
+                <Form.Group className="mb-3" controlId="nombre">
+                  <Form.Label>Nombre</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="nombre"
+                    value={formPerfil.nombre}
+                    onChange={handleChangePerfil}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="apellido">
+                  <Form.Label>Apellido</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="apellido"
+                    value={formPerfil.apellido}
+                    onChange={handleChangePerfil}
+                  />
+                </Form.Group>
                 <Form.Group className="mb-3" controlId="email">
                   <Form.Label>Correo</Form.Label>
                   <Form.Control

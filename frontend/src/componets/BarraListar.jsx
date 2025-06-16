@@ -10,10 +10,10 @@ import axios from "axios";
 import Mensaje from "./Alertas/Mensaje";
 import { toast, ToastContainer } from "react-toastify";
 import AuthContext from "../context/AuthProvider";
-import '../pages/admin/Styles-Admin/BarraListar.css'
+import "../pages/admin/Styles-Admin/BarraListar.css";
 
 const BarraListar = () => {
-  const{ auth } =useContext(AuthContext)
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [conductores, setConductores] = useState([]);
   const [rutaAsignada, setRutaAsignada] = useState(""); // Ruta que se ingresa para búsqueda
@@ -188,11 +188,15 @@ const BarraListar = () => {
     listarConductores();
   }, []);
 
-  
   // LOGICA DE ACTUALIZAR CONDUCTOR
   const [formPerfil, setFormPerfil] = useState({
     rutaAsignada: "",
     sectoresRuta: "",
+    nombre: "",
+    apellido: "",
+    cooperativa: "",
+    cedula: "",
+    placaAutomovil: "",
   });
 
   // Abrir modal y cargar datos del conductor seleccionado
@@ -200,6 +204,11 @@ const BarraListar = () => {
     setFormPerfil({
       rutaAsignada: conductor.rutaAsignada || "",
       sectoresRuta: conductor.sectoresRuta || "",
+      nombre: conductor.nombre || "",
+      apellido: conductor.apellido || "",
+      cooperativa: conductor.cooperativa || "",
+      cedula: conductor.cedula || "",
+      placaAutomovil: conductor.placaAutomovil || "",
     });
     setConductorIdActualizar(conductor._id);
     setShowModal(true);
@@ -208,7 +217,15 @@ const BarraListar = () => {
   // Cerrar modal
   const handleCloseModal = () => {
     setShowModal(false);
-    setFormPerfil({ rutaAsignada: "", sectoresRuta: "" });
+    setFormPerfil({
+      rutaAsignada: "",
+      sectoresRuta: "",
+      nombre: "",
+      apellido: "",
+      cooperativa: "",
+      cedula: "",
+      placaAutomovil: "",
+    });
     setConductorIdActualizar(null);
   };
 
@@ -258,88 +275,93 @@ const BarraListar = () => {
   // ASIGNAR PRIVILEGIOS DE ADMINISTRADOR
   const handleAddAdmin = async (id) => {
     try {
-    let eliminacionAdminSaliente = undefined;
-    let confirmResult = null;
+      let eliminacionAdminSaliente = undefined;
+      let confirmResult = null;
 
-    if (auth.esConductor === "No") {
-      confirmResult = await Swal.fire({
-        title: "¿Estás seguro?",
-        text: "Vas a asignar los privilegios de Administrador al conductor seleccionado.\nEscoja una opción:",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, asignar privilegios",
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        input: "radio",
-        inputOptions: {
-          Sí: "Eliminar información del admin saliente",
-          No: "Mantener información del admin saliente",
-        },
-        inputValidator: (value) => {
-          if (!value) {
-            return "Debes seleccionar una opción";
-          }
-        },
-      });
-      eliminacionAdminSaliente = confirmResult.value;
-      if (!eliminacionAdminSaliente) {
-        // Si no seleccionó opción, no continuar
-        return;
+      if (auth.esConductor === "No") {
+        confirmResult = await Swal.fire({
+          title: "¿Estás seguro?",
+          text: "Vas a asignar los privilegios de Administrador al conductor seleccionado.\nEscoja una opción:",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, asignar privilegios",
+          cancelButtonText: "Cancelar",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          input: "radio",
+          inputOptions: {
+            Sí: "Eliminar información del admin saliente",
+            No: "Mantener información del admin saliente",
+          },
+          inputValidator: (value) => {
+            if (!value) {
+              return "Debes seleccionar una opción";
+            }
+          },
+        });
+        eliminacionAdminSaliente = confirmResult.value;
+        if (!eliminacionAdminSaliente) {
+          // Si no seleccionó opción, no continuar
+          return;
+        }
+      } else if (auth.esConductor === "Sí") {
+        confirmResult = await Swal.fire({
+          title: "¿Estás seguro?",
+          text: "Vas a asignar los privilegios de Administrador al conductor seleccionado.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, asignar privilegios",
+          cancelButtonText: "Cancelar",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+        });
       }
-    } else if(auth.esConductor ==="Sí") {
-      confirmResult = await Swal.fire({
-        title: "¿Estás seguro?",
-        text: "Vas a asignar los privilegios de Administrador al conductor seleccionado.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, asignar privilegios",
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-      });
-    }
 
-    if (confirmResult.isConfirmed) {
-      const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/asignar/privilegios/admin/${id}`;
-      const options = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      // Siempre enviar un objeto, aunque esté vacío
-      const body = eliminacionAdminSaliente !== undefined ? { eliminacionAdminSaliente } : {};
+      if (confirmResult.isConfirmed) {
+        const token = localStorage.getItem("token");
+        const url = `${
+          import.meta.env.VITE_URL_BACKEND
+        }/asignar/privilegios/admin/${id}`;
+        const options = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        // Siempre enviar un objeto, aunque esté vacío
+        const body =
+          eliminacionAdminSaliente !== undefined
+            ? { eliminacionAdminSaliente }
+            : {};
+
+        // Log para depuración
+        console.log("Enviando PATCH a:", url);
+        console.log("Body:", body);
+
+        const respuesta = await axios.patch(url, body, options);
+
+        Swal.fire({
+          title: "Éxito",
+          text: respuesta.data.msg || "Privilegios asignados correctamente.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+        }).then(() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("rol");
+          navigate("/login");
+        });
+      }
+    } catch (error) {
+      // Mostrar mensaje exacto del backend si existe
+      const msg =
+        error?.response?.data?.msg_actualizacion_conductor ||
+        error?.response?.data?.msg ||
+        "Error al asignar privilegios de administrador.";
+      toast.error(msg);
 
       // Log para depuración
-      console.log("Enviando PATCH a:", url);
-      console.log("Body:", body);
-
-      const respuesta = await axios.patch(url, body, options);
-
-      Swal.fire({
-        title: "Éxito",
-        text: respuesta.data.msg || "Privilegios asignados correctamente.",
-        icon: "success",
-        confirmButtonColor: "#3085d6",
-      }).then(() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("rol");
-        navigate("/login");
-      });
+      console.error("Error al asignar admin:", error?.response?.data || error);
     }
-  } catch (error) {
-    // Mostrar mensaje exacto del backend si existe
-    const msg =
-      error?.response?.data?.msg_actualizacion_conductor ||
-      error?.response?.data?.msg ||
-      "Error al asignar privilegios de administrador.";
-    toast.error(msg);
-
-    // Log para depuración
-    console.error("Error al asignar admin:", error?.response?.data || error);
-  }
   };
 
   return (
@@ -524,10 +546,60 @@ const BarraListar = () => {
       {/* Modal solo para actualizar rutaAsignada y sectoresRuta */}
       <Modal show={showModal} onHide={handleCloseModal} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Actualizar Ruta y Sector</Modal.Title>
+          <Modal.Title>Actualizar Información</Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleUpdate}>
           <Modal.Body>
+            <Form.Group className="mb-3" controlId="nombre">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                name="nombre"
+                value={formPerfil.nombre}
+                onChange={handleChangePerfil}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="apellido">
+              <Form.Label>Apellido</Form.Label>
+              <Form.Control
+                type="text"
+                name="apellido"
+                value={formPerfil.apellido}
+                onChange={handleChangePerfil}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="cedula">
+              <Form.Label>Cédula</Form.Label>
+              <Form.Control
+                type="text"
+                name="cedula"
+                value={formPerfil.cedula}
+                onChange={handleChangePerfil}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="cooperativa">
+              <Form.Label>Cooperativa</Form.Label>
+              <Form.Control
+                type="text"
+                name="cooperativa"
+                value={formPerfil.cooperativa}
+                onChange={handleChangePerfil}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="placaAutomovil">
+              <Form.Label>Placa del Automóvil</Form.Label>
+              <Form.Control
+                type="text"
+                name="placaAutomovil"
+                value={formPerfil.placaAutomovil}
+                onChange={handleChangePerfil}
+                required
+              />
+            </Form.Group>
             <Form.Group className="mb-3" controlId="rutaAsignada">
               <Form.Label>Ruta de Transporte</Form.Label>
               <Form.Control
