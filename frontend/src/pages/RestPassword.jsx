@@ -9,16 +9,31 @@ import Button2 from "../Styles/Syles-Button/ButtonRestPasswordLogin";
 import "../Styles/RestPassword.css";
 import ErrorRestGift from "../assets/ErrorEmail_animation.webm";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const passwordRegex =
+  /^(?=(?:[^A-Za-z]*[A-Za-z]){3})(?=(?:[^0-9]*[0-9]){3})(?=(?:[A-Za-z0-9]*[^A-Za-z0-9]){3})[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{9,}$/;
+
+const validationSchema = Yup.object().shape({
+  passwordActual: Yup.string()
+    .matches(
+      passwordRegex,
+      "Debe tener 3 letras, 3 números y 3 caracteres especiales"
+    )
+    .required("La contraseña es obligatoria"),
+  passwordActualConfirm: Yup.string()
+    .oneOf([Yup.ref("passwordActual"), null], "Las contraseñas no coinciden")
+    .required("Confirma la contraseña"),
+});
+
 const ResetPassword = () => {
   const { token } = useParams();
   const [tokenValido, setTokenValido] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [passwordActual, setPasswordActual] = useState("");
-  const [passwordActualConfirm, setPasswordActualConfirm] = useState("");
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-
 
   useEffect(() => {
     const comprobarToken = async () => {
@@ -42,24 +57,14 @@ const ResetPassword = () => {
     comprobarToken();
   }, [token]);
 
-  // Envía la nueva contraseña
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!passwordActual || !passwordActualConfirm) {
-      toast.error("Debes llenar todos los campos");
-      return;
-    }
-    if (passwordActual !== passwordActualConfirm) {
-      toast.error("Las contraseñas no coinciden");
-      return;
-    }
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const url = `${
         import.meta.env.VITE_URL_BACKEND
       }/nueva/contrasenia/${token}`;
       const { data } = await axios.patch(url, {
-        passwordActual,
-        passwordActualConfirm,
+        passwordActual: values.passwordActual,
+        passwordActualConfirm: values.passwordActualConfirm,
       });
       toast.success(data.msg_recuperacion_contrasenia, {
         onClose: () => navigate("/login"),
@@ -70,9 +75,10 @@ const ResetPassword = () => {
         error.response?.data?.msg_recuperacion_contrasenia ||
           "Error al actualizar la contraseña"
       );
+    } finally {
+      setSubmitting(false);
     }
   };
-
 
   if (loading) return <Loading />;
 
@@ -84,45 +90,71 @@ const ResetPassword = () => {
           <div id="reset-password-box">
             <h2 id="reset-password-title">Restablecer Contraseña</h2>
             {tokenValido ? (
-              <form id="reset-password-form" onSubmit={handleSubmit}>
-                <div className="reset-input-container">
-                  <input
-                    id="reset-password-password"
-                    type={showPassword1 ? "text" : "password"}
-                    name="passwordActual"
-                    value={passwordActual}
-                    onChange={(e) => setPasswordActual(e.target.value)}
-                    required
-                    placeholder="Nueva Contraseña"
-                    className="reset-input-with-icon"
-                  />
-                  <span
-                    onClick={() => setShowPassword1(!showPassword1)}
-                    className="reset-eye-icon"
-                  >
-                    {showPassword1 ? <FaEye /> : <FaEyeSlash />}
-                  </span>
-                </div>
-                <div className="reset-input-container">
-                  <input
-                    id="reset-password-passwordConfirmar"
-                    type={showPassword2 ? "text" : "password"}
-                    name="passwordActualConfirm"
-                    value={passwordActualConfirm}
-                    onChange={(e) => setPasswordActualConfirm(e.target.value)}
-                    required
-                    placeholder="Confirmar Contraseña"
-                    className="reset-input-with-icon"
-                  />
-                  <span
-                    onClick={() => setShowPassword2(!showPassword2)}
-                    className="reset-eye-icon"
-                  >
-                    {showPassword2 ? <FaEye /> : <FaEyeSlash />}
-                  </span>
-                </div>
-                <Button1 />
-              </form>
+              <Formik
+                initialValues={{
+                  passwordActual: "",
+                  passwordActualConfirm: "",
+                }}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ isSubmitting }) => (
+                  <Form id="reset-password-form">
+                    <div className="reset-input-container">
+                      <Field
+                        id="reset-password-password"
+                        type={showPassword1 ? "text" : "password"}
+                        name="passwordActual"
+                        placeholder="Ej: Ab1#Cd2$Ef3@"
+                        className="reset-input-with-icon"
+                      />
+                      <span
+                        onClick={() => setShowPassword1(!showPassword1)}
+                        className="reset-eye-icon"
+                      >
+                        {showPassword1 ? <FaEye /> : <FaEyeSlash />}
+                      </span>
+                    </div>
+                    <ErrorMessage
+                      name="passwordActual"
+                      component="div"
+                      className="form-error"
+                    />
+                    <div
+                      style={{
+                        fontSize: "0.9em",
+                        color: "#bbb",
+                        marginBottom: 8,
+                      }}
+                    >
+                      Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
+                      <b>3 caracteres especiales</b> (ejemplo:{" "}
+                      <span style={{ color: "#4caf50" }}>Ab1#Cd2$Ef3@</span>)
+                    </div>
+                    <div className="reset-input-container">
+                      <Field
+                        id="reset-password-passwordConfirmar"
+                        type={showPassword2 ? "text" : "password"}
+                        name="passwordActualConfirm"
+                        placeholder="Confirmar Contraseña"
+                        className="reset-input-with-icon"
+                      />
+                      <span
+                        onClick={() => setShowPassword2(!showPassword2)}
+                        className="reset-eye-icon"
+                      >
+                        {showPassword2 ? <FaEye /> : <FaEyeSlash />}
+                      </span>
+                    </div>
+                    <ErrorMessage
+                      name="passwordActualConfirm"
+                      component="div"
+                      className="form-error"
+                    />
+                    <Button1 disabled={isSubmitting} />
+                  </Form>
+                )}
+              </Formik>
             ) : (
               <div id="reset-password-error-container">
                 <video
