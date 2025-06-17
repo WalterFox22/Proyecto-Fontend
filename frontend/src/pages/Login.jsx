@@ -21,21 +21,29 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false); // Estado local para la pantalla de carga
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]:
+        name === "password"
+          ? value.trimStart() // Elimina espacios al inicio mientras escribe
+          : value,
+    }));
   };
 
+  // Elimina espacios al inicio y final al enviar
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true); // Activa la pantalla de carga local
+    setIsSubmitting(true);
     try {
+      const cleanForm = {
+        ...form,
+        password: form.password.trim(), // Elimina espacios al inicio y final
+      };
       const url = `${import.meta.env.VITE_URL_BACKEND}/login`;
-      const respuesta = await axios.post(url, form);
+      const respuesta = await axios.post(url, cleanForm);
       console.log(respuesta);
       const { token, rol, redirigir, msg } = respuesta.data;
-
 
       localStorage.setItem("token", token);
       localStorage.setItem("rol", rol); // Guardar el rol en localStorage
@@ -63,12 +71,12 @@ const Login = () => {
           "Error desconocido";
 
         // Validar si el mensaje es "Debe cambiar su contraseña antes de continuar."
-      if (errorMessage === "Debe cambiar su contraseña antes de continuar.") {
-        console.log("Redirigiendo a FirstPassword..."); // Confirmar que entra aquí
-        toast.info(errorMessage, { position: "top-right", autoClose: 3000 });
-        navigate("/cambiar/contraseña/firt"); // Redirige a FirstPassword
-        return;
-      }
+        if (errorMessage === "Debe cambiar su contraseña antes de continuar.") {
+          console.log("Redirigiendo a FirstPassword..."); // Confirmar que entra aquí
+          toast.info(errorMessage, { position: "top-right", autoClose: 3000 });
+          navigate("/cambiar/contraseña/firt"); // Redirige a FirstPassword
+          return;
+        }
 
         toast.error(errorMessage, { position: "top-right", autoClose: 3000 });
       } else {
@@ -82,6 +90,9 @@ const Login = () => {
       setIsSubmitting(false); // Desactiva la pantalla de carga local
     }
   };
+
+  // Validación para habilitar/deshabilitar el botón
+  const isFormValid = form.role && form.email && form.password;
 
   return (
     <>
@@ -119,46 +130,53 @@ const Login = () => {
                 <div style={{ position: "relative" }}>
                   <input
                     id="login-password"
-                    type={showPassword ? "text" : "password"} // Alternar entre texto y password
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     value={form.password}
                     onChange={handleChange}
                     required
                     placeholder="Contraseña"
                     style={{
-                      paddingRight: "35px", // Espacio para el ícono
-                      width: "100%", // Asegura que el campo tenga el tamaño completo
+                      paddingRight: "35px",
+                      width: "100%",
                     }}
                   />
                   {/* Ícono de ojo */}
                   <span
-                    onClick={() => setShowPassword(!showPassword)} // Alternar visibilidad
+                    onClick={() => setShowPassword(!showPassword)}
                     style={{
                       position: "absolute",
-                      right: "10px", // Alinea el ícono a la derecha
+                      right: "10px",
                       top: "62%",
-                      transform: "translateY(-50%)", // Centra el ícono verticalmente
+                      transform: "translateY(-50%)",
                       cursor: "pointer",
                       fontSize: "20px",
-                      color: "white", // Color blanco para el ícono
+                      color: "white",
                     }}
                   >
                     {showPassword ? <FaEye /> : <FaEyeSlash />}{" "}
-                    {/* Alterna entre los íconos */}
                   </span>
                 </div>
 
-                
-                  <div id="login-options">
-                    <Link
-                      to="/recuperacion/contrasenia"
-                      id="login-forgot-password"
-                    >
-                      Olvidaste tu contraseña?
-                    </Link>
-                  </div>
-                
-                <button id="login-button" className="btn btn-success">
+                <div id="login-options">
+                  <Link
+                    to="/recuperacion/contrasenia"
+                    id="login-forgot-password"
+                  >
+                    Olvidaste tu contraseña?
+                  </Link>
+                </div>
+
+                <button
+                  id="login-button"
+                  className="btn btn-success"
+                  type="submit"
+                  disabled={!isFormValid}
+                  style={{
+                    opacity: isFormValid ? 1 : 0.6,
+                    cursor: isFormValid ? "pointer" : "not-allowed",
+                  }}
+                >
                   Ingresar
                 </button>
               </form>
