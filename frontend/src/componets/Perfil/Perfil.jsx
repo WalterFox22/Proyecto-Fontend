@@ -226,7 +226,10 @@ const Perfil = () => {
   const handleSubmitPerfil = async (e) => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
-    if (Object.values(formPerfil).includes("") || !formPerfil.fotografiaDelConductor) {
+    if (
+      Object.values(formPerfil).includes("") ||
+      !formPerfil.fotografiaDelConductor
+    ) {
       toast.error("Todos los campos deben ser llenados, incluida la foto", {
         position: "top-right",
         autoClose: 3000,
@@ -242,7 +245,10 @@ const Perfil = () => {
     formData.append("email", formPerfil.email);
     formData.append("nombre", formPerfil.nombre);
     formData.append("apellido", formPerfil.apellido);
-    formData.append("fotografiaDelConductor", formPerfil.fotografiaDelConductor);
+    formData.append(
+      "fotografiaDelConductor",
+      formPerfil.fotografiaDelConductor
+    );
 
     try {
       const token = localStorage.getItem("token");
@@ -466,7 +472,7 @@ const Perfil = () => {
       }
     `}
       </style>
-      
+
       {auth.rol.includes("conductor") ? (
         <PerfilConductor />
       ) : (
@@ -777,6 +783,9 @@ const Perfil = () => {
                       {showPasswordAnterior ? <FaEye /> : <FaEyeSlash />}
                     </span>
                   </div>
+                  <Form.Text className="text-muted">
+                    Ejemplo: Abr980+++
+                  </Form.Text>
                   <Form.Control.Feedback type="invalid">
                     {formikPassword.errors.passwordAnterior}
                   </Form.Control.Feedback>

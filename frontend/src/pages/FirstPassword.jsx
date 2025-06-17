@@ -130,17 +130,14 @@ const FirstPassword = () => {
                       component="div"
                       className="form-error"
                     />
-                    <div
-                      style={{
-                        fontSize: "0.9em",
-                        color: "#bbb",
-                        marginBottom: 8,
-                      }}
+                    <Form.Text
+                      className="text-muted"
+                      style={{ marginBottom: 8, display: "block" }}
                     >
                       Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
-                      <b>3 caracteres especiales</b> (ejemplo:{" "}
-                      <span style={{ color: "#fff" }}>Abe567+#$</span>)
-                    </div>
+                      <b>3 caracteres especiales</b>.<br />
+                      Ejemplo: <span style={{ color: "#000" }}>Abr980+++</span>
+                    </Form.Text>
 
                     <div className="input-container">
                       <Field
