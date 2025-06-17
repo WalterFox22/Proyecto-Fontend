@@ -139,7 +139,7 @@ const FirstPassword = () => {
                     >
                       Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
                       <b>3 caracteres especiales</b> (ejemplo:{" "}
-                      <span style={{ color: "#4caf50" }}>Abe567+#$</span>)
+                      <span style={{ color: "#fff" }}>Abe567+#$</span>)
                     </div>
 
                     <div className="input-container">

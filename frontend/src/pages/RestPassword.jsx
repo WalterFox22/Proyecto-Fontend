@@ -120,6 +120,21 @@ const ResetPassword = () => {
                       component="div"
                       className="form-error"
                     />
+                    <div
+                      style={{
+                        fontSize: "0.9em",
+                        color: "#111", // negro
+                        marginBottom: 8,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
+                      <b>3 caracteres especiales</b> (ejemplo:{" "}
+                      <span style={{ color: "#000", fontWeight: "bold" }}>
+                        Abe567+#$
+                      </span>
+                      )
+                    </div>
                     <div className="reset-input-container">
                       <Field
                         id="reset-password-passwordConfirmar"
