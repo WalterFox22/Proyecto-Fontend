@@ -8,6 +8,8 @@ import Swal from "sweetalert2";
 import AuthContext from "../../../context/AuthProvider";
 import axios from "axios";
 import "../Styles-Drivers/ListadeEstudiantes.css";
+import { Formik, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const ListadeEstudiantes = () => {
   const { auth } = useContext(AuthContext);
@@ -195,6 +197,29 @@ const ListadeEstudiantes = () => {
     setSelectedEstudianteId(estudiante._id); // Guardar el ID del estudiante seleccionado
     setShow(true); // Abrir el modal
   };
+
+  const googleMapsRegex =
+    /^(https?:\/\/)?(www\.)?(maps\.google\.com|goo\.gl|maps\.app\.goo\.gl)\/.+$/i;
+
+  const updateValidationSchema = Yup.object({
+    nivelEscolar: Yup.string().matches(
+      /^$|^(Nocional|Inicial 1|Inicial 2|Primero de básica|Segundo de básica|Tercero de básica|Cuarto de básica|Quinto de básica|Sexto de básica|Séptimo de básica|Octavo de básica|Noveno de básica|Décimo de básica|Primero de bachillerato|Segundo de bachillerato|Tercero de bachillerato)$/,
+      "Seleccione un nivel escolar válido"
+    ),
+    paralelo: Yup.string().matches(
+      /^$|^(A|B|C)$/,
+      "Seleccione un paralelo válido"
+    ),
+    turno: Yup.string().matches(
+      /^$|^(Mañana|Tarde|Completo)$/,
+      "Seleccione un turno válido"
+    ),
+    ubicacionDomicilio: Yup.string().test(
+      "is-google-maps-url",
+      "Debe ser una URL válida de Google Maps",
+      (value) => !value || googleMapsRegex.test(value)
+    ),
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -428,103 +453,149 @@ const ListadeEstudiantes = () => {
           <Modal.Title>Actualizar Estudiantes</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* Asegúrate de que el formulario envuelve correctamente los elementos */}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-2">
-              <Form.Label>Nivel Escolar</Form.Label>
-              <Form.Select
-                name="nivelEscolar"
-                value={formUpdate.nivelEscolar}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione un nivel escolar</option>
-                <option value="Nocional">Nocional</option>
-                <option value="Inicial 1">Inicial 1</option>
-                <option value="Inicial 2">Inicial 2</option>
-                <option value="Primero de básica">Primero de básica</option>
-                <option value="Segundo de básica">Segundo de básica</option>
-                <option value="Tercero de básica">Tercero de básica</option>
-                <option value="Cuarto de básica">Cuarto de básica</option>
-                <option value="Quinto de básica">Quinto de básica</option>
-                <option value="Sexto de básica">Sexto de básica</option>
-                <option value="Séptimo de básica">Séptimo de básica</option>
-                <option value="Octavo de básica">Octavo de básica</option>
-                <option value="Noveno de básica">Noveno de básica</option>
-                <option value="Décimo de básica">Décimo de básica</option>
-                <option value="Primero de bachillerato">
-                  Primero de bachillerato
-                </option>
-                <option value="Segundo de bachillerato">
-                  Segundo de bachillerato
-                </option>
-                <option value="Tercero de bachillerato">
-                  Tercero de bachillerato
-                </option>
-              </Form.Select>
-            </Form.Group>
-
-            <Form.Group className="mb-2">
-              <Form.Label>Paralelo</Form.Label>
-              <Form.Select
-                name="paralelo"
-                value={formUpdate.paralelo}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione un paralelo</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-              </Form.Select>
-            </Form.Group>
-
-            <Form.Group className="mb-2">
-              <Form.Label>Turno de Recorrido</Form.Label>
-              <Form.Select
-                name="turno"
-                value={formUpdate.turno}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione un Formato</option>
-                <option value="Mañana">Mañana</option>
-                <option value="Tarde">Tarde</option>
-                <option value="Completo">Completo</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Direccion del Domicilio</Form.Label>
-              <Form.Control
-                type="url"
-                name="ubicacionDomicilio"
-                value={formUpdate.ubicacionDomicilio}
-                onChange={handleChange}
-                required
-              />
-              <Form.Text className="text-muted">
-                Ejemplo: https://maps.google.com/Direccion
-              </Form.Text>
-            </Form.Group>
-
-            {/* Botones dentro del formulario */}
-            <Modal.Footer>
-              <Button
-                variant="success"
-                style={{ backgroundColor: "#FF3737", border: "none" }}
-                onClick={handleClose}
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="success"
-                style={{ backgroundColor: "#4CAF50", border: "none" }}
-                type="submit"
-              >
-                Guardar Cambios
-              </Button>
-            </Modal.Footer>
-          </Form>
+          <Formik
+            initialValues={formUpdate}
+            enableReinitialize
+            validationSchema={updateValidationSchema}
+            onSubmit={async (values, actions) => {
+              try {
+                const token = localStorage.getItem("token");
+                const url = `${
+                  import.meta.env.VITE_URL_BACKEND
+                }/actualizar/estudiante/${selectedEstudianteId}`;
+                const options = {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                };
+                const response = await axios.patch(url, values, options);
+                if (response.data) {
+                  Swal.fire(
+                    "Éxito",
+                    "Estudiante actualizado correctamente",
+                    "success"
+                  );
+                  handleClose();
+                  RegistroDeListaEstudiantes();
+                }
+              } catch (error) {
+                const data = error.response?.data;
+                let mensaje = "Ocurrió un error desconocido";
+                if (data?.errors) {
+                  mensaje =
+                    "Errores de validación: " +
+                    data.errors.map((err) => err.msg).join(", ");
+                } else if (data?.msg_actualizar_estudiantes) {
+                  mensaje = data.msg_actualizar_estudiantes;
+                } else if (data?.msg) {
+                  mensaje = data.msg;
+                }
+                Swal.fire("Error", mensaje, "error");
+              }
+              actions.setSubmitting(false);
+            }}
+          >
+            {({ handleSubmit, isSubmitting }) => (
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-2">
+                  <Form.Label>Nivel Escolar</Form.Label>
+                  <Field as={Form.Select} name="nivelEscolar">
+                    <option value="">Seleccione un nivel escolar</option>
+                    <option value="Nocional">Nocional</option>
+                    <option value="Inicial 1">Inicial 1</option>
+                    <option value="Inicial 2">Inicial 2</option>
+                    <option value="Primero de básica">Primero de básica</option>
+                    <option value="Segundo de básica">Segundo de básica</option>
+                    <option value="Tercero de básica">Tercero de básica</option>
+                    <option value="Cuarto de básica">Cuarto de básica</option>
+                    <option value="Quinto de básica">Quinto de básica</option>
+                    <option value="Sexto de básica">Sexto de básica</option>
+                    <option value="Séptimo de básica">Séptimo de básica</option>
+                    <option value="Octavo de básica">Octavo de básica</option>
+                    <option value="Noveno de básica">Noveno de básica</option>
+                    <option value="Décimo de básica">Décimo de básica</option>
+                    <option value="Primero de bachillerato">
+                      Primero de bachillerato
+                    </option>
+                    <option value="Segundo de bachillerato">
+                      Segundo de bachillerato
+                    </option>
+                    <option value="Tercero de bachillerato">
+                      Tercero de bachillerato
+                    </option>
+                  </Field>
+                  <ErrorMessage
+                    name="nivelEscolar"
+                    component="div"
+                    className="text-danger"
+                  />
+                </Form.Group>
+                <Form.Group className="mb-2">
+                  <Form.Label>Paralelo</Form.Label>
+                  <Field as={Form.Select} name="paralelo">
+                    <option value="">Seleccione un paralelo</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                  </Field>
+                  <ErrorMessage
+                    name="paralelo"
+                    component="div"
+                    className="text-danger"
+                  />
+                </Form.Group>
+                <Form.Group className="mb-2">
+                  <Form.Label>Turno de Recorrido</Form.Label>
+                  <Field as={Form.Select} name="turno">
+                    <option value="">Seleccione un Formato</option>
+                    <option value="Mañana">Mañana</option>
+                    <option value="Tarde">Tarde</option>
+                    <option value="Completo">Completo</option>
+                  </Field>
+                  <ErrorMessage
+                    name="turno"
+                    component="div"
+                    className="text-danger"
+                  />
+                </Form.Group>
+                <Form.Group className="mb-2">
+                  <Form.Label>Direccion del Domicilio</Form.Label>
+                  <Field
+                    as={Form.Control}
+                    type="url"
+                    name="ubicacionDomicilio"
+                  />
+                  <Form.Text className="text-muted">
+                    Ejemplo: https://maps.google.com/Direccion
+                  </Form.Text>
+                  <ErrorMessage
+                    name="ubicacionDomicilio"
+                    component="div"
+                    className="text-danger"
+                  />
+                </Form.Group>
+                <Modal.Footer>
+                  <Button
+                    variant="success"
+                    style={{ backgroundColor: "#FF3737", border: "none" }}
+                    onClick={handleClose}
+                    type="button"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant="success"
+                    style={{ backgroundColor: "#4CAF50", border: "none" }}
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    Guardar Cambios
+                  </Button>
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
         </Modal.Body>
       </Modal>
     </>
