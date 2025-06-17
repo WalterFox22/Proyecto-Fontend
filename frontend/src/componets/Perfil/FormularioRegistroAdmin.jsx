@@ -166,10 +166,12 @@ const FormularioRegistroAdmin = () => {
       }
     }
     if (step === 5) fields = ["eliminacionAdminSaliente"];
-    await formik.validateForm();
-    const errors = fields.filter((f) => formik.errors[f]);
-    if (errors.length > 0) {
-      errors.forEach((f) => toast.error(formik.errors[f]));
+
+    // Validar solo los campos del paso actual
+    const errors = await formik.validateForm();
+    const stepErrors = fields.filter((f) => errors[f]);
+    if (stepErrors.length > 0) {
+      stepErrors.forEach((f) => toast.error(errors[f]));
       fields.forEach((f) => formik.setFieldTouched(f, true, true));
       return;
     }

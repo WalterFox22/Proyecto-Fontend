@@ -156,11 +156,16 @@ const FormularioRegistro = () => {
           : []),
       ];
     }
+
+    // Marcar todos los campos del paso como tocados
+    fields.forEach((f) => formik.setFieldTouched(f, true, true));
+
+    // Validar solo los campos del paso actual
     await formik.validateForm();
     const errors = fields.filter((f) => formik.errors[f]);
     if (errors.length > 0) {
+      // Muestra los mensajes de error
       errors.forEach((f) => toast.error(formik.errors[f]));
-      fields.forEach((f) => formik.setFieldTouched(f, true, true));
       return;
     }
     setStep(step + 1);

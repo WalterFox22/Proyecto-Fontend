@@ -40,7 +40,10 @@ const passwordSchema = Yup.object({
     "La contraseña anterior es obligatoria"
   ),
   passwordActual: Yup.string()
-    .min(6, "La nueva contraseña debe tener mínimo 6 caracteres. Ejem: Abt234+*+")
+    .min(
+      6,
+      "La nueva contraseña debe tener mínimo 6 caracteres. Ejem: Abt234+*+"
+    )
     .required("La nueva contraseña es obligatoria"),
   passwordActualConfirm: Yup.string()
     .oneOf([Yup.ref("passwordActual"), null], "Las contraseñas no coinciden")
@@ -56,6 +59,13 @@ const PerfilConductor = () => {
   const handleCloseModal = () => setModalType(null);
 
   const [preview, setPreview] = useState(auth.fotografiaDelConductor || "");
+
+  // Resetear preview cada vez que se abre el modal de perfil
+  useEffect(() => {
+    if (modalType === "perfil") {
+      setPreview(auth.fotografiaDelConductor || "");
+    }
+  }, [modalType, auth.fotografiaDelConductor]);
 
   // Formik para actualizar perfil
   const formikPerfil = useFormik({
@@ -91,7 +101,7 @@ const PerfilConductor = () => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.msg_actualizacion_perfil ||
+          error.response?.data?.msg_actualizacion_perfil || error.response?.data?.msg_registro_conductor ||
             "Error al actualizar el perfil",
           {
             position: "top-right",
@@ -496,10 +506,15 @@ const PerfilConductor = () => {
                     onChange={formikPassword.handleChange}
                     onBlur={formikPassword.handleBlur}
                     style={{ paddingRight: "2.5rem" }}
-                    isInvalid={!!formikPassword.errors.passwordAnterior && formikPassword.touched.passwordAnterior}
+                    isInvalid={
+                      !!formikPassword.errors.passwordAnterior &&
+                      formikPassword.touched.passwordAnterior
+                    }
                   />
                   <span
-                    onClick={() => setShowPasswordAnterior(!showPasswordAnterior)}
+                    onClick={() =>
+                      setShowPasswordAnterior(!showPasswordAnterior)
+                    }
                     className="position-absolute end-0 top-50 translate-middle-y me-2"
                     style={{
                       cursor: "pointer",
@@ -508,7 +523,10 @@ const PerfilConductor = () => {
                   >
                     {showPasswordAnterior ? <FaEye /> : <FaEyeSlash />}
                   </span>
-                  <Form.Control.Feedback type="invalid" style={{ color: "#e74c3c" }}>
+                  <Form.Control.Feedback
+                    type="invalid"
+                    style={{ color: "#e74c3c" }}
+                  >
                     {formikPassword.errors.passwordAnterior}
                   </Form.Control.Feedback>
                 </div>
@@ -525,7 +543,10 @@ const PerfilConductor = () => {
                     onChange={formikPassword.handleChange}
                     onBlur={formikPassword.handleBlur}
                     style={{ paddingRight: "2.5rem" }}
-                    isInvalid={!!formikPassword.errors.passwordActual && formikPassword.touched.passwordActual}
+                    isInvalid={
+                      !!formikPassword.errors.passwordActual &&
+                      formikPassword.touched.passwordActual
+                    }
                   />
                   <span
                     onClick={() => setShowPasswordActual(!showPasswordActual)}
@@ -537,7 +558,10 @@ const PerfilConductor = () => {
                   >
                     {showPasswordActual ? <FaEye /> : <FaEyeSlash />}
                   </span>
-                  <Form.Control.Feedback type="invalid" style={{ color: "#e74c3c" }}>
+                  <Form.Control.Feedback
+                    type="invalid"
+                    style={{ color: "#e74c3c" }}
+                  >
                     {formikPassword.errors.passwordActual}
                   </Form.Control.Feedback>
                 </div>
@@ -554,7 +578,10 @@ const PerfilConductor = () => {
                     onChange={formikPassword.handleChange}
                     onBlur={formikPassword.handleBlur}
                     style={{ paddingRight: "2.5rem" }}
-                    isInvalid={!!formikPassword.errors.passwordActualConfirm && formikPassword.touched.passwordActualConfirm}
+                    isInvalid={
+                      !!formikPassword.errors.passwordActualConfirm &&
+                      formikPassword.touched.passwordActualConfirm
+                    }
                   />
                   <span
                     onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
@@ -566,7 +593,10 @@ const PerfilConductor = () => {
                   >
                     {showPasswordConfirm ? <FaEye /> : <FaEyeSlash />}
                   </span>
-                  <Form.Control.Feedback type="invalid" style={{ color: "#e74c3c" }}>
+                  <Form.Control.Feedback
+                    type="invalid"
+                    style={{ color: "#e74c3c" }}
+                  >
                     {formikPassword.errors.passwordActualConfirm}
                   </Form.Control.Feedback>
                 </div>
