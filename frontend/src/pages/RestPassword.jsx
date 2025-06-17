@@ -105,7 +105,7 @@ const ResetPassword = () => {
                         id="reset-password-password"
                         type={showPassword1 ? "text" : "password"}
                         name="passwordActual"
-                        placeholder="Ej: Abr234+++"
+                        placeholder="Nueva contraseña"
                         className="reset-input-with-icon"
                       />
                       <span
