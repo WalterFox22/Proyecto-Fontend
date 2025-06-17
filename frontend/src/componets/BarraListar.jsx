@@ -10,7 +10,35 @@ import axios from "axios";
 import Mensaje from "./Alertas/Mensaje";
 import { toast, ToastContainer } from "react-toastify";
 import AuthContext from "../context/AuthProvider";
+import * as Yup from "yup";
 import "../pages/admin/Styles-Admin/BarraListar.css";
+
+const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const placaRegex = /^[A-Z]{3}-\d{4}$/;
+
+const perfilSchema = Yup.object({
+  nombre: Yup.string()
+    .matches(onlyLetters, "Solo se permiten letras")
+    .notRequired(),
+  apellido: Yup.string()
+    .matches(onlyLetters, "Solo se permiten letras")
+    .notRequired(),
+  cedula: Yup.string()
+    .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
+    .notRequired(),
+  cooperativa: Yup.string()
+    .matches(onlyLetters, "Solo se permiten letras")
+    .notRequired(),
+  placaAutomovil: Yup.string()
+    .matches(placaRegex, "Formato de placa inválido. Ejemplo: PRT-9888")
+    .notRequired(),
+  rutaAsignada: Yup.string()
+    .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12")
+    .notRequired(),
+  sectoresRuta: Yup.string()
+    .matches(onlyLetters, "Solo se permiten letras")
+    .notRequired(),
+});
 
 const BarraListar = () => {
   const { auth } = useContext(AuthContext);
@@ -237,9 +265,15 @@ const BarraListar = () => {
     });
   };
 
+  const [formErrors, setFormErrors] = useState({});
+
+  // Validar antes de enviar
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
+      await perfilSchema.validate(formPerfil, { abortEarly: false });
+      setFormErrors({});
+      // ...tu código de actualización...
       const token = localStorage.getItem("token");
       const url = `${
         import.meta.env.VITE_URL_BACKEND
@@ -264,11 +298,19 @@ const BarraListar = () => {
       handleCloseModal();
       listarConductores();
     } catch (error) {
-      console.log(error);
-      toast.error(
-        error?.response?.data?.msg_actualizacion_conductor ||
-          "Error al actualizar el conductor."
-      );
+      if (error.name === "ValidationError") {
+        // Formatea los errores de Yup
+        const errors = {};
+        error.inner.forEach((err) => {
+          errors[err.path] = err.message;
+        });
+        setFormErrors(errors);
+      } else {
+        toast.error(
+          error?.response?.data?.msg_actualizacion_conductor ||
+            "Error al actualizar el conductor."
+        );
+      }
     }
   };
 
@@ -557,8 +599,14 @@ const BarraListar = () => {
                 name="nombre"
                 value={formPerfil.nombre}
                 onChange={handleChangePerfil}
-                required
+                isInvalid={!!formErrors.nombre}
               />
+              <Form.Control.Feedback
+                type="invalid"
+                style={{ color: "#e74c3c", fontSize: "0.95em" }}
+              >
+                {formErrors.nombre}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3" controlId="apellido">
               <Form.Label>Apellido</Form.Label>
@@ -567,8 +615,14 @@ const BarraListar = () => {
                 name="apellido"
                 value={formPerfil.apellido}
                 onChange={handleChangePerfil}
-                required
+                isInvalid={!!formErrors.apellido}
               />
+              <Form.Control.Feedback
+                type="invalid"
+                style={{ color: "#e74c3c", fontSize: "0.95em" }}
+              >
+                {formErrors.apellido}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3" controlId="cedula">
               <Form.Label>Cédula</Form.Label>
@@ -577,8 +631,14 @@ const BarraListar = () => {
                 name="cedula"
                 value={formPerfil.cedula}
                 onChange={handleChangePerfil}
-                required
+                isInvalid={!!formErrors.cedula}
               />
+              <Form.Control.Feedback
+                type="invalid"
+                style={{ color: "#e74c3c", fontSize: "0.95em" }}
+              >
+                {formErrors.cedula}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3" controlId="cooperativa">
               <Form.Label>Cooperativa</Form.Label>
@@ -587,8 +647,14 @@ const BarraListar = () => {
                 name="cooperativa"
                 value={formPerfil.cooperativa}
                 onChange={handleChangePerfil}
-                required
+                isInvalid={!!formErrors.cooperativa}
               />
+              <Form.Control.Feedback
+                type="invalid"
+                style={{ color: "#e74c3c", fontSize: "0.95em" }}
+              >
+                {formErrors.cooperativa}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3" controlId="placaAutomovil">
               <Form.Label>Placa del Automóvil</Form.Label>
@@ -597,8 +663,14 @@ const BarraListar = () => {
                 name="placaAutomovil"
                 value={formPerfil.placaAutomovil}
                 onChange={handleChangePerfil}
-                required
+                isInvalid={!!formErrors.placaAutomovil}
               />
+              <Form.Control.Feedback
+                type="invalid"
+                style={{ color: "#e74c3c", fontSize: "0.95em" }}
+              >
+                {formErrors.placaAutomovil}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3" controlId="rutaAsignada">
               <Form.Label>Ruta de Transporte</Form.Label>
@@ -607,8 +679,14 @@ const BarraListar = () => {
                 name="rutaAsignada"
                 value={formPerfil.rutaAsignada}
                 onChange={handleChangePerfil}
-                required
+                isInvalid={!!formErrors.rutaAsignada}
               />
+              <Form.Control.Feedback
+                type="invalid"
+                style={{ color: "#e74c3c", fontSize: "0.95em" }}
+              >
+                {formErrors.rutaAsignada}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3" controlId="sectoresRuta">
               <Form.Label>Sector designado</Form.Label>
@@ -617,8 +695,14 @@ const BarraListar = () => {
                 name="sectoresRuta"
                 value={formPerfil.sectoresRuta}
                 onChange={handleChangePerfil}
-                required
+                isInvalid={!!formErrors.sectoresRuta}
               />
+              <Form.Control.Feedback
+                type="invalid"
+                style={{ color: "#e74c3c", fontSize: "0.95em" }}
+              >
+                {formErrors.sectoresRuta}
+              </Form.Control.Feedback>
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
