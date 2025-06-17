@@ -6,36 +6,116 @@ import { toast, ToastContainer } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import NoUser from "../../assets/NoUser.avif";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+
+const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const telefonoRegex = /^\d{7,10}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const perfilSchema = Yup.object({
+  telefono: Yup.string()
+    .matches(telefonoRegex, "Teléfono inválido")
+    .notRequired(),
+  email: Yup.string()
+    .matches(emailRegex, "Correo electrónico inválido")
+    .notRequired(),
+  fotografiaDelConductor: Yup.mixed()
+    .test(
+      "fileTypeOrUrl",
+      "Solo se permiten imágenes JPG, JPEG o PNG",
+      (value) => {
+        if (!value) return true;
+        if (typeof value === "string") return true; // Ya es una URL válida
+        return (
+          value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+        );
+      }
+    )
+    .notRequired(),
+});
+
+const passwordSchema = Yup.object({
+  passwordAnterior: Yup.string().required(
+    "La contraseña anterior es obligatoria"
+  ),
+  passwordActual: Yup.string()
+    .min(6, "La nueva contraseña debe tener mínimo 6 caracteres. Ejem: Abt234+*+")
+    .required("La nueva contraseña es obligatoria"),
+  passwordActualConfirm: Yup.string()
+    .oneOf([Yup.ref("passwordActual"), null], "Las contraseñas no coinciden")
+    .required("Confirma la nueva contraseña"),
+});
 
 const PerfilConductor = () => {
-  const { auth } = useContext(AuthContext);
-  
+  const { auth, UpdatePassword, cargarPerfil } = useContext(AuthContext);
 
-  //Acciones para mostrar la pantalla emergente
+  // Modal y preview
   const [modalType, setModalType] = useState(null);
   const handleShowModal = (type) => setModalType(type);
-  const handleCloseModal = () => {
-    setModalType(null);
-    // Restablecer el formulario del perfil si se cierra el modal sin guardar
-    if (modalType === "perfil") {
-      setFormPerfil({
-        telefono: auth.telefono || "",
-        email: auth.email || "",
-        fotografiaDelConductor: auth.fotografiaDelConductor || "", // Nueva propiedad
+  const handleCloseModal = () => setModalType(null);
+
+  const [preview, setPreview] = useState(auth.fotografiaDelConductor || "");
+
+  // Formik para actualizar perfil
+  const formikPerfil = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      telefono: auth.telefono || "",
+      email: auth.email || "",
+      fotografiaDelConductor: auth.fotografiaDelConductor || "",
+    },
+    validationSchema: perfilSchema,
+    onSubmit: async (values) => {
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        if (value) formData.append(key, value);
       });
-      setPreview(auth.fotografiaDelConductor || ""); // Restablecer el preview de la imagen
+      try {
+        const token = localStorage.getItem("token");
+        const url = `${
+          import.meta.env.VITE_URL_BACKEND
+        }/actualizar/perfil/conductor`;
+        const options = {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const respuesta = await axios.patch(url, formData, options);
+        await cargarPerfil(token);
+        if (respuesta.data.msg_actualizacion_perfil) {
+          toast.success(respuesta.data.msg_actualizacion_perfil);
+          handleCloseModal();
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.msg_actualizacion_perfil ||
+            "Error al actualizar el perfil",
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+      }
+    },
+  });
+
+  // Imagen para perfil
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+      formikPerfil.setFieldValue("fotografiaDelConductor", file);
     }
   };
 
-  // Accione para poder visualizar el password al ingresar
+  // Contraseña (igual que tu lógica actual)
   const [showPasswordAnterior, setShowPasswordAnterior] = useState(false);
   const [showPasswordActual, setShowPasswordActual] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-
-  const { UpdatePassword, cargarPerfil } = useContext(AuthContext);
   const [mensaje, setMensaje] = useState({});
-
-  //Logica para actualizar el Password
   const [form, setForm] = useState({
     passwordActual: "",
     passwordAnterior: "",
@@ -47,7 +127,6 @@ const PerfilConductor = () => {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (Object.values(form).includes("")) {
@@ -146,101 +225,32 @@ const PerfilConductor = () => {
     }, 3000);
   };
 
-  // LOGICA PARA ACTUALIZAR PERFIL
-  const [formPerfil, setFormPerfil] = useState({
-    telefono: auth.telefono || "",
-    email: auth.email || "",
-    fotografiaDelConductor: auth.fotografiaDelConductor || "", // Nueva propiedad
+  // Formik para actualizar contraseña
+  const formikPassword = useFormik({
+    initialValues: {
+      passwordAnterior: "",
+      passwordActual: "",
+      passwordActualConfirm: "",
+    },
+    validationSchema: passwordSchema,
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const resultado = await UpdatePassword(values);
+        if (resultado.msg_actualizacion_contrasenia) {
+          toast.success(resultado.msg_actualizacion_contrasenia);
+          resetForm();
+          handleCloseModal();
+        } else if (resultado.msg) {
+          toast.error(resultado.msg);
+        } else {
+          toast.error("Ocurrió un error inesperado");
+        }
+      } catch (error) {
+        toast.error("Error al procesar la solicitud");
+      }
+    },
   });
 
-  const [preview, setPreview] = useState(auth.fotografiaDelConductor || ""); // Preview de la imagen
-
-  // Sincroniza los datos del perfil cada vez que se abre el modal
-  useEffect(() => {
-    if (modalType === "perfil") {
-      setFormPerfil({
-        telefono: auth.telefono || "",
-        email: auth.email || "",
-        fotografiaDelConductor: auth.fotografiaDelConductor || "",
-      });
-      setPreview(auth.fotografiaDelConductor || "");
-    }
-  }, [modalType, auth]);
-
-  const handleChangePerfil = (e) => {
-    setFormPerfil({
-      ...formPerfil,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmitPerfil = async (e) => {
-    e.preventDefault();
-    // Validar que todos los campos estén llenos
-    if (
-      Object.values(formPerfil).includes("") ||
-      !formPerfil.fotografiaDelConductor
-    ) {
-      toast.error("Todos los campos deben ser llenados, incluida la foto", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("telefono", formPerfil.telefono);
-    formData.append("email", formPerfil.email);
-    formData.append(
-      "fotografiaDelConductor",
-      formPerfil.fotografiaDelConductor
-    ); // Agregar la imagen
-
-    try {
-      const token = localStorage.getItem("token");
-      const url = `${
-        import.meta.env.VITE_URL_BACKEND
-      }/actualizar/perfil/conductor`;
-      const options = {
-        headers: {
-          "Content-Type": "multipart/form-data", // Importante para enviar archivos
-          Authorization: `Bearer ${token}`, // Token del usuario
-        },
-      };
-
-      const respuesta = await axios.patch(url, formData, options);
-      await cargarPerfil(token);
-      if (respuesta.data.msg_actualizacion_perfil) {
-        toast.success(respuesta.data.msg_actualizacion_perfil);
-        handleCloseModal();
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(
-        error.response?.data?.msg_actualizacion_perfil ||
-          "Error al actualizar el perfil",
-        {
-          position: "top-right",
-          autoClose: 3000,
-        }
-      );
-    }
-  };
-
-  // Manejar cambios en la imagen
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result); // Muestra la imagen en el preview
-        setFormPerfil({ ...formPerfil, fotografiaDelConductor: file }); // Guarda el archivo en el estado
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Verificamos si auth está vacío o no tiene los datos necesarios
   if (!auth || Object.keys(auth).length === 0) {
     return (
       <Container fluid className="p-3">
@@ -254,7 +264,15 @@ const PerfilConductor = () => {
   }
   return (
     <>
+      <style>
+        {`
+          .form-control.is-invalid, .was-validated .form-control:invalid {
+            background-image: none !important;
+          }
+        `}
+      </style>
       <Container fluid className="p-3">
+        <ToastContainer />
         <div className="text-center">
           <h1 className="mb-4">Perfil del Conductor</h1>
           <hr className="my-4" />
@@ -279,7 +297,6 @@ const PerfilConductor = () => {
               >
                 Información del Perfil
               </h2>
-              {/* Asegúrate de que auth tiene los valores antes de renderizarlos */}
               <div style={{ fontSize: "2rem", lineHeight: "1.6" }}>
                 <p>
                   <strong>Nombre del Conductor:</strong> {auth?.nombre}
@@ -327,12 +344,12 @@ const PerfilConductor = () => {
                 className="mx-auto d-block"
                 onClick={() => handleShowModal("perfil")}
                 style={{
-                  width: "180px", // Ajusta según necesites
+                  width: "180px",
                   color: "white",
                   border: "none",
                   borderRadius: "5px",
                   marginTop: "10px",
-                  padding: "0px 6px", // Ajustar relleno
+                  padding: "0px 6px",
                 }}
               >
                 Actualizar Perfil
@@ -346,12 +363,12 @@ const PerfilConductor = () => {
                 className="mx-auto d-block"
                 onClick={() => handleShowModal("password")}
                 style={{
-                  width: "180px", // Ajusta según necesites
+                  width: "180px",
                   color: "white",
                   border: "none",
                   borderRadius: "5px",
                   marginTop: "10px",
-                  padding: "0px 6px", // Ajustar relleno
+                  padding: "0px 6px",
                 }}
               >
                 Actualizar Contraseña
@@ -361,33 +378,51 @@ const PerfilConductor = () => {
         </Row>
 
         {/* Modal Integrado ACTUALIZAR EL PERFIL */}
-
         <Modal show={modalType === "perfil"} onHide={handleCloseModal} centered>
           <Modal.Header closeButton>
             <Modal.Title>Actualizar Perfil</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form onSubmit={handleSubmitPerfil}>
+            <Form onSubmit={formikPerfil.handleSubmit}>
               <Form.Group className="mb-3" controlId="email">
                 <Form.Label>Correo</Form.Label>
                 <Form.Control
                   type="text"
                   name="email"
-                  value={formPerfil.email}
-                  onChange={handleChangePerfil}
+                  value={formikPerfil.values.email}
+                  onChange={formikPerfil.handleChange}
+                  onBlur={formikPerfil.handleBlur}
+                  isInvalid={
+                    !!formikPerfil.errors.email && formikPerfil.touched.email
+                  }
                 />
+                <Form.Control.Feedback
+                  type="invalid"
+                  style={{ color: "#e74c3c" }}
+                >
+                  {formikPerfil.errors.email}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3" controlId="telefono">
                 <Form.Label>Teléfono</Form.Label>
                 <Form.Control
                   type="text"
                   name="telefono"
-                  value={formPerfil.telefono}
-                  onChange={handleChangePerfil}
+                  value={formikPerfil.values.telefono}
+                  onChange={formikPerfil.handleChange}
+                  onBlur={formikPerfil.handleBlur}
+                  isInvalid={
+                    !!formikPerfil.errors.telefono &&
+                    formikPerfil.touched.telefono
+                  }
                 />
+                <Form.Control.Feedback
+                  type="invalid"
+                  style={{ color: "#e74c3c" }}
+                >
+                  {formikPerfil.errors.telefono}
+                </Form.Control.Feedback>
               </Form.Group>
-
-              {/* Sección de foto de perfil */}
               <Form.Group className="mb-3">
                 <Form.Label>Foto de Perfil</Form.Label>
                 <div className="text-center mb-2">
@@ -407,8 +442,12 @@ const PerfilConductor = () => {
                   accept="image/*"
                   onChange={handleImageChange}
                 />
+                {formikPerfil.errors.fotografiaDelConductor && (
+                  <div style={{ color: "#e74c3c", fontSize: "0.95em" }}>
+                    {formikPerfil.errors.fotografiaDelConductor}
+                  </div>
+                )}
               </Form.Group>
-
               <Modal.Footer>
                 <Button
                   variant="success"
@@ -445,11 +484,7 @@ const PerfilConductor = () => {
             <Modal.Title>Actualizar Contraseña</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {/* Asegúrate de que el formulario envuelve correctamente los elementos */}
-            <Form onSubmit={handleSubmit}>
-              {mensaje && mensaje.respuesta && (
-                <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
-              )}
+            <Form onSubmit={formikPassword.handleSubmit}>
               <Form.Group className="mb-3" controlId="passwordAnterior">
                 <Form.Label>Antigua Contraseña</Form.Label>
                 <div className="position-relative">
@@ -457,14 +492,14 @@ const PerfilConductor = () => {
                     type={showPasswordAnterior ? "text" : "password"}
                     name="passwordAnterior"
                     placeholder="Ingrese su contraseña anterior"
-                    value={form.passwordAnterior}
-                    onChange={handleChange}
+                    value={formikPassword.values.passwordAnterior}
+                    onChange={formikPassword.handleChange}
+                    onBlur={formikPassword.handleBlur}
                     style={{ paddingRight: "2.5rem" }}
+                    isInvalid={!!formikPassword.errors.passwordAnterior && formikPassword.touched.passwordAnterior}
                   />
                   <span
-                    onClick={() =>
-                      setShowPasswordAnterior(!showPasswordAnterior)
-                    }
+                    onClick={() => setShowPasswordAnterior(!showPasswordAnterior)}
                     className="position-absolute end-0 top-50 translate-middle-y me-2"
                     style={{
                       cursor: "pointer",
@@ -473,6 +508,9 @@ const PerfilConductor = () => {
                   >
                     {showPasswordAnterior ? <FaEye /> : <FaEyeSlash />}
                   </span>
+                  <Form.Control.Feedback type="invalid" style={{ color: "#e74c3c" }}>
+                    {formikPassword.errors.passwordAnterior}
+                  </Form.Control.Feedback>
                 </div>
               </Form.Group>
 
@@ -483,9 +521,11 @@ const PerfilConductor = () => {
                     type={showPasswordActual ? "text" : "password"}
                     name="passwordActual"
                     placeholder="Ingrese su nueva contraseña"
-                    value={form.passwordActual}
-                    onChange={handleChange}
+                    value={formikPassword.values.passwordActual}
+                    onChange={formikPassword.handleChange}
+                    onBlur={formikPassword.handleBlur}
                     style={{ paddingRight: "2.5rem" }}
+                    isInvalid={!!formikPassword.errors.passwordActual && formikPassword.touched.passwordActual}
                   />
                   <span
                     onClick={() => setShowPasswordActual(!showPasswordActual)}
@@ -497,6 +537,9 @@ const PerfilConductor = () => {
                   >
                     {showPasswordActual ? <FaEye /> : <FaEyeSlash />}
                   </span>
+                  <Form.Control.Feedback type="invalid" style={{ color: "#e74c3c" }}>
+                    {formikPassword.errors.passwordActual}
+                  </Form.Control.Feedback>
                 </div>
               </Form.Group>
 
@@ -507,9 +550,11 @@ const PerfilConductor = () => {
                     type={showPasswordConfirm ? "text" : "password"}
                     name="passwordActualConfirm"
                     placeholder="Confirme su nueva contraseña"
-                    value={form.passwordActualConfirm}
-                    onChange={handleChange}
+                    value={formikPassword.values.passwordActualConfirm}
+                    onChange={formikPassword.handleChange}
+                    onBlur={formikPassword.handleBlur}
                     style={{ paddingRight: "2.5rem" }}
+                    isInvalid={!!formikPassword.errors.passwordActualConfirm && formikPassword.touched.passwordActualConfirm}
                   />
                   <span
                     onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
@@ -521,10 +566,11 @@ const PerfilConductor = () => {
                   >
                     {showPasswordConfirm ? <FaEye /> : <FaEyeSlash />}
                   </span>
+                  <Form.Control.Feedback type="invalid" style={{ color: "#e74c3c" }}>
+                    {formikPassword.errors.passwordActualConfirm}
+                  </Form.Control.Feedback>
                 </div>
               </Form.Group>
-
-              {/* Botones dentro del formulario */}
               <Modal.Footer>
                 <Button
                   variant="success"

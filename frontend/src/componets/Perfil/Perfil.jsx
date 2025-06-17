@@ -466,7 +466,7 @@ const Perfil = () => {
       }
     `}
       </style>
-      <ToastContainer />
+      
       {auth.rol.includes("conductor") ? (
         <PerfilConductor />
       ) : (
