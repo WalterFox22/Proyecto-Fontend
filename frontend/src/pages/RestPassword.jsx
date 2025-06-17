@@ -105,7 +105,7 @@ const ResetPassword = () => {
                         id="reset-password-password"
                         type={showPassword1 ? "text" : "password"}
                         name="passwordActual"
-                        placeholder="Ej: Ab1#Cd2$Ef3@"
+                        placeholder="Ej: Abr234+++"
                         className="reset-input-with-icon"
                       />
                       <span
@@ -123,13 +123,15 @@ const ResetPassword = () => {
                     <div
                       style={{
                         fontSize: "0.9em",
-                        color: "#bbb",
+                        color: "#fff", // Todo el texto en blanco
                         marginBottom: 8,
                       }}
                     >
-                      Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
-                      <b>3 caracteres especiales</b> (ejemplo:{" "}
-                      <span style={{ color: "#4caf50" }}>Ab1#Cd2$Ef3@</span>)
+                      Debe tener <b style={{ color: "#fff" }}>3 letras</b>,{" "}
+                      <b style={{ color: "#fff" }}>3 números</b> y{" "}
+                      <b style={{ color: "#fff" }}>3 caracteres especiales</b>{" "}
+                      (ejemplo: <span style={{ color: "#fff" }}>Abr234+++</span>
+                      )
                     </div>
                     <div className="reset-input-container">
                       <Field
