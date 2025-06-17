@@ -11,6 +11,7 @@ import ErrorRestGift from "../assets/ErrorEmail_animation.webm";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { Form } from "react-bootstrap";
 
 const passwordRegex =
   /^(?=(?:[^A-Za-z]*[A-Za-z]){3})(?=(?:[^0-9]*[0-9]){3})(?=(?:[A-Za-z0-9]*[^A-Za-z0-9]){3})[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{9,}$/;
