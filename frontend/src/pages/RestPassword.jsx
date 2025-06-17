@@ -11,7 +11,7 @@ import ErrorRestGift from "../assets/ErrorEmail_animation.webm";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Form } from "react-bootstrap";
+import { Form as BootstrapForm } from "react-bootstrap";
 
 const passwordRegex =
   /^(?=(?:[^A-Za-z]*[A-Za-z]){3})(?=(?:[^0-9]*[0-9]){3})(?=(?:[A-Za-z0-9]*[^A-Za-z0-9]){3})[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{9,}$/;
@@ -121,14 +121,14 @@ const ResetPassword = () => {
                       component="div"
                       className="form-error"
                     />
-                    <Form.Text
+                    <BootstrapForm.Text
                       className="text-muted"
                       style={{ marginBottom: 8, display: "block" }}
                     >
                       Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
                       <b>3 caracteres especiales</b>.<br />
                       Ejemplo: <span style={{ color: "#000" }}>Abr980+++</span>
-                    </Form.Text>
+                    </BootstrapForm.Text>
                     <div className="reset-input-container">
                       <Field
                         id="reset-password-passwordConfirmar"
