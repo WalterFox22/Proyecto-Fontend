@@ -9,6 +9,7 @@ import NoUser from "../../assets/NoUser.avif";
 
 const PerfilConductor = () => {
   const { auth } = useContext(AuthContext);
+  
 
   //Acciones para mostrar la pantalla emergente
   const [modalType, setModalType] = useState(null);
@@ -208,7 +209,7 @@ const PerfilConductor = () => {
       };
 
       const respuesta = await axios.patch(url, formData, options);
-      cargarPerfil(token);
+      await cargarPerfil(token);
       if (respuesta.data.msg_actualizacion_perfil) {
         toast.success(respuesta.data.msg_actualizacion_perfil);
         handleCloseModal();

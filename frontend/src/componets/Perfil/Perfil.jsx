@@ -217,7 +217,7 @@ const Perfil = () => {
       };
 
       const respuesta = await axios.patch(url, formData, options);
-      cargarPerfil(token);
+      await cargarPerfil(token);
       if (respuesta.data.msg_actualizacion_perfil) {
         handleCloseModal();
         if (
