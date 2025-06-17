@@ -114,7 +114,7 @@ const FirstPassword = () => {
                         id="first-password-password"
                         type={showPassword ? "text" : "password"}
                         name="passwordActual"
-                        placeholder="Ej: Ab1#Cd2$Ef3@"
+                        placeholder="Ej: Abe567+#$"
                         className="input-with-icon"
                       />
                       <span
@@ -139,7 +139,7 @@ const FirstPassword = () => {
                     >
                       Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
                       <b>3 caracteres especiales</b> (ejemplo:{" "}
-                      <span style={{ color: "#4caf50" }}>Ab1#Cd2$Ef3@</span>)
+                      <span style={{ color: "#4caf50" }}>Abe567+#$</span>)
                     </div>
 
                     <div className="input-container">

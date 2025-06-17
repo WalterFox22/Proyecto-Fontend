@@ -3,149 +3,176 @@ import { Container, Form, Button, ProgressBar } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import NoUser from "../../assets/NoUser.avif";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 
 const FormularioRegistro = () => {
   const [step, setStep] = useState(1);
-  const [form, setForm] = useState({
-    nombre: "",
-    apellido: "",
-    telefono: "",
-    cedula: "",
-    email: "",
-    institucion: "Unidad Educativa Particular Emaús",
-    generoConductor: "",
-    placaAutomovil: "",
-    cooperativa: "",
-    esReemplazo: "",
-    rutaAsignada: "",
-    sectoresRuta: "",
-  });
-  const [imagen, setImagen] = useState(null);
   const [imagenPreview, setImagenPreview] = useState(null);
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
+  // Yup validation schema
+  const validationSchema = Yup.object({
+    nombre: Yup.string()
+      .matches(onlyLetters, "Solo se permiten letras")
+      .required("El nombre es obligatorio"),
+    apellido: Yup.string()
+      .matches(onlyLetters, "Solo se permiten letras")
+      .required("El apellido es obligatorio"),
+    telefono: Yup.string()
+      .matches(/^\d{7,10}$/, "Teléfono inválido")
+      .required("El teléfono es obligatorio"),
+    cedula: Yup.string()
+      .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
+      .required("La cédula es obligatoria"),
+    email: Yup.string()
+      .email("Correo inválido")
+      .required("El correo es obligatorio"),
+    institucion: Yup.string().required(),
+    generoConductor: Yup.string()
+      .oneOf(
+        ["Masculino", "Femenino", "Prefiero no decirlo"],
+        "Seleccione un género válido"
+      )
+      .required("Seleccione un género"),
+    fotografiaDelConductor: Yup.mixed()
+      .required("La foto es obligatoria")
+      .test(
+        "fileType",
+        "Solo se permiten archivos JPG, JPEG o PNG",
+        (value) =>
+          value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+      ),
+    placaAutomovil: Yup.string()
+      .matches(
+        /^[A-Z]{3}-\d{4}$/,
+        "Formato de placa inválido. Ejemplo: PRT-9888"
+      )
+      .required("La placa es obligatoria"),
+    cooperativa: Yup.string()
+      .matches(onlyLetters, "Solo se permiten letras")
+      .required("La cooperativa es obligatoria"),
+    esReemplazo: Yup.string()
+      .oneOf(["Sí", "No"], "Seleccione una opción válida")
+      .required("Seleccione una opción"),
+    rutaAsignada: Yup.string().when("esReemplazo", (esReemplazo, schema) =>
+      esReemplazo === "No"
+        ? schema
+            .required("La ruta es obligatoria")
+            .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12")
+        : schema.notRequired()
+    ),
+    sectoresRuta: Yup.string().when("esReemplazo", (esReemplazo, schema) =>
+      esReemplazo === "No"
+        ? schema
+            .matches(onlyLetters, "Solo se permiten letras")
+            .required("El sector es obligatorio")
+        : schema.notRequired()
+    ),
+  });
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-      if (!allowedTypes.includes(file.type)) {
-        toast.error("Solo se permiten archivos de imagen en formato JPG, JPEG o PNG");
-        setImagen(null);
-        setImagenPreview(null);
-        return;
+  const formik = useFormik({
+    initialValues: {
+      nombre: "",
+      apellido: "",
+      telefono: "",
+      cedula: "",
+      email: "",
+      institucion: "Unidad Educativa Particular Emaús",
+      generoConductor: "",
+      fotografiaDelConductor: null,
+      placaAutomovil: "",
+      cooperativa: "",
+      esReemplazo: "",
+      rutaAsignada: "",
+      sectoresRuta: "",
+    },
+    validationSchema,
+    validateOnChange: false,
+    validateOnBlur: true,
+    onSubmit: async (values, { resetForm }) => {
+      const formDataToSend = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        formDataToSend.append(key, value ?? "");
+      });
+
+      try {
+        const token = localStorage.getItem("token");
+        const url = `${import.meta.env.VITE_URL_BACKEND}/registro/conductores`;
+        const options = {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const response = await axios.post(url, formDataToSend, options);
+
+        if (response) {
+          toast.success("Conductor registrado con éxito y correo enviado");
+          resetForm();
+          setImagenPreview(null);
+          setStep(1);
+        }
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const backendResponse = error.response.data;
+          if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
+            backendResponse.errors.forEach((err) => {
+              toast.error(err.msg || err);
+            });
+          } else if (backendResponse.msg_registro_conductor) {
+            toast.error(backendResponse.msg_registro_conductor);
+          } else if (backendResponse.msg_registro_representante) {
+            toast.error(backendResponse.msg_registro_representante);
+          } else if (backendResponse.msg) {
+            toast.error(backendResponse.msg);
+          } else {
+            toast.error(
+              "Error desconocido. Por favor, verifica los datos e intenta nuevamente."
+            );
+          }
+        } else {
+          toast.error("Error de red. Por favor, intenta nuevamente.");
+        }
       }
-      setImagen(file);
-      setImagenPreview(URL.createObjectURL(file));
-    } else {
-      setImagen(null);
-      setImagenPreview(null);
-    }
-  };
+    },
+  });
 
-  const nextStep = () => setStep(step + 1);
+  // Manejo de pasos
+  const nextStep = async () => {
+    let fields = [];
+    if (step === 1) fields = ["nombre", "apellido", "telefono", "cedula"];
+    if (step === 2)
+      fields = ["email", "generoConductor", "fotografiaDelConductor"];
+    if (step === 3) {
+      fields = [
+        "placaAutomovil",
+        "cooperativa",
+        "esReemplazo",
+        ...(formik.values.esReemplazo === "No"
+          ? ["rutaAsignada", "sectoresRuta"]
+          : []),
+      ];
+    }
+    await formik.validateForm();
+    const errors = fields.filter((f) => formik.errors[f]);
+    if (errors.length > 0) {
+      errors.forEach((f) => toast.error(formik.errors[f]));
+      fields.forEach((f) => formik.setFieldTouched(f, true, true));
+      return;
+    }
+    setStep(step + 1);
+  };
   const prevStep = () => setStep(step - 1);
 
-  const handleNextStep2 = () => {
-    if (!imagen) {
-      toast.error("Debes subir una imagen");
-      return;
-    }
-    nextStep();
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validación manual
-    if (
-      !form.nombre ||
-      !form.apellido ||
-      !form.telefono ||
-      !form.cedula ||
-      !form.email ||
-      !form.generoConductor ||
-      !form.placaAutomovil ||
-      !form.cooperativa ||
-      !form.esReemplazo ||
-      (form.esReemplazo === "No" && (!form.rutaAsignada || !form.sectoresRuta)) ||
-      !imagen
-    ) {
-      toast.error("Todos los campos son obligatorios, incluida la foto");
-      return;
-    }
-
-    const formDataToSend = new FormData();
-    Object.keys(form).forEach((key) => {
-      // Si es reemplazo, ruta y sector deben ir vacíos
-      if (
-        form.esReemplazo === "Sí" &&
-        (key === "rutaAsignada" || key === "sectoresRuta")
-      ) {
-        formDataToSend.append(key, "");
-      } else {
-        formDataToSend.append(key, form[key]);
-      }
-    });
-    formDataToSend.append("fotografiaDelConductor", imagen);
-
-    try {
-      const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/registro/conductores`;
-      const options = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const response = await axios.post(url, formDataToSend, options);
-
-      if (response) {
-        toast.success("Conductor registrado con éxito y correo enviado");
-        setForm({
-          nombre: "",
-          apellido: "",
-          telefono: "",
-          cedula: "",
-          email: "",
-          institucion: "Unidad Educativa Particular Emaús",
-          generoConductor: "",
-          placaAutomovil: "",
-          cooperativa: "",
-          esReemplazo: "",
-          rutaAsignada: "",
-          sectoresRuta: "",
-        });
-        setImagen(null);
-        setImagenPreview(null);
-        setStep(1);
-      }
-    } catch (error) {
-      if (error.response && error.response.data) {
-        const backendResponse = error.response.data;
-        if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
-          backendResponse.errors.forEach((err) => {
-            toast.error(err.msg || err);
-          });
-        } else if (backendResponse.msg_registro_conductor) {
-          toast.error(backendResponse.msg_registro_conductor);
-        } else if (backendResponse.msg_registro_representante) {
-          toast.error(backendResponse.msg_registro_representante);
-        } else if (backendResponse.msg) {
-          toast.error(backendResponse.msg);
-        } else {
-          toast.error("Error desconocido. Por favor, verifica los datos e intenta nuevamente.");
-        }
-      } else {
-        toast.error("Error de red. Por favor, intenta nuevamente.");
-      }
-    }
+  // Imagen
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    formik.setFieldValue("fotografiaDelConductor", file);
+    if (file) setImagenPreview(URL.createObjectURL(file));
+    else setImagenPreview(null);
   };
 
   const progress = (step / 3) * 100;
@@ -155,7 +182,7 @@ const FormularioRegistro = () => {
       <ToastContainer />
       <Container className="mt-4">
         <ProgressBar variant="success" now={progress} className="mb-4" />
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={formik.handleSubmit}>
           {step === 1 && (
             <>
               <Form.Group className="mb-3">
@@ -163,50 +190,71 @@ const FormularioRegistro = () => {
                 <Form.Control
                   type="text"
                   name="nombre"
-                  value={form.nombre}
-                  onChange={handleChange}
+                  value={formik.values.nombre}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Ingrese el Nombre"
-                  required
+                  isInvalid={!!formik.errors.nombre && formik.touched.nombre}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.nombre}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label style={{ fontWeight: "bold" }}>Apellido</Form.Label>
                 <Form.Control
                   type="text"
                   name="apellido"
-                  value={form.apellido}
-                  onChange={handleChange}
+                  value={formik.values.apellido}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Ingrese el Apellido"
-                  required
+                  isInvalid={
+                    !!formik.errors.apellido && formik.touched.apellido
+                  }
                 />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.apellido}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label style={{ fontWeight: "bold" }}>Teléfono</Form.Label>
                 <Form.Control
                   type="text"
                   name="telefono"
-                  value={form.telefono}
-                  onChange={handleChange}
+                  value={formik.values.telefono}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Ingrese el teléfono"
-                  required
+                  isInvalid={
+                    !!formik.errors.telefono && formik.touched.telefono
+                  }
                 />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.telefono}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label style={{ fontWeight: "bold" }}>Cédula</Form.Label>
                 <Form.Control
                   type="text"
                   name="cedula"
-                  value={form.cedula}
-                  onChange={handleChange}
+                  value={formik.values.cedula}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Ingrese su cédula (solo 10 dígitos)"
-                  required
+                  isInvalid={!!formik.errors.cedula && formik.touched.cedula}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.cedula}
+                </Form.Control.Feedback>
               </Form.Group>
               <Button
                 variant="success"
                 className="mt-1"
                 style={{ backgroundColor: "#32CD32", border: "none" }}
                 onClick={nextStep}
+                type="button"
               >
                 Siguiente
               </Button>
@@ -220,18 +268,24 @@ const FormularioRegistro = () => {
                 <Form.Control
                   type="email"
                   name="email"
-                  value={form.email}
-                  onChange={handleChange}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Ingrese el correo electrónico"
-                  required
+                  isInvalid={!!formik.errors.email && formik.touched.email}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.email}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label style={{ fontWeight: "bold" }}>Institución</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>
+                  Institución
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="institucion"
-                  value={form.institucion}
+                  value={formik.values.institucion}
                   readOnly
                 />
               </Form.Group>
@@ -239,18 +293,29 @@ const FormularioRegistro = () => {
                 <Form.Label style={{ fontWeight: "bold" }}>Género</Form.Label>
                 <Form.Select
                   name="generoConductor"
-                  value={form.generoConductor}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.generoConductor}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    !!formik.errors.generoConductor &&
+                    formik.touched.generoConductor
+                  }
                 >
                   <option value="">Seleccione un género</option>
                   <option value="Masculino">Masculino</option>
                   <option value="Femenino">Femenino</option>
-                  <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+                  <option value="Prefiero no decirlo">
+                    Prefiero no decirlo
+                  </option>
                 </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.generoConductor}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label style={{ fontWeight: "bold" }}>Foto del Conductor</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>
+                  Foto del Conductor
+                </Form.Label>
                 <div className="text-center mb-2">
                   <img
                     src={imagenPreview || NoUser}
@@ -267,22 +332,40 @@ const FormularioRegistro = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  required
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    !!formik.errors.fotografiaDelConductor &&
+                    formik.touched.fotografiaDelConductor
+                  }
                 />
+                {formik.values.fotografiaDelConductor && (
+                  <div
+                    className="mt-2"
+                    style={{ fontSize: "0.9em", color: "#555" }}
+                  >
+                    Archivo seleccionado:{" "}
+                    {formik.values.fotografiaDelConductor.name}
+                  </div>
+                )}
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.fotografiaDelConductor}
+                </Form.Control.Feedback>
               </Form.Group>
               <Button
                 variant="success"
                 style={{ backgroundColor: "#333333", border: "none" }}
                 onClick={prevStep}
                 className="me-2 mt-1"
+                type="button"
               >
                 Atrás
               </Button>
               <Button
                 variant="success"
                 style={{ backgroundColor: "#32CD32", border: "none" }}
-                onClick={handleNextStep2}
+                onClick={nextStep}
                 className="mt-1"
+                type="button"
               >
                 Siguiente
               </Button>
@@ -292,26 +375,43 @@ const FormularioRegistro = () => {
           {step === 3 && (
             <>
               <Form.Group className="mb-3">
-                <Form.Label style={{ fontWeight: "bold" }}>Placa del Automóvil</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>
+                  Placa del Automóvil
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="placaAutomovil"
-                  value={form.placaAutomovil}
-                  onChange={handleChange}
+                  value={formik.values.placaAutomovil}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Ingrese las placas. Ejemplo: PHT-8888 "
-                  required
+                  isInvalid={
+                    !!formik.errors.placaAutomovil &&
+                    formik.touched.placaAutomovil
+                  }
                 />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.placaAutomovil}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label style={{ fontWeight: "bold" }}>Cooperativa</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>
+                  Cooperativa
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="cooperativa"
-                  value={form.cooperativa}
-                  onChange={handleChange}
+                  value={formik.values.cooperativa}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Ingrese la cooperativa"
-                  required
+                  isInvalid={
+                    !!formik.errors.cooperativa && formik.touched.cooperativa
+                  }
                 />
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.cooperativa}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label style={{ fontWeight: "bold" }}>
@@ -319,38 +419,62 @@ const FormularioRegistro = () => {
                 </Form.Label>
                 <Form.Select
                   name="esReemplazo"
-                  value={form.esReemplazo}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.esReemplazo}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    !!formik.errors.esReemplazo && formik.touched.esReemplazo
+                  }
                 >
                   <option value="">Seleccione una opción</option>
                   <option value="Sí">Sí es conductor remplazo</option>
                   <option value="No">No es conductor remplazo</option>
                 </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.esReemplazo}
+                </Form.Control.Feedback>
               </Form.Group>
-              {form.esReemplazo === "No" && (
+              {formik.values.esReemplazo === "No" && (
                 <>
                   <Form.Group className="mb-3">
-                    <Form.Label style={{ fontWeight: "bold" }}>Ruta Asignada</Form.Label>
+                    <Form.Label style={{ fontWeight: "bold" }}>
+                      Ruta Asignada
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       name="rutaAsignada"
-                      value={form.rutaAsignada}
-                      onChange={handleChange}
+                      value={formik.values.rutaAsignada}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder="Ingrese la ruta (Ejm: 11)"
-                      required
+                      isInvalid={
+                        !!formik.errors.rutaAsignada &&
+                        formik.touched.rutaAsignada
+                      }
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.rutaAsignada}
+                    </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-3">
-                    <Form.Label style={{ fontWeight: "bold" }}>Sectores de la Ruta</Form.Label>
+                    <Form.Label style={{ fontWeight: "bold" }}>
+                      Sectores de la Ruta
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       name="sectoresRuta"
-                      value={form.sectoresRuta}
-                      onChange={handleChange}
+                      value={formik.values.sectoresRuta}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder="Ingrese el sector (Ejm: La Mariscal)"
-                      required
+                      isInvalid={
+                        !!formik.errors.sectoresRuta &&
+                        formik.touched.sectoresRuta
+                      }
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.sectoresRuta}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </>
               )}
@@ -359,6 +483,7 @@ const FormularioRegistro = () => {
                 style={{ backgroundColor: "#333333", border: "none" }}
                 onClick={prevStep}
                 className="me-2 mt-1"
+                type="button"
               >
                 Atrás
               </Button>
