@@ -125,7 +125,6 @@ const ResetPassword = () => {
                         fontSize: "0.9em",
                         color: "#111", // negro
                         marginBottom: 8,
-                        fontWeight: "bold",
                       }}
                     >
                       Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
