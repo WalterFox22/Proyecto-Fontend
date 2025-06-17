@@ -9,6 +9,46 @@ import NoUser from "../../assets/NoUser.avif";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Mensaje from "../Alertas/Mensaje";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+
+const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const placaRegex = /^[A-Z]{3}-\d{4}$/;
+
+const passwordSchema = Yup.object({
+  passwordAnterior: Yup.string().required(
+    "La contraseña anterior es obligatoria"
+  ),
+  passwordActual: Yup.string()
+    .min(6, "La nueva contraseña debe tener mínimo 6 caracteres")
+    .required("La nueva contraseña es obligatoria"),
+  passwordActualConfirm: Yup.string()
+    .oneOf([Yup.ref("passwordActual"), null], "Las contraseñas no coinciden")
+    .required("Confirma la nueva contraseña"),
+});
+
+const perfilSchema = Yup.object({
+  nombre: Yup.string()
+    .matches(onlyLetters, "Solo se permiten letras")
+    .notRequired(),
+  apellido: Yup.string()
+    .matches(onlyLetters, "Solo se permiten letras")
+    .notRequired(),
+  email: Yup.string().email("Correo electrónico inválido").notRequired(),
+  cedula: Yup.string()
+    .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
+    .notRequired(),
+  cooperativa: Yup.string()
+    .matches(onlyLetters, "Solo se permiten letras")
+    .notRequired(),
+  placaAutomovil: Yup.string()
+    .matches(placaRegex, "Formato de placa inválido. Ejemplo: PRT-9888")
+    .notRequired(),
+  telefono: Yup.string()
+    .matches(/^\d{7,10}$/, "Teléfono inválido")
+    .notRequired(),
+  // foto: Quita la validación de la foto aquí
+});
 
 const Perfil = () => {
   const { auth } = useContext(AuthContext);
@@ -152,7 +192,7 @@ const Perfil = () => {
     cooperativa: auth.cooperativa || "",
     placaAutomovil: auth.placaAutomovil || "",
     email: auth.email || "",
-    foto: auth.fotografiaDelConductor || "",
+    fotografiaDelConductor: auth.fotografiaDelConductor || "",
     nombre: auth.nombre || "",
     apellido: auth.apellido || "",
   });
@@ -168,7 +208,7 @@ const Perfil = () => {
         cooperativa: auth.cooperativa || "",
         placaAutomovil: auth.placaAutomovil || "",
         email: auth.email || "",
-        foto: auth.fotografiaDelConductor || "",
+        fotografiaDelConductor: auth.fotografiaDelConductor || "",
         nombre: auth.nombre || "",
         apellido: auth.apellido || "",
       });
@@ -186,7 +226,7 @@ const Perfil = () => {
   const handleSubmitPerfil = async (e) => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
-    if (Object.values(formPerfil).includes("") || !formPerfil.foto) {
+    if (Object.values(formPerfil).includes("") || !formPerfil.fotografiaDelConductor) {
       toast.error("Todos los campos deben ser llenados, incluida la foto", {
         position: "top-right",
         autoClose: 3000,
@@ -202,7 +242,7 @@ const Perfil = () => {
     formData.append("email", formPerfil.email);
     formData.append("nombre", formPerfil.nombre);
     formData.append("apellido", formPerfil.apellido);
-    formData.append("fotografiaDelConductor", formPerfil.foto);
+    formData.append("fotografiaDelConductor", formPerfil.fotografiaDelConductor);
 
     try {
       const token = localStorage.getItem("token");
@@ -256,16 +296,151 @@ const Perfil = () => {
     }
   };
 
-  // Manejar cambios en la imagen
+  // Contraseña - Formik
+  const formikPassword = useFormik({
+    initialValues: {
+      passwordAnterior: "",
+      passwordActual: "",
+      passwordActualConfirm: "",
+    },
+    validationSchema: passwordSchema,
+    onSubmit: async (values, { resetForm }) => {
+      const resultado = await UpdatePassword(values);
+      if (resultado.msg_actualizacion_contrasenia) {
+        const exito =
+          resultado.msg_actualizacion_contrasenia.includes(
+            "satisfactoriamente"
+          );
+        setMensaje({
+          respuesta: resultado.msg_actualizacion_contrasenia,
+          tipo: exito,
+        });
+        if (exito) {
+          toast.success(resultado.msg_actualizacion_contrasenia, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          // Limpiar campos y cerrar modal después del toast
+          setTimeout(() => {
+            setMensaje({});
+            resetForm();
+            handleCloseModal();
+          }, 3000);
+        } else {
+          toast.error(resultado.msg_actualizacion_contrasenia, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          setTimeout(() => {
+            setMensaje({});
+          }, 3000);
+        }
+      } else if (resultado.msg) {
+        setMensaje({
+          respuesta: resultado.msg,
+          tipo: false,
+        });
+        toast.error(resultado.msg, {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setTimeout(() => {
+          setMensaje({});
+        }, 3000);
+      } else {
+        setMensaje({
+          respuesta: "Ocurrió un error inesperado",
+          tipo: false,
+        });
+        toast.error("Ocurrió un error inesperado", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setTimeout(() => {
+          setMensaje({});
+        }, 3000);
+      }
+    },
+  });
+
+  // Perfil - Formik
+  const formikPerfil = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      nombre: auth.nombre || "",
+      apellido: auth.apellido || "",
+      email: auth.email || "",
+      cedula: auth.cedula || "",
+      cooperativa: auth.cooperativa || "",
+      placaAutomovil: auth.placaAutomovil || "",
+      telefono: auth.telefono || "",
+      fotografiaDelConductor: auth.fotografiaDelConductor || "",
+    },
+    validationSchema: perfilSchema,
+    onSubmit: async (values) => {
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        if (value) formData.append(key, value);
+      });
+      try {
+        const token = localStorage.getItem("token");
+        const url = `${
+          import.meta.env.VITE_URL_BACKEND
+        }/actualizar/informacion/admin`;
+        const options = {
+          headers: {
+            "Content-Type": "multipart/form-data", // Importante para enviar archivos
+            Authorization: `Bearer ${token}`, // Token del usuario
+          },
+        };
+
+        const respuesta = await axios.patch(url, formData, options);
+        await cargarPerfil(token);
+        if (respuesta.data.msg_actualizacion_perfil) {
+          handleCloseModal();
+          if (
+            respuesta.data.msg_actualizacion_perfil ===
+            "Se ha enviado un enlace de confirmación al nuevo correo electrónico"
+          ) {
+            Swal.fire({
+              icon: "success",
+              title: "Perfil actualizado",
+              text: respuesta.data.msg_actualizacion_perfil,
+              confirmButtonText: "Ir a Login",
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+            }).then(() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("rol");
+              navigate("/login");
+            });
+          } else {
+            toast.success(respuesta.data.msg_actualizacion_perfil, {
+              position: "top-right",
+              autoClose: 3000,
+            });
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(
+          error.response?.data?.msg_actualizacion_perfil ||
+            "Error al actualizar el perfil",
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+      }
+    },
+  });
+
+  // Imagen para perfil
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result); // Muestra la imagen en el preview
-        setFormPerfil({ ...formPerfil, foto: file }); // Guarda el archivo en el estado
-      };
-      reader.readAsDataURL(file);
+      setPreview(URL.createObjectURL(file));
+      formikPerfil.setFieldValue("foto", file);
     }
   };
 
@@ -284,6 +459,13 @@ const Perfil = () => {
 
   return (
     <>
+      <style>
+        {`
+      .form-control.is-invalid, .was-validated .form-control:invalid {
+        background-image: none !important;
+      }
+    `}
+      </style>
       <ToastContainer />
       {auth.rol.includes("conductor") ? (
         <PerfilConductor />
@@ -392,72 +574,125 @@ const Perfil = () => {
               <Modal.Title>Actualizar Perfil</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form onSubmit={handleSubmitPerfil}>
+              <Form onSubmit={formikPerfil.handleSubmit}>
                 <Form.Group className="mb-3" controlId="nombre">
                   <Form.Label>Nombre</Form.Label>
                   <Form.Control
                     type="text"
                     name="nombre"
-                    value={formPerfil.nombre}
-                    onChange={handleChangePerfil}
+                    value={formikPerfil.values.nombre}
+                    onChange={formikPerfil.handleChange}
+                    onBlur={formikPerfil.handleBlur}
+                    isInvalid={
+                      !!formikPerfil.errors.nombre &&
+                      formikPerfil.touched.nombre
+                    }
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formikPerfil.errors.nombre}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="apellido">
                   <Form.Label>Apellido</Form.Label>
                   <Form.Control
                     type="text"
                     name="apellido"
-                    value={formPerfil.apellido}
-                    onChange={handleChangePerfil}
+                    value={formikPerfil.values.apellido}
+                    onChange={formikPerfil.handleChange}
+                    onBlur={formikPerfil.handleBlur}
+                    isInvalid={
+                      !!formikPerfil.errors.apellido &&
+                      formikPerfil.touched.apellido
+                    }
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formikPerfil.errors.apellido}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="email">
                   <Form.Label>Correo</Form.Label>
                   <Form.Control
                     type="text"
                     name="email"
-                    value={formPerfil.email}
-                    onChange={handleChangePerfil}
+                    value={formikPerfil.values.email}
+                    onChange={formikPerfil.handleChange}
+                    onBlur={formikPerfil.handleBlur}
+                    isInvalid={
+                      !!formikPerfil.errors.email && formikPerfil.touched.email
+                    }
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formikPerfil.errors.email}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="cedula">
                   <Form.Label>Cédula</Form.Label>
                   <Form.Control
                     type="text"
                     name="cedula"
-                    value={formPerfil.cedula}
-                    onChange={handleChangePerfil}
+                    value={formikPerfil.values.cedula}
+                    onChange={formikPerfil.handleChange}
+                    onBlur={formikPerfil.handleBlur}
+                    isInvalid={
+                      !!formikPerfil.errors.cedula &&
+                      formikPerfil.touched.cedula
+                    }
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formikPerfil.errors.cedula}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="cooperativa">
                   <Form.Label>Cooperativa</Form.Label>
                   <Form.Control
                     type="text"
                     name="cooperativa"
-                    value={formPerfil.cooperativa}
-                    onChange={handleChangePerfil}
+                    value={formikPerfil.values.cooperativa}
+                    onChange={formikPerfil.handleChange}
+                    onBlur={formikPerfil.handleBlur}
+                    isInvalid={
+                      !!formikPerfil.errors.cooperativa &&
+                      formikPerfil.touched.cooperativa
+                    }
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formikPerfil.errors.cooperativa}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="placaAutomovil">
                   <Form.Label>Placa del Vehículo</Form.Label>
                   <Form.Control
                     type="text"
                     name="placaAutomovil"
-                    value={formPerfil.placaAutomovil}
-                    onChange={handleChangePerfil}
+                    value={formikPerfil.values.placaAutomovil}
+                    onChange={formikPerfil.handleChange}
+                    onBlur={formikPerfil.handleBlur}
+                    isInvalid={
+                      !!formikPerfil.errors.placaAutomovil &&
+                      formikPerfil.touched.placaAutomovil
+                    }
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formikPerfil.errors.placaAutomovil}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="telefono">
                   <Form.Label>Teléfono</Form.Label>
                   <Form.Control
                     type="text"
                     name="telefono"
-                    value={formPerfil.telefono}
-                    onChange={handleChangePerfil}
+                    value={formikPerfil.values.telefono}
+                    onChange={formikPerfil.handleChange}
+                    onBlur={formikPerfil.handleBlur}
+                    isInvalid={
+                      !!formikPerfil.errors.telefono &&
+                      formikPerfil.touched.telefono
+                    }
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formikPerfil.errors.telefono}
+                  </Form.Control.Feedback>
                 </Form.Group>
-
-                {/* Sección de foto de perfil */}
                 <Form.Group className="mb-3">
                   <Form.Label>Foto de Perfil</Form.Label>
                   <div className="text-center mb-2">
@@ -476,9 +711,9 @@ const Perfil = () => {
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
+                    // Quita onBlur, isInvalid y Form.Control.Feedback para la foto
                   />
                 </Form.Group>
-
                 <Modal.Footer>
                   <Button
                     variant="success"
@@ -511,7 +746,7 @@ const Perfil = () => {
             </Modal.Header>
             <Modal.Body>
               {/* Asegúrate de que el formulario envuelve correctamente los elementos */}
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={formikPassword.handleSubmit}>
                 {mensaje.respuesta && (
                   <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
                 )}
@@ -523,8 +758,13 @@ const Perfil = () => {
                       type={showPasswordAnterior ? "text" : "password"}
                       name="passwordAnterior"
                       placeholder="Ingrese su contraseña anterior"
-                      value={form.passwordAnterior}
-                      onChange={handleChange}
+                      value={formikPassword.values.passwordAnterior}
+                      onChange={formikPassword.handleChange}
+                      onBlur={formikPassword.handleBlur}
+                      isInvalid={
+                        !!formikPassword.errors.passwordAnterior &&
+                        formikPassword.touched.passwordAnterior
+                      }
                       style={{ paddingRight: "2.5rem" }}
                     />
                     <span
@@ -537,6 +777,9 @@ const Perfil = () => {
                       {showPasswordAnterior ? <FaEye /> : <FaEyeSlash />}
                     </span>
                   </div>
+                  <Form.Control.Feedback type="invalid">
+                    {formikPassword.errors.passwordAnterior}
+                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="passwordActual">
@@ -546,8 +789,13 @@ const Perfil = () => {
                       type={showPasswordActual ? "text" : "password"}
                       name="passwordActual"
                       placeholder="Ingrese su nueva contraseña"
-                      value={form.passwordActual}
-                      onChange={handleChange}
+                      value={formikPassword.values.passwordActual}
+                      onChange={formikPassword.handleChange}
+                      onBlur={formikPassword.handleBlur}
+                      isInvalid={
+                        !!formikPassword.errors.passwordActual &&
+                        formikPassword.touched.passwordActual
+                      }
                       style={{ paddingRight: "2.5rem" }}
                     />
                     <span
@@ -558,17 +806,25 @@ const Perfil = () => {
                       {showPasswordActual ? <FaEye /> : <FaEyeSlash />}
                     </span>
                   </div>
+                  <Form.Control.Feedback type="invalid">
+                    {formikPassword.errors.passwordActual}
+                  </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="passwordConfirm">
+                <Form.Group className="mb-3" controlId="passwordActualConfirm">
                   <Form.Label>Confirmar nueva Contraseña</Form.Label>
                   <div className="position-relative">
                     <Form.Control
                       type={showPasswordConfirm ? "text" : "password"}
                       name="passwordActualConfirm"
                       placeholder="Confirme su nueva contraseña"
-                      value={form.passwordActualConfirm}
-                      onChange={handleChange}
+                      value={formikPassword.values.passwordActualConfirm}
+                      onChange={formikPassword.handleChange}
+                      onBlur={formikPassword.handleBlur}
+                      isInvalid={
+                        !!formikPassword.errors.passwordActualConfirm &&
+                        formikPassword.touched.passwordActualConfirm
+                      }
                       style={{ paddingRight: "2.5rem" }}
                     />
                     <span
@@ -581,6 +837,9 @@ const Perfil = () => {
                       {showPasswordConfirm ? <FaEye /> : <FaEyeSlash />}
                     </span>
                   </div>
+                  <Form.Control.Feedback type="invalid">
+                    {formikPassword.errors.passwordActualConfirm}
+                  </Form.Control.Feedback>
                 </Form.Group>
 
                 {/* Botones dentro del formulario */}
