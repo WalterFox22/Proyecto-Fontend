@@ -138,7 +138,7 @@ const RemplazoDisponible = () => {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.msg_reemplazo || "Ocurrió un error al realizar el reemplazo Permanente."
+        error.response?.data?.msg_reemplazo || error.response?.data?.msg_actualizacion_conductor || "Ocurrió un error al realizar el reemplazo Permanente."
       );
     }
   };

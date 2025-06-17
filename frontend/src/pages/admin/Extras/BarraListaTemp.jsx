@@ -4,7 +4,7 @@ import { Card, Table } from "react-bootstrap";
 import Mensaje from "../../../componets/Alertas/Mensaje";
 import Delete from "../../../assets/borrar1.png";
 import Swal from "sweetalert2";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import '../Styles-Admin/BarraListaTemp.css'
 
 const BarraListaTemp = () => {
@@ -103,7 +103,7 @@ const BarraListaTemp = () => {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.msg_eliminar_reemplazo ||
+        error.response?.data?.msg_eliminar_reemplazo || error.response?.data?.msg_actualizacion_conductor||
           "Ocurrió un error al eliminar el conductor temporal."
       );
     }
@@ -111,6 +111,7 @@ const BarraListaTemp = () => {
 
   return (
     <>
+    <ToastContainer/>
       {error && (
         <Mensaje tipo={false} className="text-danger">
           {error}

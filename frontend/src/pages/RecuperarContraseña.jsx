@@ -30,6 +30,14 @@ const RecuperarContra = () => {
   // Paso 3 Envio de la informacion a backend
   const handleSubmit = async (e) => {
     e.preventDefault(); // Para evitar que se pierda la info al recargar
+
+    // Validación extra de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!mail.email || !emailRegex.test(mail.email)) {
+      toast.error("Por favor ingresa un correo electrónico válido.");
+      return;
+    }
+    
     try {
       const url = `${import.meta.env.VITE_URL_BACKEND}/recuperacion/contrasenia`;
       const respuesta = await axios.post(url, mail);

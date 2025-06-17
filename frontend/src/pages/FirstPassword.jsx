@@ -7,38 +7,44 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Loading from "../componets/Loading/Loading";
 import { toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const passwordRegex =
+  /^(?=(?:[^A-Za-z]*[A-Za-z]){3})(?=(?:[^0-9]*[0-9]){3})(?=(?:[A-Za-z0-9]*[^A-Za-z0-9]){3})[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{9,}$/;
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Correo electrónico inválido")
+    .required("El correo es obligatorio"),
+  passwordActual: Yup.string()
+    .matches(
+      passwordRegex,
+      "Debe tener 3 letras, 3 números y 3 caracteres especiales"
+    )
+    .required("La contraseña es obligatoria"),
+  passwordActualConfirm: Yup.string()
+    .oneOf([Yup.ref("passwordActual"), null], "Las contraseñas no coinciden")
+    .required("Confirma la contraseña"),
+});
 
 const FirstPassword = () => {
   const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
 
-  const [form, setForm] = useState({
-    email: "",
-    passwordActual: "",
-    passwordActualConfirm: "",
-  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
-  const [isSubmitting, setIsSubmitting] = useState(false); // Estado local para la pantalla de carga
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true); // Activa la pantalla de carga local
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setIsSubmitting(true);
     try {
       const url = `${
         import.meta.env.VITE_URL_BACKEND
       }/cambiar/contrasenia/primer/inicio`;
       const respuesta = await axios.patch(url, {
-        email: form.email,
-        passwordActual: form.passwordActual,
-        passwordActualConfirm: form.passwordActualConfirm,
+        email: values.email,
+        passwordActual: values.passwordActual,
+        passwordActualConfirm: values.passwordActualConfirm,
       });
 
       setAuth(respuesta.data);
@@ -49,15 +55,14 @@ const FirstPassword = () => {
         text: "La contraseña ha sido cambiada correctamente.",
         confirmButtonText: "Aceptar",
       }).then(() => {
-        navigate("/login"); // Redirige al login después de aceptar
+        navigate("/login");
       });
     } catch (error) {
       if (error.response) {
         const errorMessage =
-        error.response?.data?.error?.msg || // Mensaje de validación del backend
-        error.response?.data?.msg_cambio_contrasenia || // Otros mensajes del backend
-        "Error desconocido";  
-
+          error.response?.data?.error?.msg ||
+          error.response?.data?.msg_cambio_contrasenia ||
+          "Error desconocido";
         toast.error(errorMessage, { position: "top-right", autoClose: 3000 });
       } else {
         toast.error("Error de conexión, por favor intenta de nuevo.", {
@@ -66,7 +71,8 @@ const FirstPassword = () => {
         });
       }
     } finally {
-      setIsSubmitting(false); // Desactiva la pantalla de carga local
+      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
@@ -80,58 +86,95 @@ const FirstPassword = () => {
           <div id="first-password-glass-container">
             <div id="first-password-box">
               <h2 id="first-password-title">Cambiar la contraseña</h2>
-              <form id="first-password-form" onSubmit={handleSubmit}>
-                <input
-                  id="first-password-email"
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="Correo"
-                />
-                <div className="input-container">
-                  <input
-                    id="first-password-password"
-                    type={showPassword ? "text" : "password"}
-                    name="passwordActual"
-                    value={form.passwordActual}
-                    onChange={handleChange}
-                    required
-                    placeholder="Contraseña"
-                    className="input-with-icon"
-                  />
-                  <span
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="eye-icon"
-                  >
-                    {showPassword ? <FaEye /> : <FaEyeSlash />}
-                  </span>
-                </div>
+              <Formik
+                initialValues={{
+                  email: "",
+                  passwordActual: "",
+                  passwordActualConfirm: "",
+                }}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ isSubmitting }) => (
+                  <Form id="first-password-form">
+                    <Field
+                      id="first-password-email"
+                      type="email"
+                      name="email"
+                      placeholder="Correo"
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="form-error"
+                    />
 
-                <div className="input-container">
-                  <input
-                    id="first-password-passwordConfirmar"
-                    type={showPassword ? "text" : "password"}
-                    name="passwordActualConfirm"
-                    value={form.passwordActualConfirm}
-                    onChange={handleChange}
-                    required
-                    placeholder="Confirmación Contraseña"
-                    className="input-with-icon"
-                  />
-                  <span
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="eye-icon"
-                  >
-                    {showPassword ? <FaEye /> : <FaEyeSlash />}
-                  </span>
-                </div>
+                    <div className="input-container">
+                      <Field
+                        id="first-password-password"
+                        type={showPassword ? "text" : "password"}
+                        name="passwordActual"
+                        placeholder="Ej: Ab1#Cd2$Ef3@"
+                        className="input-with-icon"
+                      />
+                      <span
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="eye-icon"
+                        style={{ cursor: "pointer" }}
+                      >
+                        {showPassword ? <FaEye /> : <FaEyeSlash />}
+                      </span>
+                    </div>
+                    <ErrorMessage
+                      name="passwordActual"
+                      component="div"
+                      className="form-error"
+                    />
+                    <div
+                      style={{
+                        fontSize: "0.9em",
+                        color: "#bbb",
+                        marginBottom: 8,
+                      }}
+                    >
+                      Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
+                      <b>3 caracteres especiales</b> (ejemplo:{" "}
+                      <span style={{ color: "#4caf50" }}>Ab1#Cd2$Ef3@</span>)
+                    </div>
 
-                <button id="first-password-button" className="btn btn-success">
-                  Cambiar
-                </button>
-              </form>
+                    <div className="input-container">
+                      <Field
+                        id="first-password-passwordConfirmar"
+                        type={showPassword ? "text" : "password"}
+                        name="passwordActualConfirm"
+                        placeholder="Confirmación Contraseña"
+                        className="input-with-icon"
+                      />
+                      <span
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="eye-icon"
+                        style={{ cursor: "pointer" }}
+                      >
+                        {showPassword ? <FaEye /> : <FaEyeSlash />}
+                      </span>
+                    </div>
+                    <ErrorMessage
+                      name="passwordActualConfirm"
+                      component="div"
+                      className="form-error"
+                    />
+
+                    <button
+                      id="first-password-button"
+                      className="btn btn-success"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      Cambiar
+                    </button>
+                  </Form>
+                )}
+              </Formik>
             </div>
           </div>
         </div>
