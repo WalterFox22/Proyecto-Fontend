@@ -12,6 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 import AuthContext from "../context/AuthProvider";
 import * as Yup from "yup";
 import "../pages/admin/Styles-Admin/BarraListar.css";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const placaRegex = /^[A-Z]{3}-\d{4}$/;
@@ -195,6 +196,7 @@ const BarraListar = () => {
 
     if (!value) {
       // Si la barra de búsqueda está vacía, recargar toda la lista de conductores
+      setError(null);
       listarConductores();
     }
   };
@@ -205,6 +207,7 @@ const BarraListar = () => {
 
     if (!rutaAsignada) {
       // Si la barra de búsqueda está vacía, recargar toda la lista de conductores
+      setError(null);
       listarConductores();
     } else {
       buscarConductorPorRuta(); // Realizar la búsqueda con la ruta especificada
@@ -516,20 +519,28 @@ const BarraListar = () => {
                       className="d-flex justify-content-center align-items-center"
                       style={{ minWidth: "150px" }}
                     >
-                      <img
-                        src={Update}
-                        alt="Update"
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          marginRight: "7px",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer inline-block icon-action"
-                        onClick={() => {
-                          handleOpenModal(conductor);
-                        }}
-                      />
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-actualizar">Actualizar</Tooltip>
+                        }
+                      >
+                        <img
+                          src={Update}
+                          alt="Update"
+                          style={{
+                            height: "30px",
+                            width: "30px",
+                            marginRight: "7px",
+                            cursor: "pointer",
+                          }}
+                          className="cursor-pointer inline-block icon-action"
+                          onClick={() => {
+                            handleOpenModal(conductor);
+                          }}
+                        />
+                      </OverlayTrigger>
+
                       {/** 
                       <img
                         src={Delete}
@@ -546,36 +557,55 @@ const BarraListar = () => {
                         }}
                       />
                       */}
-                      <img
-                        src={AddAdmin}
-                        alt="AddAdmin"
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          marginRight: "7px",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer inline-block icon-action"
-                        onClick={() => {
-                          handleAddAdmin(conductor._id);
-                        }}
-                      />
-                      <img
-                        src={Replace}
-                        alt="Replace"
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          marginRight: "7px",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer inline-block icon-action"
-                        onClick={() =>
-                          navigate(
-                            `/dashboard/listar/reemplazo/disponibles?idPrincipal=${conductor._id}`
-                          )
+
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-addAdmin">
+                            Convertir en administrador
+                          </Tooltip>
                         }
-                      />
+                      >
+                        <img
+                          src={AddAdmin}
+                          alt="AddAdmin"
+                          style={{
+                            height: "30px",
+                            width: "30px",
+                            marginRight: "7px",
+                            cursor: "pointer",
+                          }}
+                          className="cursor-pointer inline-block icon-action"
+                          onClick={() => {
+                            handleAddAdmin(conductor._id);
+                          }}
+                        />
+                      </OverlayTrigger>
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-replace">
+                            Asignar reemplazo
+                          </Tooltip>
+                        }
+                      >
+                        <img
+                          src={Replace}
+                          alt="Replace"
+                          style={{
+                            height: "30px",
+                            width: "30px",
+                            marginRight: "7px",
+                            cursor: "pointer",
+                          }}
+                          className="cursor-pointer inline-block icon-action"
+                          onClick={() =>
+                            navigate(
+                              `/dashboard/listar/reemplazo/disponibles?idPrincipal=${conductor._id}`
+                            )
+                          }
+                        />
+                      </OverlayTrigger>
                     </td>
                   </tr>
                 ))}

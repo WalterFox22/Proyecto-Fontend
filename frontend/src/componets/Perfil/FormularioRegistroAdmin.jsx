@@ -5,6 +5,7 @@ import { Button, Container, Form, ProgressBar } from "react-bootstrap";
 import NoUser from "../../assets/NoUser.avif";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import Swal from "sweetalert2";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const placaRegex = /^[A-Z]{3}-\d{4}$/;
@@ -48,23 +49,32 @@ const validationSchema = Yup.object({
   trabajaraOno: Yup.string()
     .oneOf(["Sí", "No"], "Seleccione una opción válida")
     .required("Este campo es obligatorio"),
-  asignacionOno: Yup.string()
-    .oneOf(["Sí", "No"], "Seleccione una opción válida")
-    .required("Este campo es obligatorio"),
-  rutaAsignada: Yup.string().when("asignacionOno", (asignacionOno, schema) =>
-    asignacionOno === "No"
-      ? schema
-          .required("La ruta es obligatoria")
-          .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12")
-      : schema.notRequired()
-  ),
-  sectoresRuta: Yup.string().when("asignacionOno", (asignacionOno, schema) =>
-    asignacionOno === "No"
-      ? schema
-          .matches(onlyLetters, "Solo se permiten letras")
-          .required("El sector es obligatorio")
-      : schema.notRequired()
-  ),
+  asignacionOno: Yup.string().when("trabajaraOno", {
+    is: "Sí",
+    then: (schema) =>
+      schema
+        .oneOf(["Sí", "No"], "Seleccione una opción válida")
+        .required("Este campo es obligatorio"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  rutaAsignada: Yup.string().when(["trabajaraOno", "asignacionOno"], {
+    is: (trabajaraOno, asignacionOno) =>
+      trabajaraOno === "Sí" && asignacionOno === "No",
+    then: (schema) =>
+      schema
+        .required("La ruta es obligatoria")
+        .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  sectoresRuta: Yup.string().when(["trabajaraOno", "asignacionOno"], {
+    is: (trabajaraOno, asignacionOno) =>
+      trabajaraOno === "Sí" && asignacionOno === "No",
+    then: (schema) =>
+      schema
+        .matches(onlyLetters, "Solo se permiten letras")
+        .required("El sector es obligatorio"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
   eliminacionAdminSaliente: Yup.string()
     .oneOf(["Sí", "No"], "Seleccione una opción válida")
     .required("Este campo es obligatorio"),
@@ -112,7 +122,12 @@ const FormularioRegistroAdmin = () => {
           respuesta.data.msg_registro_conductor &&
           respuesta.status === 200
         ) {
-          toast.success(respuesta.data.msg_registro_conductor);
+          await Swal.fire({
+            icon: "success",
+            title: "Registro exitoso",
+            text: respuesta.data.msg_registro_conductor,
+            confirmButtonText: "OK",
+          });
           localStorage.removeItem("token");
           localStorage.removeItem("rol");
           resetForm();
@@ -458,78 +473,86 @@ const FormularioRegistroAdmin = () => {
                   {formik.errors.trabajaraOno}
                 </Form.Control.Feedback>
               </Form.Group>
-              <Form.Group className="mb-2">
-                <Form.Label>
-                  ¿Desea asignar sus estudiantes al nuevo administrador, esto
-                  con ruta y sector?
-                </Form.Label>
-                <Form.Select
-                  name="asignacionOno"
-                  value={formik.values.asignacionOno}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  isInvalid={
-                    !!formik.errors.asignacionOno &&
-                    formik.touched.asignacionOno
-                  }
-                >
-                  <option value="">Seleccione una opción</option>
-                  <option value="Sí">Sí</option>
-                  <option value="No">No</option>
-                </Form.Select>
-                <Form.Control.Feedback
-                  type="invalid"
-                  style={{ color: "#e74c3c" }}
-                >
-                  {formik.errors.asignacionOno}
-                </Form.Control.Feedback>
-              </Form.Group>
-              {formik.values.asignacionOno === "No" && (
+
+              {/* Solo mostrar la pregunta de asignación si trabajaraOno es "Sí" */}
+              {formik.values.trabajaraOno === "Sí" && (
                 <>
                   <Form.Group className="mb-2">
-                    <Form.Label>Ruta Asignada</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="rutaAsignada"
-                      value={formik.values.rutaAsignada}
+                    <Form.Label>
+                      ¿Desea asignar sus estudiantes al nuevo administrador,
+                      esto con ruta y sector?
+                    </Form.Label>
+                    <Form.Select
+                      name="asignacionOno"
+                      value={formik.values.asignacionOno}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      placeholder="Ingrese la ruta (1 al 12)"
                       isInvalid={
-                        !!formik.errors.rutaAsignada &&
-                        formik.touched.rutaAsignada
+                        !!formik.errors.asignacionOno &&
+                        formik.touched.asignacionOno
                       }
-                    />
+                    >
+                      <option value="">Seleccione una opción</option>
+                      <option value="Sí">Sí</option>
+                      <option value="No">No</option>
+                    </Form.Select>
                     <Form.Control.Feedback
                       type="invalid"
                       style={{ color: "#e74c3c" }}
                     >
-                      {formik.errors.rutaAsignada}
+                      {formik.errors.asignacionOno}
                     </Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group className="mb-2">
-                    <Form.Label>Sectores de la Ruta</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="sectoresRuta"
-                      value={formik.values.sectoresRuta}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder="Ingrese el sector"
-                      isInvalid={
-                        !!formik.errors.sectoresRuta &&
-                        formik.touched.sectoresRuta
-                      }
-                    />
-                    <Form.Control.Feedback
-                      type="invalid"
-                      style={{ color: "#e74c3c" }}
-                    >
-                      {formik.errors.sectoresRuta}
-                    </Form.Control.Feedback>
-                  </Form.Group>
+                  {/* Solo mostrar Ruta y Sector si asignacionOno es "No" */}
+                  {formik.values.asignacionOno === "No" && (
+                    <>
+                      <Form.Group className="mb-2">
+                        <Form.Label>Ruta Asignada</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="rutaAsignada"
+                          value={formik.values.rutaAsignada}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          placeholder="Ingrese la ruta (1 al 12)"
+                          isInvalid={
+                            !!formik.errors.rutaAsignada &&
+                            formik.touched.rutaAsignada
+                          }
+                        />
+                        <Form.Control.Feedback
+                          type="invalid"
+                          style={{ color: "#e74c3c" }}
+                        >
+                          {formik.errors.rutaAsignada}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <Form.Group className="mb-2">
+                        <Form.Label>Sectores de la Ruta</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="sectoresRuta"
+                          value={formik.values.sectoresRuta}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          placeholder="Ingrese el sector"
+                          isInvalid={
+                            !!formik.errors.sectoresRuta &&
+                            formik.touched.sectoresRuta
+                          }
+                        />
+                        <Form.Control.Feedback
+                          type="invalid"
+                          style={{ color: "#e74c3c" }}
+                        >
+                          {formik.errors.sectoresRuta}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </>
+                  )}
                 </>
               )}
+
               <Button
                 variant="success"
                 style={{ backgroundColor: "#333333", border: "none" }}

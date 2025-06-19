@@ -5,7 +5,8 @@ import Mensaje from "../../../componets/Alertas/Mensaje";
 import Delete from "../../../assets/borrar1.png";
 import Swal from "sweetalert2";
 import { toast, ToastContainer } from "react-toastify";
-import '../Styles-Admin/BarraListaTemp.css'
+import "../Styles-Admin/BarraListaTemp.css";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const BarraListaTemp = () => {
   const [conductores, setConductores] = useState([]);
@@ -103,7 +104,8 @@ const BarraListaTemp = () => {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.msg_eliminar_reemplazo || error.response?.data?.msg_actualizacion_conductor||
+        error.response?.data?.msg_eliminar_reemplazo ||
+          error.response?.data?.msg_actualizacion_conductor ||
           "Ocurrió un error al eliminar el conductor temporal."
       );
     }
@@ -111,7 +113,7 @@ const BarraListaTemp = () => {
 
   return (
     <>
-    <ToastContainer/>
+      <ToastContainer />
       {error && (
         <Mensaje tipo={false} className="text-danger">
           {error}
@@ -161,20 +163,27 @@ const BarraListaTemp = () => {
                       className="d-flex justify-content-center align-items-center"
                       style={{ minWidth: "150px" }}
                     >
-                      <img
-                        src={Delete}
-                        alt="Delete"
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          marginRight: "7px",
-                          cursor: "pointer",
-                        }}
-                        className="cursor-pointer inline-block icon-action"
-                        onClick={() => {
-                          handleDelete(conductor._id);
-                        }}
-                      />
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-delete">Eliminar</Tooltip>
+                        }
+                      >
+                        <img
+                          src={Delete}
+                          alt="Delete"
+                          style={{
+                            height: "30px",
+                            width: "30px",
+                            marginRight: "7px",
+                            cursor: "pointer",
+                          }}
+                          className="cursor-pointer inline-block icon-action"
+                          onClick={() => {
+                            handleDelete(conductor._id);
+                          }}
+                        />
+                      </OverlayTrigger>
                     </td>
                   </tr>
                 ))}

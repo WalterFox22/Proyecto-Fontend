@@ -10,6 +10,7 @@ import axios from "axios";
 import "../Styles-Drivers/ListadeEstudiantes.css";
 import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const ListadeEstudiantes = () => {
   const { auth } = useContext(AuthContext);
@@ -378,50 +379,12 @@ const ListadeEstudiantes = () => {
                       style={{ minWidth: "150px" }}
                     >
                       {auth.esReemplazo === "Sí" ? (
-                        <img
-                          src={Maps}
-                          alt="Maps"
-                          style={{
-                            height: "30px",
-                            width: "30px",
-                            marginRight: "7px",
-                            cursor: "pointer",
-                          }}
-                          className="cursor-pointer inline-block icon-action"
-                          onClick={() =>
-                            OpenMaps(estudiantes.ubicacionDomicilio)
+                        <OverlayTrigger
+                          placement="top"
+                          overlay={
+                            <Tooltip id="tooltip-maps">Abrir Ubicación</Tooltip>
                           }
-                        />
-                      ) : (
-                        <>
-                          <img
-                            src={Update}
-                            alt="Update"
-                            style={{
-                              height: "30px",
-                              width: "30px",
-                              marginRight: "7px",
-                              cursor: "pointer",
-                            }}
-                            className="cursor-pointer inline-block icon-action"
-                            onClick={() => handleShow(estudiantes)}
-                          />
-
-                          <img
-                            src={Delete}
-                            alt="Delete"
-                            style={{
-                              height: "30px",
-                              width: "30px",
-                              marginRight: "7px",
-                              cursor: "pointer",
-                            }}
-                            className="cursor-pointer inline-block icon-action"
-                            onClick={() => {
-                              handleDelete(estudiantes._id);
-                            }}
-                          />
-
+                        >
                           <img
                             src={Maps}
                             alt="Maps"
@@ -436,6 +399,74 @@ const ListadeEstudiantes = () => {
                               OpenMaps(estudiantes.ubicacionDomicilio)
                             }
                           />
+                        </OverlayTrigger>
+                      ) : (
+                        <>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-actualizar">
+                                Actualizar Información
+                              </Tooltip>
+                            }
+                          >
+                            <img
+                              src={Update}
+                              alt="Update"
+                              style={{
+                                height: "30px",
+                                width: "30px",
+                                marginRight: "7px",
+                                cursor: "pointer",
+                              }}
+                              className="cursor-pointer inline-block icon-action"
+                              onClick={() => handleShow(estudiantes)}
+                            />
+                          </OverlayTrigger>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-delete">Eliminar</Tooltip>
+                            }
+                          >
+                            <img
+                              src={Delete}
+                              alt="Delete"
+                              style={{
+                                height: "30px",
+                                width: "30px",
+                                marginRight: "7px",
+                                cursor: "pointer",
+                              }}
+                              className="cursor-pointer inline-block icon-action"
+                              onClick={() => {
+                                handleDelete(estudiantes._id);
+                              }}
+                            />
+                          </OverlayTrigger>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="tooltip-maps">
+                                Abrir Ubicación
+                              </Tooltip>
+                            }
+                          >
+                            <img
+                              src={Maps}
+                              alt="Maps"
+                              style={{
+                                height: "30px",
+                                width: "30px",
+                                marginRight: "7px",
+                                cursor: "pointer",
+                              }}
+                              className="cursor-pointer inline-block icon-action"
+                              onClick={() =>
+                                OpenMaps(estudiantes.ubicacionDomicilio)
+                              }
+                            />
+                          </OverlayTrigger>
                         </>
                       )}
                     </td>

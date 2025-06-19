@@ -140,6 +140,7 @@ const FormularioEstudiante = () => {
                       type="text"
                       name="nombre"
                       autoComplete="off"
+                      placeholder="Ingrese el nombre"
                     />
                     <ErrorMessage
                       name="nombre"
@@ -154,6 +155,7 @@ const FormularioEstudiante = () => {
                       type="text"
                       name="apellido"
                       autoComplete="off"
+                      placeholder="Ingrese el apellido"
                     />
                     <ErrorMessage
                       name="apellido"
@@ -184,6 +186,7 @@ const FormularioEstudiante = () => {
                       type="text"
                       name="cedula"
                       autoComplete="off"
+                      placeholder="Ingrese la cédula (10 dígitos)"
                     />
                     <ErrorMessage
                       name="cedula"

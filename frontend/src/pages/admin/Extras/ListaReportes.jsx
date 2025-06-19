@@ -293,7 +293,12 @@ const ListaReportes = () => {
       <hr className="my-4" />
       <Row>
         <Col xs={12} md={12} lg={10} xl={9} className="mx-auto">
-          <Form>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              ReporteTablas();
+            }}
+          >
             <Form.Group className="mb-3 d-flex flex-wrap align-items-center gap-2">
               <Form.Label className="mb-0 text-break w-100">
                 Selecciona el tipo de reporte detallado:
@@ -323,7 +328,7 @@ const ListaReportes = () => {
                   value={busquedaRuta}
                   onChange={(e) => setBusquedaRuta(e.target.value)}
                   className="flex-grow-1"
-                  style={{ maxWidth: "200px" }} // Keep a max-width
+                  style={{ maxWidth: "200px" }}
                 />
               </Form.Group>
             )}
@@ -332,7 +337,7 @@ const ListaReportes = () => {
                 <Button
                   className="mb-2 px-4"
                   variant="success"
-                  onClick={ReporteTablas}
+                  type="submit"
                   disabled={loadingDetalle}
                   style={{
                     width: "auto",
