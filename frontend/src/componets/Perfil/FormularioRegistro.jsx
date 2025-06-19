@@ -13,64 +13,73 @@ const FormularioRegistro = () => {
   const [imagenPreview, setImagenPreview] = useState(null);
 
   // Yup validation schema
-  const validationSchema = Yup.object({
-    nombre: Yup.string()
-      .matches(onlyLetters, "Solo se permiten letras")
-      .required("El nombre es obligatorio"),
-    apellido: Yup.string()
-      .matches(onlyLetters, "Solo se permiten letras")
-      .required("El apellido es obligatorio"),
-    telefono: Yup.string()
-      .matches(/^\d{7,10}$/, "Teléfono inválido")
-      .required("El teléfono es obligatorio"),
-    cedula: Yup.string()
-      .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
-      .required("La cédula es obligatoria"),
-    email: Yup.string()
-      .email("Correo inválido")
-      .required("El correo es obligatorio"),
-    institucion: Yup.string().required(),
-    generoConductor: Yup.string()
-      .oneOf(
-        ["Masculino", "Femenino", "Prefiero no decirlo"],
-        "Seleccione un género válido"
-      )
-      .required("Seleccione un género"),
-    fotografiaDelConductor: Yup.mixed()
-      .required("La foto es obligatoria")
-      .test(
-        "fileType",
-        "Solo se permiten archivos JPG, JPEG o PNG",
-        (value) =>
-          value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+  const validationSchemas = [
+    // Paso 1
+    Yup.object({
+      nombre: Yup.string()
+        .matches(onlyLetters, "Solo se permiten letras")
+        .required("El nombre es obligatorio"),
+      apellido: Yup.string()
+        .matches(onlyLetters, "Solo se permiten letras")
+        .required("El apellido es obligatorio"),
+      telefono: Yup.string()
+        .matches(/^\d{7,10}$/, "Número de celular inválido")
+        .required("El número de celular es obligatorio"),
+      cedula: Yup.string()
+        .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
+        .required("La cédula es obligatoria"),
+    }),
+    // Paso 2
+    Yup.object({
+      email: Yup.string()
+        .email("Correo inválido")
+        .required("El correo es obligatorio"),
+      generoConductor: Yup.string()
+        .oneOf(
+          ["Masculino", "Femenino", "Prefiero no decirlo"],
+          "Seleccione un género válido"
+        )
+        .required("Seleccione un género"),
+      fotografiaDelConductor: Yup.mixed()
+        .required("La foto es obligatoria")
+        .test(
+          "fileType",
+          "Solo se permiten archivos JPG, JPEG o PNG",
+          (value) =>
+            value &&
+            ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+        ),
+    }),
+    // Paso 3
+    Yup.object({
+      placaAutomovil: Yup.string()
+        .matches(
+          /^[A-Z]{3}-\d{4}$/,
+          "Formato de placa inválido. Ejemplo: PRT-9888"
+        )
+        .required("La placa es obligatoria"),
+      cooperativa: Yup.string()
+        .matches(onlyLetters, "Solo se permiten letras")
+        .required("La cooperativa es obligatoria"),
+      esReemplazo: Yup.string()
+        .oneOf(["Sí", "No"], "Seleccione una opción válida")
+        .required("Seleccione una opción"),
+      rutaAsignada: Yup.string().when("esReemplazo", (esReemplazo, schema) =>
+        esReemplazo === "No"
+          ? schema
+              .required("La ruta es obligatoria")
+              .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12")
+          : schema.notRequired()
       ),
-    placaAutomovil: Yup.string()
-      .matches(
-        /^[A-Z]{3}-\d{4}$/,
-        "Formato de placa inválido. Ejemplo: PRT-9888"
-      )
-      .required("La placa es obligatoria"),
-    cooperativa: Yup.string()
-      .matches(onlyLetters, "Solo se permiten letras")
-      .required("La cooperativa es obligatoria"),
-    esReemplazo: Yup.string()
-      .oneOf(["Sí", "No"], "Seleccione una opción válida")
-      .required("Seleccione una opción"),
-    rutaAsignada: Yup.string().when("esReemplazo", (esReemplazo, schema) =>
-      esReemplazo === "No"
-        ? schema
-            .required("La ruta es obligatoria")
-            .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12")
-        : schema.notRequired()
-    ),
-    sectoresRuta: Yup.string().when("esReemplazo", (esReemplazo, schema) =>
-      esReemplazo === "No"
-        ? schema
-            .matches(onlyLetters, "Solo se permiten letras")
-            .required("El sector es obligatorio")
-        : schema.notRequired()
-    ),
-  });
+      sectoresRuta: Yup.string().when("esReemplazo", (esReemplazo, schema) =>
+        esReemplazo === "No"
+          ? schema
+              .matches(onlyLetters, "Solo se permiten letras")
+              .required("El sector es obligatorio")
+          : schema.notRequired()
+      ),
+    }),
+  ];
 
   const formik = useFormik({
     initialValues: {
@@ -88,7 +97,7 @@ const FormularioRegistro = () => {
       rutaAsignada: "",
       sectoresRuta: "",
     },
-    validationSchema,
+    validationSchema: validationSchemas[step - 1], // <-- usa el esquema del paso actual
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: async (values, { resetForm }) => {
@@ -142,33 +151,16 @@ const FormularioRegistro = () => {
 
   // Manejo de pasos
   const nextStep = async () => {
-    let fields = [];
-    if (step === 1) fields = ["nombre", "apellido", "telefono", "cedula"];
-    if (step === 2)
-      fields = ["email", "generoConductor", "fotografiaDelConductor"];
-    if (step === 3) {
-      fields = [
-        "placaAutomovil",
-        "cooperativa",
-        "esReemplazo",
-        ...(formik.values.esReemplazo === "No"
-          ? ["rutaAsignada", "sectoresRuta"]
-          : []),
-      ];
+    const errors = await formik.validateForm();
+    formik.setTouched(
+      Object.keys(validationSchemas[step - 1].fields).reduce(
+        (acc, key) => ({ ...acc, [key]: true }),
+        {}
+      )
+    );
+    if (Object.keys(errors).length === 0) {
+      setStep(step + 1);
     }
-
-    // Marcar todos los campos del paso como tocados
-    fields.forEach((f) => formik.setFieldTouched(f, true, true));
-
-    // Validar solo los campos del paso actual
-    await formik.validateForm();
-    const errors = fields.filter((f) => formik.errors[f]);
-    if (errors.length > 0) {
-      // Muestra los mensajes de error
-      errors.forEach((f) => toast.error(formik.errors[f]));
-      return;
-    }
-    setStep(step + 1);
   };
   const prevStep = () => setStep(step - 1);
 
@@ -223,14 +215,16 @@ const FormularioRegistro = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label style={{ fontWeight: "bold" }}>Teléfono</Form.Label>
+                <Form.Label style={{ fontWeight: "bold" }}>
+                  Número de celular
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="telefono"
                   value={formik.values.telefono}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  placeholder="Ingrese el teléfono"
+                  placeholder="Ingrese el número de celular (10 dígitos)"
                   isInvalid={
                     !!formik.errors.telefono && formik.touched.telefono
                   }

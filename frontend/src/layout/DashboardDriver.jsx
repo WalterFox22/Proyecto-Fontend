@@ -99,8 +99,8 @@ const DashboardDriver = () => {
             />
             <p className="mt-3" style={{ color: "white" }}>
               <span
-                className="bg-success rounded-circle d-inline-block me-2"
-                style={{ width: 10, height: 10 }}
+                className="rounded-circle d-inline-block me-2"
+                style={{ width: 10, height: 10, backgroundColor: "#4efc6e" }}
               ></span>
               Bienvenido - {auth?.nombre || "Usuario desconocido"}
             </p>

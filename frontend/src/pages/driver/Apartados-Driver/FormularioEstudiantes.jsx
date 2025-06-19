@@ -6,7 +6,7 @@ import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const googleMapsRegex =
-  /^(https?:\/\/)?(www\.)?(maps\.google\.com|goo\.gl|maps\.app\.goo\.gl)\/.+$/i;
+  /^(https?:\/\/)?(www\.)?(google\.[a-z.]+\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)\/[^\s]+/i;
 
 const validationSchemas = [
   // Paso 1
@@ -31,12 +31,12 @@ const validationSchemas = [
   Yup.object({
     turno: Yup.string().required("El turno es obligatorio"),
     ubicacionDomicilio: Yup.string()
-      .test(
-        "is-google-maps-url",
-        "Debe ser una URL válida de Google Maps",
-        (value) => !!value && googleMapsRegex.test(value)
-      )
-      .required("La dirección es obligatoria"),
+  .test(
+    "is-google-maps-url",
+    "Debe ser una URL válida de Google Maps",
+    (value) => !!value && googleMapsRegex.test(value)
+  )
+  .required("La dirección es obligatoria"),
   }),
 ];
 
@@ -57,7 +57,7 @@ const FormularioEstudiante = () => {
 
   const progress = ((step + 1) / 3) * 100;
 
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values, actions) => {
     try {
       const resultado = await RegistrarEstudiantes(values);
       if (
@@ -69,9 +69,9 @@ const FormularioEstudiante = () => {
           position: "top-right",
           autoClose: 3000,
         });
-        resetForm();
+        actions.resetForm();
         setStep(0);
-      } else if (resultado.error) {
+      } else if (resultado && resultado.error) {
         toast.error(
           resultado.error.msg_registro_estudiantes ||
             "Ocurrió un error inesperado",
@@ -91,6 +91,10 @@ const FormularioEstudiante = () => {
         position: "top-right",
         autoClose: 3000,
       });
+    } finally {
+      actions.setSubmitting(false);
+      actions.setTouched({});
+      actions.setErrors({});
     }
   };
 
@@ -107,9 +111,10 @@ const FormularioEstudiante = () => {
           validateOnBlur={true}
           onSubmit={(values, actions) => {
             if (step < 2) {
-              setStep(step + 1);
               actions.setTouched({});
+              actions.setErrors({});
               actions.setSubmitting(false);
+              setStep(step + 1);
             } else {
               handleSubmit(values, actions);
             }
@@ -121,8 +126,9 @@ const FormularioEstudiante = () => {
             errors,
             touched,
             validateForm,
-            values,
             setTouched,
+            setErrors,
+            setSubmitting,
           }) => (
             <Form onSubmit={handleSubmit}>
               {step === 0 && (
@@ -198,7 +204,14 @@ const FormularioEstudiante = () => {
                         genero: true,
                         cedula: true,
                       });
-                      if (Object.keys(formErrors).length === 0) setStep(1);
+                      if (Object.keys(formErrors).length === 0) {
+                        setStep(1);
+                        setTouched({});
+                        setErrors({});
+                        setSubmitting(false);
+                      } else {
+                        setSubmitting(false);
+                      }
                     }}
                   >
                     Siguiente
@@ -269,6 +282,9 @@ const FormularioEstudiante = () => {
                     onClick={(e) => {
                       e.preventDefault();
                       setStep(0);
+                      setTouched({});
+                      setErrors({});
+                      setSubmitting(false);
                     }}
                     className="me-2 mt-1"
                   >
@@ -285,7 +301,14 @@ const FormularioEstudiante = () => {
                         nivelEscolar: true,
                         paralelo: true,
                       });
-                      if (Object.keys(formErrors).length === 0) setStep(2);
+                      if (Object.keys(formErrors).length === 0) {
+                        setStep(2);
+                        setTouched({});
+                        setErrors({});
+                        setSubmitting(false);
+                      } else {
+                        setSubmitting(false);
+                      }
                     }}
                   >
                     Siguiente
@@ -332,6 +355,9 @@ const FormularioEstudiante = () => {
                     onClick={(e) => {
                       e.preventDefault();
                       setStep(1);
+                      setTouched({});
+                      setErrors({});
+                      setSubmitting(false);
                     }}
                     className="me-2 mt-1"
                   >

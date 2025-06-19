@@ -55,7 +55,7 @@
 
 #login-email,
 #login-password {
-  width: 90%;
+  width: 85%;
   padding: 15px;
   margin-top: 20px;
   border: none;
@@ -65,6 +65,20 @@
   color: white;
   font-size: 16px;
   text-align: center;
+}
+#login-email{
+  padding-right: 60px;
+  
+  padding-left: 30px;
+  text-align: left;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+
+#login-email,
+#login-email::placeholder {
+  text-align: center !important;
 }
 
 #login-email::placeholder,
@@ -131,6 +145,7 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   margin-top: 10px;
   font-weight: bold;
+  padding-left: 15px;
 }
 
 #login-forgot-password:hover {
@@ -157,11 +172,11 @@
 
 /* Estilo para el selector de rol con id único */
 #login-role-select {
-  width: 90%;
-  padding: 12px;
+  width: 85%;
+  padding: 15px;
   margin-top: 20px;
   border: 3px solid #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: transparent;
   color: white; /* Texto blanco */
   font-size: 16px;

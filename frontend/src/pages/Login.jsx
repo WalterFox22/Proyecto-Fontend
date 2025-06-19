@@ -114,7 +114,7 @@ const Login = () => {
                   required
                 >
                   <option value="">Seleccionar rol</option>
-                  <option value="admin">Admintrador</option>
+                  <option value="admin">Administrador</option>
                   <option value="conductor">Conductor</option>
                 </select>
 
@@ -126,6 +126,7 @@ const Login = () => {
                   onChange={handleChange}
                   required
                   placeholder="Correo"
+                  dir="ltr"
                 />
                 <div style={{ position: "relative" }}>
                   <input
@@ -163,7 +164,7 @@ const Login = () => {
                     to="/recuperacion/contrasenia"
                     id="login-forgot-password"
                   >
-                    Olvidaste tu contraseña?
+                    ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
 

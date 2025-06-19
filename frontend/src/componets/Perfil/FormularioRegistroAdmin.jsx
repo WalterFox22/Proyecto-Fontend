@@ -17,8 +17,8 @@ const validationSchema = Yup.object({
     .matches(onlyLetters, "Solo se permiten letras")
     .required("El apellido es obligatorio"),
   telefono: Yup.string()
-    .matches(/^\d{7,10}$/, "Teléfono inválido")
-    .required("El teléfono es obligatorio"),
+    .matches(/^\d{7,10}$/, "Número de celular inválido")
+    .required("El número de celular es obligatorio"),
   generoConductor: Yup.string()
     .oneOf(
       ["Masculino", "Femenino", "Prefiero no decirlo"],
@@ -51,9 +51,6 @@ const validationSchema = Yup.object({
   asignacionOno: Yup.string()
     .oneOf(["Sí", "No"], "Seleccione una opción válida")
     .required("Este campo es obligatorio"),
-  eliminacionAdminSaliente: Yup.string()
-    .oneOf(["Sí", "No"], "Seleccione una opción válida")
-    .required("Este campo es obligatorio"),
   rutaAsignada: Yup.string().when("asignacionOno", (asignacionOno, schema) =>
     asignacionOno === "No"
       ? schema
@@ -68,6 +65,9 @@ const validationSchema = Yup.object({
           .required("El sector es obligatorio")
       : schema.notRequired()
   ),
+  eliminacionAdminSaliente: Yup.string()
+    .oneOf(["Sí", "No"], "Seleccione una opción válida")
+    .required("Este campo es obligatorio"),
 });
 
 const FormularioRegistroAdmin = () => {
@@ -153,19 +153,20 @@ const FormularioRegistroAdmin = () => {
     },
   });
 
+  // Cambia la lógica de pasos: ahora solo hay 4 pasos
   const nextStep = async () => {
     let fields = [];
     if (step === 1)
       fields = ["nombre", "apellido", "telefono", "generoConductor", "cedula"];
     if (step === 2) fields = ["email", "placaAutomovil", "cooperativa", "foto"];
-    if (step === 3) fields = ["trabajaraOno"];
-    if (step === 4) {
-      fields = ["asignacionOno"];
+    // Paso 3 unificado: trabajaraOno, asignacionOno, rutaAsignada, sectoresRuta
+    if (step === 3) {
+      fields = ["trabajaraOno", "asignacionOno"];
       if (formik.values.asignacionOno === "No") {
         fields.push("rutaAsignada", "sectoresRuta");
       }
     }
-    if (step === 5) fields = ["eliminacionAdminSaliente"];
+    if (step === 4) fields = ["eliminacionAdminSaliente"];
 
     // Validar solo los campos del paso actual
     const errors = await formik.validateForm();
@@ -187,7 +188,8 @@ const FormularioRegistroAdmin = () => {
     else setPreview(null);
   };
 
-  const progress = (step / 5) * 100;
+  // Ahora hay 4 pasos
+  const progress = (step / 4) * 100;
 
   return (
     <>
@@ -205,6 +207,7 @@ const FormularioRegistroAdmin = () => {
                   value={formik.values.nombre}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  placeholder="Ingrese el nombre"
                   isInvalid={!!formik.errors.nombre && formik.touched.nombre}
                 />
                 <Form.Control.Feedback
@@ -222,6 +225,7 @@ const FormularioRegistroAdmin = () => {
                   value={formik.values.apellido}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  placeholder="Ingrese el apellido"
                   isInvalid={
                     !!formik.errors.apellido && formik.touched.apellido
                   }
@@ -234,13 +238,14 @@ const FormularioRegistroAdmin = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Telefóno</Form.Label>
+                <Form.Label>Número de celular</Form.Label>
                 <Form.Control
                   type="text"
                   name="telefono"
                   value={formik.values.telefono}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  placeholder="Ingrese el número de celular (10 dígitos)"
                   isInvalid={
                     !!formik.errors.telefono && formik.touched.telefono
                   }
@@ -286,6 +291,7 @@ const FormularioRegistroAdmin = () => {
                   value={formik.values.cedula}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  placeholder="Ingrese la cédula (10 dígitos)"
                   isInvalid={!!formik.errors.cedula && formik.touched.cedula}
                 />
                 <Form.Control.Feedback
@@ -317,6 +323,7 @@ const FormularioRegistroAdmin = () => {
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  placeholder="Ingrese el correo electrónico"
                   isInvalid={!!formik.errors.email && formik.touched.email}
                 />
                 <Form.Control.Feedback
@@ -334,6 +341,7 @@ const FormularioRegistroAdmin = () => {
                   value={formik.values.placaAutomovil}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  placeholder="Ejemplo: PRT-9888"
                   isInvalid={
                     !!formik.errors.placaAutomovil &&
                     formik.touched.placaAutomovil
@@ -354,6 +362,7 @@ const FormularioRegistroAdmin = () => {
                   value={formik.values.cooperativa}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  placeholder="Ingrese la cooperativa"
                   isInvalid={
                     !!formik.errors.cooperativa && formik.touched.cooperativa
                   }
@@ -385,7 +394,7 @@ const FormularioRegistroAdmin = () => {
                   onChange={handleImageChange}
                   onBlur={formik.handleBlur}
                   isInvalid={!!formik.errors.foto && formik.touched.foto}
-                  // No seteamos value, así el usuario puede avanzar y retroceder sin perder la imagen
+                  placeholder="Seleccione una imagen"
                 />
                 <Form.Control.Feedback
                   type="invalid"
@@ -422,6 +431,7 @@ const FormularioRegistroAdmin = () => {
             </>
           )}
 
+          {/* Paso 3 unificado */}
           {step === 3 && (
             <>
               <Form.Group className="mb-2">
@@ -448,29 +458,6 @@ const FormularioRegistroAdmin = () => {
                   {formik.errors.trabajaraOno}
                 </Form.Control.Feedback>
               </Form.Group>
-              <Button
-                variant="success"
-                style={{ backgroundColor: "#333333", border: "none" }}
-                onClick={prevStep}
-                className="me-2 mt-1"
-                type="button"
-              >
-                Atrás
-              </Button>
-              <Button
-                variant="success"
-                style={{ backgroundColor: "#32CD32", border: "none" }}
-                onClick={nextStep}
-                className="mt-1"
-                type="button"
-              >
-                Siguiente
-              </Button>
-            </>
-          )}
-
-          {step === 4 && (
-            <>
               <Form.Group className="mb-2">
                 <Form.Label>
                   ¿Desea asignar sus estudiantes al nuevo administrador, esto
@@ -497,7 +484,6 @@ const FormularioRegistroAdmin = () => {
                   {formik.errors.asignacionOno}
                 </Form.Control.Feedback>
               </Form.Group>
-
               {formik.values.asignacionOno === "No" && (
                 <>
                   <Form.Group className="mb-2">
@@ -508,6 +494,7 @@ const FormularioRegistroAdmin = () => {
                       value={formik.values.rutaAsignada}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
+                      placeholder="Ingrese la ruta (1 al 12)"
                       isInvalid={
                         !!formik.errors.rutaAsignada &&
                         formik.touched.rutaAsignada
@@ -528,6 +515,7 @@ const FormularioRegistroAdmin = () => {
                       value={formik.values.sectoresRuta}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
+                      placeholder="Ingrese el sector"
                       isInvalid={
                         !!formik.errors.sectoresRuta &&
                         formik.touched.sectoresRuta
@@ -542,7 +530,6 @@ const FormularioRegistroAdmin = () => {
                   </Form.Group>
                 </>
               )}
-
               <Button
                 variant="success"
                 style={{ backgroundColor: "#333333", border: "none" }}
@@ -564,7 +551,7 @@ const FormularioRegistroAdmin = () => {
             </>
           )}
 
-          {step === 5 && (
+          {step === 4 && (
             <>
               <Form.Group className="mb-2">
                 <Form.Label>¿Desea eliminarse del sistema?</Form.Label>

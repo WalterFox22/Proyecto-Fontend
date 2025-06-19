@@ -48,6 +48,19 @@ const perfilSchema = Yup.object({
     .matches(/^\d{7,10}$/, "Teléfono inválido")
     .notRequired(),
   // foto: Quita la validación de la foto aquí
+  fotografiaDelConductor: Yup.mixed()
+    .test(
+      "fileTypeOrUrl",
+      "Solo se permiten imágenes JPG, JPEG o PNG",
+      (value) => {
+        if (!value) return true; // No es obligatorio
+        if (typeof value === "string") return true; // Ya es una URL válida
+        return (
+          value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+        );
+      }
+    )
+    .notRequired(),
 });
 
 const Perfil = () => {
@@ -58,7 +71,13 @@ const Perfil = () => {
   //Acciones para mostrar la pantalla emergente
   const [modalType, setModalType] = useState(null);
   const handleShowModal = (type) => setModalType(type);
-  const handleCloseModal = () => setModalType(null);
+  const handleCloseModal = () => {
+    setModalType(null);
+    // Resetea el formulario de contraseña si el modal abierto era el de contraseña
+    if (modalType === "password") {
+      formikPassword.resetForm();
+    }
+  };
 
   // Accione para poder visualizar el password al ingresar
   const [showPasswordAnterior, setShowPasswordAnterior] = useState(false);
@@ -257,8 +276,8 @@ const Perfil = () => {
       }/actualizar/informacion/admin`;
       const options = {
         headers: {
-          "Content-Type": "multipart/form-data", // Importante para enviar archivos
-          Authorization: `Bearer ${token}`, // Token del usuario
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       };
 
@@ -283,22 +302,23 @@ const Perfil = () => {
             navigate("/login");
           });
         } else {
-          toast.success(respuesta.data.msg_actualizacion_perfil, {
-            position: "top-right",
-            autoClose: 3000,
+          Swal.fire({
+            icon: "success",
+            title: "Perfil actualizado",
+            text: respuesta.data.msg_actualizacion_perfil,
+            confirmButtonText: "OK",
           });
         }
       }
     } catch (error) {
-      console.log(error);
-      toast.error(
-        error.response?.data?.msg_actualizacion_perfil ||
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.response?.data?.msg_actualizacion_perfil ||
           "Error al actualizar el perfil",
-        {
-          position: "top-right",
-          autoClose: 3000,
-        }
-      );
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -322,49 +342,46 @@ const Perfil = () => {
           tipo: exito,
         });
         if (exito) {
-          toast.success(resultado.msg_actualizacion_contrasenia, {
-            position: "top-right",
-            autoClose: 3000,
-          });
-          // Limpiar campos y cerrar modal después del toast
-          setTimeout(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Contraseña actualizada",
+            text: resultado.msg_actualizacion_contrasenia,
+            confirmButtonText: "OK",
+          }).then(() => {
             setMensaje({});
             resetForm();
             handleCloseModal();
-          }, 3000);
-        } else {
-          toast.error(resultado.msg_actualizacion_contrasenia, {
-            position: "top-right",
-            autoClose: 3000,
           });
-          setTimeout(() => {
-            setMensaje({});
-          }, 3000);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: resultado.msg_actualizacion_contrasenia,
+            confirmButtonText: "OK",
+          }).then(() => setMensaje({}));
         }
       } else if (resultado.msg) {
         setMensaje({
           respuesta: resultado.msg,
           tipo: false,
         });
-        toast.error(resultado.msg, {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        setTimeout(() => {
-          setMensaje({});
-        }, 3000);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: resultado.msg,
+          confirmButtonText: "OK",
+        }).then(() => setMensaje({}));
       } else {
         setMensaje({
           respuesta: "Ocurrió un error inesperado",
           tipo: false,
         });
-        toast.error("Ocurrió un error inesperado", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        setTimeout(() => {
-          setMensaje({});
-        }, 3000);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error inesperado",
+          confirmButtonText: "OK",
+        }).then(() => setMensaje({}));
       }
     },
   });
@@ -395,8 +412,8 @@ const Perfil = () => {
         }/actualizar/informacion/admin`;
         const options = {
           headers: {
-            "Content-Type": "multipart/form-data", // Importante para enviar archivos
-            Authorization: `Bearer ${token}`, // Token del usuario
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
         };
 
@@ -421,22 +438,23 @@ const Perfil = () => {
               navigate("/login");
             });
           } else {
-            toast.success(respuesta.data.msg_actualizacion_perfil, {
-              position: "top-right",
-              autoClose: 3000,
+            Swal.fire({
+              icon: "success",
+              title: "Perfil actualizado",
+              text: respuesta.data.msg_actualizacion_perfil,
+              confirmButtonText: "OK",
             });
           }
         }
       } catch (error) {
-        console.log(error);
-        toast.error(
-          error.response?.data?.msg_actualizacion_perfil ||
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text:
+            error.response?.data?.msg_actualizacion_perfil ||
             "Error al actualizar el perfil",
-          {
-            position: "top-right",
-            autoClose: 3000,
-          }
-        );
+          confirmButtonText: "OK",
+        });
       }
     },
   });
@@ -446,7 +464,7 @@ const Perfil = () => {
     const file = e.target.files[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
-      formikPerfil.setFieldValue("foto", file);
+      formikPerfil.setFieldValue("fotografiaDelConductor", file); // <--- aquí el nombre correcto
     }
   };
 
@@ -717,8 +735,12 @@ const Perfil = () => {
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
-                    // Quita onBlur, isInvalid y Form.Control.Feedback para la foto
                   />
+                  {formikPerfil.errors.fotografiaDelConductor && (
+                    <div style={{ color: "#e74c3c", fontSize: "0.95em" }}>
+                      {formikPerfil.errors.fotografiaDelConductor}
+                    </div>
+                  )}
                 </Form.Group>
                 <Modal.Footer>
                   <Button

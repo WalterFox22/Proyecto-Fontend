@@ -56,7 +56,13 @@ const PerfilConductor = () => {
   // Modal y preview
   const [modalType, setModalType] = useState(null);
   const handleShowModal = (type) => setModalType(type);
-  const handleCloseModal = () => setModalType(null);
+  const handleCloseModal = () => {
+    setModalType(null);
+    // Resetea el formulario de contraseña si el modal abierto era el de contraseña
+    if (modalType === "password") {
+      formikPassword.resetForm();
+    }
+  };
 
   const [preview, setPreview] = useState(auth.fotografiaDelConductor || "");
 
@@ -101,7 +107,8 @@ const PerfilConductor = () => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.msg_actualizacion_perfil || error.response?.data?.msg_registro_conductor ||
+          error.response?.data?.msg_actualizacion_perfil ||
+            error.response?.data?.msg_registro_conductor ||
             "Error al actualizar el perfil",
           {
             position: "top-right",
@@ -523,12 +530,6 @@ const PerfilConductor = () => {
                   >
                     {showPasswordAnterior ? <FaEye /> : <FaEyeSlash />}
                   </span>
-                  <Form.Control.Feedback
-                    type="invalid"
-                    style={{ color: "#e74c3c" }}
-                  >
-                    {formikPassword.errors.passwordAnterior}
-                  </Form.Control.Feedback>
                 </div>
               </Form.Group>
 
@@ -558,12 +559,6 @@ const PerfilConductor = () => {
                   >
                     {showPasswordActual ? <FaEye /> : <FaEyeSlash />}
                   </span>
-                  <Form.Control.Feedback
-                    type="invalid"
-                    style={{ color: "#e74c3c" }}
-                  >
-                    {formikPassword.errors.passwordActual}
-                  </Form.Control.Feedback>
                 </div>
               </Form.Group>
 
@@ -593,12 +588,6 @@ const PerfilConductor = () => {
                   >
                     {showPasswordConfirm ? <FaEye /> : <FaEyeSlash />}
                   </span>
-                  <Form.Control.Feedback
-                    type="invalid"
-                    style={{ color: "#e74c3c" }}
-                  >
-                    {formikPassword.errors.passwordActualConfirm}
-                  </Form.Control.Feedback>
                 </div>
               </Form.Group>
               <Modal.Footer>
