@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import AuthContext from "../../context/AuthProvider";
 import Mensaje from "../../componets/Alertas/Mensaje";
@@ -10,12 +10,12 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
-const telefonoRegex = /^\d{7,10}$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const telefonoRegex = /^\d{10}$/;
 const perfilSchema = Yup.object({
   telefono: Yup.string()
-    .matches(telefonoRegex, "Teléfono inválido")
+    .matches(telefonoRegex, "Teléfono inválido, debe tener 10 dígitos")
     .notRequired(),
   email: Yup.string()
     .matches(emailRegex, "Correo electrónico inválido")
@@ -58,7 +58,10 @@ const PerfilConductor = () => {
   const handleShowModal = (type) => setModalType(type);
   const handleCloseModal = () => {
     setModalType(null);
-    // Resetea el formulario de contraseña si el modal abierto era el de contraseña
+    if (modalType === "perfil" && formikPerfilRef.current) {
+      formikPerfilRef.current.resetForm();
+      setPreview(auth.fotografiaDelConductor || "");
+    }
     if (modalType === "password") {
       formikPassword.resetForm();
     }
@@ -74,6 +77,7 @@ const PerfilConductor = () => {
   }, [modalType, auth.fotografiaDelConductor]);
 
   // Formik para actualizar perfil
+  const formikPerfilRef = useRef();
   const formikPerfil = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -118,6 +122,7 @@ const PerfilConductor = () => {
       }
     },
   });
+  formikPerfilRef.current = formikPerfil;
 
   // Imagen para perfil
   const handleImageChange = (e) => {
@@ -289,7 +294,6 @@ const PerfilConductor = () => {
         `}
       </style>
       <Container fluid className="p-3">
-        <ToastContainer />
         <div className="text-center">
           <h1 className="mb-4">Perfil del Conductor</h1>
           <hr className="my-4" />

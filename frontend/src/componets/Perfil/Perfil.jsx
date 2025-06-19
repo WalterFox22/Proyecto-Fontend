@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import Mensaje from "../Alertas/Mensaje";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { useRef } from "react";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const placaRegex = /^[A-Z]{3}-\d{4}$/;
@@ -45,7 +46,7 @@ const perfilSchema = Yup.object({
     .matches(placaRegex, "Formato de placa inválido. Ejemplo: PRT-9888")
     .notRequired(),
   telefono: Yup.string()
-    .matches(/^\d{7,10}$/, "Teléfono inválido")
+    .matches(/^\d{10}$/, "Teléfono inválido, debe tener 10 dígitos")
     .notRequired(),
   // foto: Quita la validación de la foto aquí
   fotografiaDelConductor: Yup.mixed()
@@ -66,6 +67,7 @@ const perfilSchema = Yup.object({
 const Perfil = () => {
   const { auth } = useContext(AuthContext);
   console.log(auth);
+  const formikPerfilRef = useRef();
 
   const navigate = useNavigate();
   //Acciones para mostrar la pantalla emergente
@@ -73,7 +75,9 @@ const Perfil = () => {
   const handleShowModal = (type) => setModalType(type);
   const handleCloseModal = () => {
     setModalType(null);
-    // Resetea el formulario de contraseña si el modal abierto era el de contraseña
+    if (modalType === "perfil" && formikPerfilRef.current) {
+      formikPerfilRef.current.resetForm();
+    }
     if (modalType === "password") {
       formikPassword.resetForm();
     }
@@ -458,6 +462,7 @@ const Perfil = () => {
       }
     },
   });
+  formikPerfilRef.current = formikPerfil;
 
   // Imagen para perfil
   const handleImageChange = (e) => {
@@ -490,7 +495,7 @@ const Perfil = () => {
       }
     `}
       </style>
-
+      <ToastContainer />
       {auth.rol.includes("conductor") ? (
         <PerfilConductor />
       ) : (

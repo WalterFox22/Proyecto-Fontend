@@ -451,7 +451,7 @@ const FormularioRegistroAdmin = () => {
             <>
               <Form.Group className="mb-2">
                 <Form.Label>
-                  ¿El nuevo administrador trabajará como conductor?
+                  ¿Desea que el nuevo administrador también se registre como conductor?
                 </Form.Label>
                 <Form.Select
                   name="trabajaraOno"
@@ -479,8 +479,7 @@ const FormularioRegistroAdmin = () => {
                 <>
                   <Form.Group className="mb-2">
                     <Form.Label>
-                      ¿Desea asignar sus estudiantes al nuevo administrador,
-                      esto con ruta y sector?
+                      ¿Desea transferir sus estudiantes, junto con su ruta y sector, al nuevo administrador?
                     </Form.Label>
                     <Form.Select
                       name="asignacionOno"
@@ -493,8 +492,8 @@ const FormularioRegistroAdmin = () => {
                       }
                     >
                       <option value="">Seleccione una opción</option>
-                      <option value="Sí">Sí</option>
-                      <option value="No">No</option>
+                      <option value="Sí">Sí, transferir estudiantes, ruta y sector</option>
+                      <option value="No">No, asignaré una nueva ruta y sector manualmente</option>
                     </Form.Select>
                     <Form.Control.Feedback
                       type="invalid"
@@ -577,7 +576,12 @@ const FormularioRegistroAdmin = () => {
           {step === 4 && (
             <>
               <Form.Group className="mb-2">
-                <Form.Label>¿Desea eliminarse del sistema?</Form.Label>
+                <Form.Label>
+                  Al registrar un nuevo administrador, usted será eliminado como
+                  administrador. 
+                  ¿Desea eliminar completamente su cuenta del
+                  sistema, incluyendo su perfil de conductor (si tiene uno)?
+                </Form.Label>
                 <Form.Select
                   name="eliminacionAdminSaliente"
                   value={formik.values.eliminacionAdminSaliente}
@@ -589,8 +593,10 @@ const FormularioRegistroAdmin = () => {
                   }
                 >
                   <option value="">Seleccione una opción</option>
-                  <option value="Sí">Sí</option>
-                  <option value="No">No</option>
+                  <option value="Sí">Sí, eliminarme completamente</option>
+                  <option value="No">
+                    No, solo eliminar perfil de administrador
+                  </option>
                 </Form.Select>
                 <Form.Control.Feedback
                   type="invalid"
