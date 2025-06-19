@@ -133,36 +133,39 @@ const FormularioRegistroAdmin = () => {
           resetForm();
           setPreview(null);
           setStep(1);
-        } else if (
-          respuesta &&
-          respuesta.data &&
-          respuesta.data.msg_registro_conductor
-        ) {
-          // Si hay un mensaje de error personalizado
-          toast.error(respuesta.data.msg_registro_conductor);
-        } else if (
-          respuesta &&
-          respuesta.data &&
-          respuesta.data.msg_registro_representante
-        ) {
-          toast.error(respuesta.data.msg_registro_representante);
         } else {
-          toast.error("Error desconocido al registrar el administrador.");
+          // Mostrar cualquier mensaje de error que venga del backend
+          const data = respuesta?.data || {};
+          const errorMsg =
+            data.msg_registro_conductor ||
+            data.msg_registro_representante ||
+            data.msg_eliminacion_conductor ||
+            data.msg ||
+            data.errors ||
+            "Error desconocido al registrar el administrador.";
+          // Si errorMsg es un array, muestra cada error
+          if (Array.isArray(errorMsg)) {
+            errorMsg.forEach((msg) => toast.error(msg));
+          } else {
+            toast.error(errorMsg);
+          }
         }
       } catch (error) {
         // Si el error viene del backend
-        if (error.response && error.response.data) {
-          if (error.response.data.msg_registro_conductor) {
-            toast.error(error.response.data.msg_registro_conductor);
-          } else if (error.response.data.msg_registro_representante) {
-            toast.error(error.response.data.msg_registro_representante);
-          } else if (error.response.data.msg) {
-            toast.error(error.response.data.msg);
-          } else {
-            toast.error("Error desconocido del servidor.");
-          }
+        const data = error.response?.data || {};
+        // Busca cualquier mensaje de error que pueda venir del backend
+        const errorMsg =
+          data.msg_registro_conductor ||
+          data.msg_registro_representante ||
+          data.msg_eliminacion_conductor ||
+          data.msg ||
+          data.errors ||
+          error.message ||
+          "Error de red. Inténtalo nuevamente.";
+        if (Array.isArray(errorMsg)) {
+          errorMsg.forEach((msg) => toast.error(msg));
         } else {
-          toast.error("Error de red. Inténtalo nuevamente.");
+          toast.error(errorMsg);
         }
       }
     },
@@ -215,7 +218,7 @@ const FormularioRegistroAdmin = () => {
           {step === 1 && (
             <>
               <Form.Group className="mb-2">
-                <Form.Label>Nombre</Form.Label>
+                <Form.Label className="fw-bold">Nombre</Form.Label>
                 <Form.Control
                   type="text"
                   name="nombre"
@@ -233,7 +236,7 @@ const FormularioRegistroAdmin = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Apellido</Form.Label>
+                <Form.Label className="fw-bold">Apellido</Form.Label>
                 <Form.Control
                   type="text"
                   name="apellido"
@@ -253,7 +256,7 @@ const FormularioRegistroAdmin = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Número de celular</Form.Label>
+                <Form.Label className="fw-bold">Número de celular</Form.Label>
                 <Form.Control
                   type="text"
                   name="telefono"
@@ -273,7 +276,7 @@ const FormularioRegistroAdmin = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Género</Form.Label>
+                <Form.Label className="fw-bold">Género</Form.Label>
                 <Form.Select
                   name="generoConductor"
                   value={formik.values.generoConductor}
@@ -299,7 +302,7 @@ const FormularioRegistroAdmin = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Cédula</Form.Label>
+                <Form.Label className="fw-bold">Cédula</Form.Label>
                 <Form.Control
                   type="text"
                   name="cedula"
@@ -331,7 +334,7 @@ const FormularioRegistroAdmin = () => {
           {step === 2 && (
             <>
               <Form.Group className="mb-2">
-                <Form.Label>Correo</Form.Label>
+                <Form.Label className="fw-bold">Correo</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -349,7 +352,7 @@ const FormularioRegistroAdmin = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Placa del Automóvil</Form.Label>
+                <Form.Label className="fw-bold">Placa del Automóvil</Form.Label>
                 <Form.Control
                   type="text"
                   name="placaAutomovil"
@@ -370,7 +373,7 @@ const FormularioRegistroAdmin = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-2">
-                <Form.Label>Cooperativa</Form.Label>
+                <Form.Label className="fw-bold">Cooperativa</Form.Label>
                 <Form.Control
                   type="text"
                   name="cooperativa"
@@ -390,7 +393,7 @@ const FormularioRegistroAdmin = () => {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>Foto de Perfil</Form.Label>
+                <Form.Label className="fw-bold">Foto de Perfil</Form.Label>
                 <div className="text-center mb-2">
                   <img
                     src={preview || NoUser}
@@ -450,7 +453,7 @@ const FormularioRegistroAdmin = () => {
           {step === 3 && (
             <>
               <Form.Group className="mb-2">
-                <Form.Label>
+                <Form.Label className="fw-bold">
                   ¿Desea que el nuevo administrador también se registre como conductor?
                 </Form.Label>
                 <Form.Select
@@ -478,7 +481,7 @@ const FormularioRegistroAdmin = () => {
               {formik.values.trabajaraOno === "Sí" && (
                 <>
                   <Form.Group className="mb-2">
-                    <Form.Label>
+                    <Form.Label className="fw-bold">
                       ¿Desea transferir sus estudiantes, junto con su ruta y sector, al nuevo administrador?
                     </Form.Label>
                     <Form.Select
@@ -506,7 +509,7 @@ const FormularioRegistroAdmin = () => {
                   {formik.values.asignacionOno === "No" && (
                     <>
                       <Form.Group className="mb-2">
-                        <Form.Label>Ruta Asignada</Form.Label>
+                        <Form.Label className="fw-bold">Ruta Asignada</Form.Label>
                         <Form.Control
                           type="text"
                           name="rutaAsignada"
@@ -527,14 +530,14 @@ const FormularioRegistroAdmin = () => {
                         </Form.Control.Feedback>
                       </Form.Group>
                       <Form.Group className="mb-2">
-                        <Form.Label>Sectores de la Ruta</Form.Label>
+                        <Form.Label className="fw-bold">Sectores de la Ruta</Form.Label>
                         <Form.Control
                           type="text"
                           name="sectoresRuta"
                           value={formik.values.sectoresRuta}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
-                          placeholder="Ingrese el sector"
+                          placeholder="Ingrese el sector (Ejm: La Mariscal)"
                           isInvalid={
                             !!formik.errors.sectoresRuta &&
                             formik.touched.sectoresRuta
@@ -576,7 +579,7 @@ const FormularioRegistroAdmin = () => {
           {step === 4 && (
             <>
               <Form.Group className="mb-2">
-                <Form.Label>
+                <Form.Label className="fw-bold">
                   Al registrar un nuevo administrador, usted será eliminado como
                   administrador. 
                   ¿Desea eliminar completamente su cuenta del

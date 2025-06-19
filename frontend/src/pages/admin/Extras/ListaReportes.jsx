@@ -141,7 +141,6 @@ const ListaReportes = () => {
       };
 
       const respuesta = await axios.post(url, body, options);
-      console.log("Data recibida para", opcion, respuesta.data);
       // Determinar qué propiedad contiene la data
       if (opcion === "Reemplazo temporal")
         setDetalle(respuesta.data.infoReemplazosTemporales || []);
@@ -236,6 +235,24 @@ const ListaReportes = () => {
         ],
       }
     : null;
+
+  useEffect(() => {
+    if (
+      opcion &&
+      (opcion !== "Listado de estudiantes de un conductor" || busquedaRuta)
+    ) {
+      ReporteTablas();
+    }
+    // eslint-disable-next-line
+  }, [opcion]);
+
+  // Si quieres que también se actualice cuando cambia la ruta buscada:
+  useEffect(() => {
+    if (opcion === "Listado de estudiantes de un conductor" && busquedaRuta) {
+      ReporteTablas();
+    }
+    // eslint-disable-next-line
+  }, [busquedaRuta]);
 
   return (
     <Container fluid className="py-3 px-0 overflow-hidden">

@@ -66,7 +66,6 @@ const perfilSchema = Yup.object({
 
 const Perfil = () => {
   const { auth } = useContext(AuthContext);
-  console.log(auth);
   const formikPerfilRef = useRef();
 
   const navigate = useNavigate();

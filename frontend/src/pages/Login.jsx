@@ -42,7 +42,6 @@ const Login = () => {
       };
       const url = `${import.meta.env.VITE_URL_BACKEND}/login`;
       const respuesta = await axios.post(url, cleanForm);
-      console.log(respuesta);
       const { token, rol, redirigir, msg } = respuesta.data;
 
       localStorage.setItem("token", token);
@@ -72,7 +71,7 @@ const Login = () => {
 
         // Validar si el mensaje es "Debe cambiar su contraseña antes de continuar."
         if (errorMessage === "Debe cambiar su contraseña antes de continuar.") {
-          console.log("Redirigiendo a FirstPassword..."); // Confirmar que entra aquí
+          console.log("Redirigiendo a Cambio de contraseña..."); // Confirmar que entra aquí
           toast.info(errorMessage, { position: "top-right", autoClose: 3000 });
           navigate("/cambiar/contraseña/firt"); // Redirige a FirstPassword
           return;

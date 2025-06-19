@@ -19,7 +19,6 @@ const AuthProvider = ({ children }) => {
 
   // Apartado de actualizar perfil
   const cargarPerfil = async (token) => {
-    console.warn("Rol seleccionado:", localStorage.getItem("rol"));
     const SelecctRol = localStorage.getItem("rol");
     try {
       let url = "";
@@ -48,13 +47,10 @@ const AuthProvider = ({ children }) => {
           } else if (respuesta.data.conductor) {
             setAuth({ ...respuesta.data.conductor, rol: SelecctRol });
           }
-
-          console.warn("Perfil cargado correctamente:", respuesta.data);
         } else {
           console.error("La respuesta no contiene datos válidos:", respuesta);
           throw new Error("Datos del perfil no encontrados");
         }
-        console.warn("Perfil cargado:", respuesta);
       } else {
         console.error("Rol no reconocido:", SelecctRol);
         throw new Error("Rol desconocido");
@@ -77,7 +73,6 @@ const AuthProvider = ({ children }) => {
         setLoading(false);
         navigate("/login", { replace: true });
       } else {
-        console.log("Token válido. Cargando perfil...");
         cargarPerfil(token);
       }
     } else {
