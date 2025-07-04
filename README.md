@@ -39,6 +39,9 @@ A continuación, se presentan las dependencias necesarias y los comandos para in
 | **Validación de formularios**    | `npm i formik yup`                       |
 | **React Bits**    | `npx jsrepo init https://reactbits.dev/default`                       |
 | **Framer motion (liberia para animación)**    | `npm i framer-motion`                       |
+| **Axios**    | ` npm install axios`                       |
+| **Chart (liberira para visualizar graficas)**    | ` npm install chart.js react-chartjs-2`                       |
+
 
 Ejecuta los comandos en la terminal dentro del directorio del proyecto para instalar cada una de las dependencias requeridas.
 ## Despliegue
