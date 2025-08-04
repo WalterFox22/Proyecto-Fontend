@@ -146,38 +146,57 @@ const FormularioRegistroAdmin = () => {
         } else {
           // Mostrar cualquier mensaje de error que venga del backend
           const data = respuesta?.data || {};
-          const errorMsg =
-            data.msg_registro_conductor ||
-            data.msg_registro_representante ||
-            data.msg_eliminacion_conductor ||
-            data.msg ||
-            data.errors ||
-            "Error desconocido al registrar el administrador.";
-          // Si errorMsg es un array, muestra cada error
-          if (Array.isArray(errorMsg)) {
-            errorMsg.forEach((msg) => toast.error(msg));
-          } else if (typeof errorMsg === "object") {
-            Object.values(errorMsg).forEach((msg) => toast.error(msg));
-          } else {
-            toast.error(errorMsg);
+          const errorFields = [
+            "msg_registro_conductor",
+            "msg_registro_representante",
+            "msg_eliminacion_conductor",
+            "msg",
+            "errors",
+            "error",
+          ];
+          let foundError = false;
+          errorFields.forEach((field) => {
+            if (data[field]) {
+              foundError = true;
+              if (Array.isArray(data[field])) {
+                data[field].forEach((msg) => toast.error(msg));
+              } else if (typeof data[field] === "object") {
+                Object.values(data[field]).forEach((msg) => toast.error(msg));
+              } else {
+                toast.error(data[field]);
+              }
+            }
+          });
+          if (!foundError) {
+            toast.error("Error desconocido al registrar el administrador.");
           }
         }
       } catch (error) {
         // Si el error viene del backend
         const data = error.response?.data || {};
-        // Busca cualquier mensaje de error que pueda venir del backend
-        const errorMsg =
-          data.msg_registro_conductor ||
-          data.msg_registro_representante ||
-          data.msg_eliminacion_conductor ||
-          data.msg ||
-          data.errors ||
-          error.message ||
-          "Error de red. Inténtalo nuevamente.";
-        if (Array.isArray(errorMsg)) {
-          errorMsg.forEach((msg) => toast.error(msg));
-        } else {
-          toast.error(errorMsg);
+        const errorFields = [
+          "msg_registro_conductor",
+          "msg_registro_representante",
+          "msg_eliminacion_conductor",
+          "msg",
+          "errors",
+          "error",
+        ];
+        let foundError = false;
+        errorFields.forEach((field) => {
+          if (data[field]) {
+            foundError = true;
+            if (Array.isArray(data[field])) {
+              data[field].forEach((msg) => toast.error(msg));
+            } else if (typeof data[field] === "object") {
+              Object.values(data[field]).forEach((msg) => toast.error(msg));
+            } else {
+              toast.error(data[field]);
+            }
+          }
+        });
+        if (!foundError) {
+          toast.error(error.message || "Error de red. Inténtalo nuevamente.");
         }
       }
     },
