@@ -137,7 +137,13 @@ const AuthProvider = ({ children }) => {
         setAuth([respuesta.data.administrador]);
         return respuesta.data.administrador;
       }
-    } catch (error) {}
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return { data: error.response.data, status: error.response.status };
+      }
+      // Solo retorna el mensaje, no el código
+      return { data: { error: "Ocurrió un error inesperado" } };
+    }
   };
 
   return (

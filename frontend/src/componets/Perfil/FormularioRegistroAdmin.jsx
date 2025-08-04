@@ -121,12 +121,11 @@ const FormularioRegistroAdmin = () => {
       try {
         const respuesta = await NewAdmin(formData);
 
-        // Si el backend responde con status 200 y msg_registro_conductor
         if (
           respuesta &&
           respuesta.data &&
-          respuesta.data.msg_registro_conductor &&
-          respuesta.status === 200
+          respuesta.status === 200 &&
+          respuesta.data.msg_registro_conductor
         ) {
           await Swal.fire({
             icon: "success",
@@ -144,63 +143,48 @@ const FormularioRegistroAdmin = () => {
             }, 100);
           });
         } else {
-          // Mostrar cualquier mensaje de error que venga del backend
+          // Mostrar todos los errores posibles del backend
           const data = respuesta?.data || {};
-          const errorFields = [
-            "msg_registro_conductor",
-            "msg_registro_representante",
-            "msg_eliminacion_conductor",
-            "msg",
-            "errors",
-            "error",
-          ];
-          let foundError = false;
-          errorFields.forEach((field) => {
-            if (data[field]) {
-              foundError = true;
-              if (Array.isArray(data[field])) {
-                data[field].forEach((msg) => toast.error(msg));
-              } else if (typeof data[field] === "object") {
-                Object.values(data[field]).forEach((msg) => toast.error(msg));
-              } else {
-                toast.error(data[field]);
-              }
-            }
-          });
+          const foundError = mostrarErrores(data);
           if (!foundError) {
             toast.error("Error desconocido al registrar el administrador.");
           }
         }
       } catch (error) {
-        // Si el error viene del backend
+        // Mostrar todos los errores posibles del backend en el catch
         const data = error.response?.data || {};
-        const errorFields = [
-          "msg_registro_conductor",
-          "msg_registro_representante",
-          "msg_eliminacion_conductor",
-          "msg",
-          "errors",
-          "error",
-        ];
-        let foundError = false;
-        errorFields.forEach((field) => {
-          if (data[field]) {
-            foundError = true;
-            if (Array.isArray(data[field])) {
-              data[field].forEach((msg) => toast.error(msg));
-            } else if (typeof data[field] === "object") {
-              Object.values(data[field]).forEach((msg) => toast.error(msg));
-            } else {
-              toast.error(data[field]);
-            }
-          }
-        });
+        const foundError = mostrarErrores(data);
         if (!foundError) {
           toast.error(error.message || "Error de red. Inténtalo nuevamente.");
         }
       }
     },
   });
+
+  const mostrarErrores = (data) => {
+    const errorFields = [
+      "msg_registro_conductor",
+      "msg_registro_representante",
+      "msg_eliminacion_conductor",
+      "msg",
+      "errors",
+      "error",
+    ];
+    let foundError = false;
+    errorFields.forEach((field) => {
+      if (data[field]) {
+        foundError = true;
+        if (Array.isArray(data[field])) {
+          data[field].forEach((msg) => toast.error(msg));
+        } else if (typeof data[field] === "object") {
+          Object.values(data[field]).forEach((msg) => toast.error(msg));
+        } else {
+          toast.error(data[field]);
+        }
+      }
+    });
+    return foundError;
+  };
 
   // Cambia la lógica de pasos: ahora solo hay 4 pasos
   const nextStep = async () => {
