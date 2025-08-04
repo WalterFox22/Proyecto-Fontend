@@ -134,7 +134,6 @@ const FirstPassword = () => {
                       className="form-error"
                     />
                     <BootstrapForm.Text
-                      className="text-muted"
                       style={{ marginBottom: 8, display: "block",  color: "#fff" }}
                     >
                       Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
