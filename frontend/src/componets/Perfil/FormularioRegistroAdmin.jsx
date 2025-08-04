@@ -106,6 +106,10 @@ const FormularioRegistroAdmin = () => {
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: async (values, { resetForm }) => {
+      // Si trabajaraOno es "No", asignacionOno debe ser "No"
+      if (values.trabajaraOno === "No") {
+        values.asignacionOno = "No";
+      }
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         formData.append(key, value ?? "");
