@@ -85,7 +85,7 @@ const FormularioRegistroAdmin = () => {
   const { NewAdmin } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [preview, setPreview] = useState(null);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -139,7 +139,9 @@ const FormularioRegistroAdmin = () => {
             resetForm();
             setPreview(null);
             setStep(1);
-            navigate("/login");
+            setTimeout(() => {
+              navigate("/login");
+            }, 100);
           });
         } else {
           // Mostrar cualquier mensaje de error que venga del backend
