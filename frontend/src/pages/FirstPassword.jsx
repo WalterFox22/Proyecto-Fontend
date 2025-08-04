@@ -42,11 +42,13 @@ const FirstPassword = () => {
       const url = `${
         import.meta.env.VITE_URL_BACKEND
       }/cambiar/contrasenia/primer/inicio`;
-      const respuesta = await axios.patch(url, {
-        email: values.email,
-        passwordActual: values.passwordActual,
-        passwordActualConfirm: values.passwordActualConfirm,
-      });
+      const cleanValues = {
+        email: values.email.trim(),
+        passwordActual: values.passwordActual.trim(),
+        passwordActualConfirm: values.passwordActualConfirm.trim(),
+      };
+
+      const respuesta = await axios.patch(url, cleanValues);
 
       setAuth(respuesta.data);
 
@@ -133,7 +135,7 @@ const FirstPassword = () => {
                     />
                     <BootstrapForm.Text
                       className="text-muted"
-                      style={{ marginBottom: 8, display: "block" }}
+                      style={{ marginBottom: 8, display: "block",  color: "#fff" }}
                     >
                       Debe tener <b>3 letras</b>, <b>3 números</b> y{" "}
                       <b>3 caracteres especiales</b>.<br />

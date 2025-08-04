@@ -1,11 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
-import {Link,Navigate,Outlet,useLocation,useNavigate,} from "react-router-dom";
-import {Container,Row,Col,Navbar,Nav,Image,Button,} from "react-bootstrap";
+import {
+  Link,
+  Navigate,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  Navbar,
+  Nav,
+  Image,
+  Button,
+} from "react-bootstrap";
 import AuthContext from "../context/AuthProvider";
-import LogoAdmin from "../assets/Admin.png";
 import Loading from "../componets/Loading/Loading";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 
 const Dashboard = () => {
@@ -17,6 +29,7 @@ const Dashboard = () => {
 
   const { auth, loading, setAuth } = useContext(AuthContext);
   const autenticado = localStorage.getItem("token");
+  const navigate=useNavigate()
 
   useEffect(() => {
     if (!loading) {
@@ -37,7 +50,9 @@ const Dashboard = () => {
   const handleMakeDriver = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/aumentar/privilegios/conductor`;
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/aumentar/privilegios/conductor`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -48,13 +63,24 @@ const Dashboard = () => {
       const respuesta = await axios.patch(url, {}, options);
       Swal.fire({
         icon: "success",
-        title: "Éxito",
+        title: "¡Ahora eres conductor!",
         text:
           respuesta.data.msg_añadir_privilegios ||
           "Ya posee usted privilegios de conductor",
+        confirmButtonText: "Actualizar ruta y sector",
+      }).then(() => {
+        // Actualiza el estado local para ocultar el botón
+        setAuth({ ...auth, esConductor: "Si" });
+        // Notifica y redirige a la lista de conductores para actualizar datos
+        Swal.fire({
+          icon: "info",
+          title: "Actualiza tu información",
+          text: "Debes actualizar tu ruta y sector en la lista de conductores.",
+          confirmButtonText: "Ir a la lista",
+        }).then(() => {
+          navigate("/dashboard/listar/conductores");
+        });
       });
-      // Actualiza el estado local para ocultar el botón
-      setAuth({ ...auth, esConductor: "Si" });
     } catch (error) {
       if (
         error.response &&
@@ -216,7 +242,6 @@ const Dashboard = () => {
             >
               Reportes
             </Nav.Link>
-            
           </Nav>
         </Col>
 

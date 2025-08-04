@@ -146,6 +146,8 @@ const FormularioRegistroAdmin = () => {
           // Si errorMsg es un array, muestra cada error
           if (Array.isArray(errorMsg)) {
             errorMsg.forEach((msg) => toast.error(msg));
+          } else if (typeof errorMsg === "object") {
+            Object.values(errorMsg).forEach((msg) => toast.error(msg));
           } else {
             toast.error(errorMsg);
           }
@@ -454,7 +456,8 @@ const FormularioRegistroAdmin = () => {
             <>
               <Form.Group className="mb-2">
                 <Form.Label className="fw-bold">
-                  ¿Desea que el nuevo administrador también se registre como conductor?
+                  ¿Desea que el nuevo administrador también se registre como
+                  conductor?
                 </Form.Label>
                 <Form.Select
                   name="trabajaraOno"
@@ -482,7 +485,8 @@ const FormularioRegistroAdmin = () => {
                 <>
                   <Form.Group className="mb-2">
                     <Form.Label className="fw-bold">
-                      ¿Desea transferir sus estudiantes, junto con su ruta y sector, al nuevo administrador?
+                      ¿Desea transferir sus estudiantes, junto con su ruta y
+                      sector, al nuevo administrador?
                     </Form.Label>
                     <Form.Select
                       name="asignacionOno"
@@ -495,8 +499,12 @@ const FormularioRegistroAdmin = () => {
                       }
                     >
                       <option value="">Seleccione una opción</option>
-                      <option value="Sí">Sí, transferir estudiantes, ruta y sector</option>
-                      <option value="No">No, asignaré una nueva ruta y sector manualmente</option>
+                      <option value="Sí">
+                        Sí, transferir estudiantes, ruta y sector
+                      </option>
+                      <option value="No">
+                        No, asignaré una nueva ruta y sector manualmente
+                      </option>
                     </Form.Select>
                     <Form.Control.Feedback
                       type="invalid"
@@ -509,7 +517,9 @@ const FormularioRegistroAdmin = () => {
                   {formik.values.asignacionOno === "No" && (
                     <>
                       <Form.Group className="mb-2">
-                        <Form.Label className="fw-bold">Ruta Asignada</Form.Label>
+                        <Form.Label className="fw-bold">
+                          Ruta Asignada
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           name="rutaAsignada"
@@ -530,7 +540,9 @@ const FormularioRegistroAdmin = () => {
                         </Form.Control.Feedback>
                       </Form.Group>
                       <Form.Group className="mb-2">
-                        <Form.Label className="fw-bold">Sectores de la Ruta</Form.Label>
+                        <Form.Label className="fw-bold">
+                          Sectores de la Ruta
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           name="sectoresRuta"
@@ -581,8 +593,7 @@ const FormularioRegistroAdmin = () => {
               <Form.Group className="mb-2">
                 <Form.Label className="fw-bold">
                   Al registrar un nuevo administrador, usted será eliminado como
-                  administrador. 
-                  ¿Desea eliminar completamente su cuenta del
+                  administrador. ¿Desea eliminar completamente su cuenta del
                   sistema, incluyendo su perfil de conductor (si tiene uno)?
                 </Form.Label>
                 <Form.Select

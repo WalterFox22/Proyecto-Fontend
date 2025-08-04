@@ -334,7 +334,13 @@ const Perfil = () => {
     },
     validationSchema: passwordSchema,
     onSubmit: async (values, { resetForm }) => {
-      const resultado = await UpdatePassword(values);
+      // Elimina espacios al inicio y final de cada campo
+      const cleanValues = {
+        passwordAnterior: values.passwordAnterior.trim(),
+        passwordActual: values.passwordActual.trim(),
+        passwordActualConfirm: values.passwordActualConfirm.trim(),
+      };
+      const resultado = await UpdatePassword(cleanValues);
       if (resultado.msg_actualizacion_contrasenia) {
         const exito =
           resultado.msg_actualizacion_contrasenia.includes(
@@ -349,11 +355,16 @@ const Perfil = () => {
             icon: "success",
             title: "Contraseña actualizada",
             text: resultado.msg_actualizacion_contrasenia,
-            confirmButtonText: "OK",
+            confirmButtonText: "Ir a Login",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
           }).then(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("rol");
             setMensaje({});
             resetForm();
             handleCloseModal();
+            navigate("/login");
           });
         } else {
           Swal.fire({
@@ -440,6 +451,7 @@ const Perfil = () => {
               localStorage.removeItem("rol");
               navigate("/login");
             });
+            return;
           } else {
             Swal.fire({
               icon: "success",
@@ -455,6 +467,7 @@ const Perfil = () => {
           title: "Error",
           text:
             error.response?.data?.msg_actualizacion_perfil ||
+            error.response?.data?.msg_registro_conductor ||
             "Error al actualizar el perfil",
           confirmButtonText: "OK",
         });
@@ -809,9 +822,7 @@ const Perfil = () => {
                       {showPasswordAnterior ? <FaEye /> : <FaEyeSlash />}
                     </span>
                   </div>
-                  <Form.Text className="text-muted">
-                    Ejemplo: Abr980+++
-                  </Form.Text>
+
                   <Form.Control.Feedback type="invalid">
                     {formikPassword.errors.passwordAnterior}
                   </Form.Control.Feedback>
@@ -841,6 +852,9 @@ const Perfil = () => {
                       {showPasswordActual ? <FaEye /> : <FaEyeSlash />}
                     </span>
                   </div>
+                  <Form.Text className="text-muted">
+                    Ejemplo: Abr980+++
+                  </Form.Text>
                   <Form.Control.Feedback type="invalid">
                     {formikPassword.errors.passwordActual}
                   </Form.Control.Feedback>

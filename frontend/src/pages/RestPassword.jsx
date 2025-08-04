@@ -63,10 +63,12 @@ const ResetPassword = () => {
       const url = `${
         import.meta.env.VITE_URL_BACKEND
       }/nueva/contrasenia/${token}`;
-      const { data } = await axios.patch(url, {
-        passwordActual: values.passwordActual,
-        passwordActualConfirm: values.passwordActualConfirm,
-      });
+      const cleanValues = {
+        passwordActual: values.passwordActual.trim(),
+        passwordActualConfirm: values.passwordActualConfirm.trim(),
+      };
+
+      const { data } = await axios.patch(url, cleanValues);
       toast.success(data.msg_recuperacion_contrasenia, {
         onClose: () => navigate("/login"),
         autoClose: 3500,

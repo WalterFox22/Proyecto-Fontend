@@ -8,6 +8,8 @@ import axios from "axios";
 import NoUser from "../../assets/NoUser.avif";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 
@@ -52,6 +54,7 @@ const passwordSchema = Yup.object({
 
 const PerfilConductor = () => {
   const { auth, UpdatePassword, cargarPerfil } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // Modal y preview
   const [modalType, setModalType] = useState(null);
@@ -105,6 +108,26 @@ const PerfilConductor = () => {
 
         const respuesta = await axios.patch(url, formData, options);
         await cargarPerfil(token);
+        if (
+          respuesta.data.msg_actualizacion_perfil &&
+          respuesta.data.msg_actualizacion_perfil.includes(
+            "enlace de confirmación"
+          )
+        ) {
+          Swal.fire({
+            icon: "success",
+            title: "Perfil actualizado",
+            text: respuesta.data.msg_actualizacion_perfil,
+            confirmButtonText: "Ir a Login",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+          }).then(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("rol");
+            navigate("/login");
+          });
+          return;
+        }
         if (respuesta.data.msg_actualizacion_perfil) {
           toast.success(respuesta.data.msg_actualizacion_perfil);
           handleCloseModal();
@@ -256,12 +279,34 @@ const PerfilConductor = () => {
     },
     validationSchema: passwordSchema,
     onSubmit: async (values, { resetForm }) => {
+      // Elimina espacios de los campos antes de enviar
+      const cleanValues = {
+        passwordAnterior: values.passwordAnterior.trim(),
+        passwordActual: values.passwordActual.trim(),
+        passwordActualConfirm: values.passwordActualConfirm.trim(),
+      };
       try {
-        const resultado = await UpdatePassword(values);
-        if (resultado.msg_actualizacion_contrasenia) {
-          toast.success(resultado.msg_actualizacion_contrasenia);
-          resetForm();
-          handleCloseModal();
+        const resultado = await UpdatePassword(cleanValues);
+        if (
+          resultado.msg_actualizacion_contrasenia &&
+          resultado.msg_actualizacion_contrasenia.includes("satisfactoriamente")
+        ) {
+          Swal.fire({
+            icon: "success",
+            title: "Contraseña actualizada",
+            text: resultado.msg_actualizacion_contrasenia,
+            confirmButtonText: "Ir a Login",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+          }).then(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("rol");
+            resetForm();
+            handleCloseModal();
+            navigate("/login");
+          });
+        } else if (resultado.msg_actualizacion_contrasenia) {
+          toast.error(resultado.msg_actualizacion_contrasenia);
         } else if (resultado.msg) {
           toast.error(resultado.msg);
         } else {
@@ -564,6 +609,7 @@ const PerfilConductor = () => {
                     {showPasswordActual ? <FaEye /> : <FaEyeSlash />}
                   </span>
                 </div>
+                <Form.Text className="text-muted">Ejemplo: Abr980+++</Form.Text>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="passwordConfirm">

@@ -21,14 +21,15 @@ const RemplazoDisponible = () => {
   const [showPermanente, setShowPermanente] = useState(false);
   const [showTemporal, setShowTemporal] = useState(false);
 
-  // Puedes guardar el conductor seleccionado si lo necesitas
   const [conductorSeleccionado, setConductorSeleccionado] = useState(null);
 
   // Logica para obtener la lista de los conductores temporales
   const ListaDisponible = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/listar/reemplazo/disponibles`;
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/listar/reemplazo/disponibles`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +50,9 @@ const RemplazoDisponible = () => {
     } catch (error) {
       console.log(error);
       setError(
-        "Ocurrió un error al cargar los conductores. Intente nuevamente."
+        error.response?.data?.msg_listar_conductores_reemplazo ||
+          error.message ||
+          "Ocurrió un error al cargar los conductores. Intente nuevamente."
       );
     }
   };
@@ -75,7 +78,9 @@ const RemplazoDisponible = () => {
     try {
       const token = localStorage.getItem("token");
       // Reemplaza los parámetros en la URL
-      const url = `${import.meta.env.VITE_URL_BACKEND}/reemplazo/temporal/${idPrincipal}/${conductorSeleccionado._id}`;
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/reemplazo/temporal/${idPrincipal}/${conductorSeleccionado._id}`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +104,8 @@ const RemplazoDisponible = () => {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.msg_reemplazo || "Ocurrió un error al realizar el reemplazo temporal."
+        error.response?.data?.msg_reemplazo ||
+          "Ocurrió un error al realizar el reemplazo temporal."
       );
     }
   };
@@ -114,7 +120,9 @@ const RemplazoDisponible = () => {
     }
     try {
       const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_URL_BACKEND}/reemplazo/permanente/${idPrincipal}/${conductorSeleccionado._id}`;
+      const url = `${
+        import.meta.env.VITE_URL_BACKEND
+      }/reemplazo/permanente/${idPrincipal}/${conductorSeleccionado._id}`;
       const options = {
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +146,11 @@ const RemplazoDisponible = () => {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.msg_reemplazo || error.response?.data?.msg_actualizacion_conductor || "Ocurrió un error al realizar el reemplazo Permanente."
+        error.response?.data?.msg_reemplazo ||
+          error.response?.data?.msg_actualizacion_conductor ||
+          error.response?.data?.msg_eliminacion_conductor ||
+          error.message ||
+          "Ocurrió un error al realizar el reemplazo Permanente."
       );
     }
   };
@@ -151,7 +163,8 @@ const RemplazoDisponible = () => {
         <h1>Lista de Conductores Reemplazo</h1>
         <hr />
         <p className="mb-1">
-          Este módulo te permite seleccionar un conductor para realizar un reemplazo.
+          Este módulo te permite seleccionar un conductor para realizar un
+          reemplazo.
         </p>
       </div>
       {error && (
