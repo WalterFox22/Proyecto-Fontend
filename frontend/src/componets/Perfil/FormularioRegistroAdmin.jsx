@@ -6,6 +6,7 @@ import NoUser from "../../assets/NoUser.avif";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const placaRegex = /^[A-Z]{3}-\d{4}$/;
@@ -84,6 +85,7 @@ const FormularioRegistroAdmin = () => {
   const { NewAdmin } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [preview, setPreview] = useState(null);
+  const navigate=useNavigate()
 
   const formik = useFormik({
     initialValues: {
@@ -131,12 +133,14 @@ const FormularioRegistroAdmin = () => {
             title: "Registro exitoso",
             text: respuesta.data.msg_registro_conductor,
             confirmButtonText: "OK",
+          }).then(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("rol");
+            resetForm();
+            setPreview(null);
+            setStep(1);
+            navigate("/login");
           });
-          localStorage.removeItem("token");
-          localStorage.removeItem("rol");
-          resetForm();
-          setPreview(null);
-          setStep(1);
         } else {
           // Mostrar cualquier mensaje de error que venga del backend
           const data = respuesta?.data || {};
