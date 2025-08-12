@@ -111,9 +111,12 @@ const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      // Retorna el error tal como lo envía el backend
       if (error.response && error.response.data) {
-        return error.response.data;
+        // Devuelve el objeto completo de error
+        return {
+          ...error.response.data,
+          status: error.response.status,
+        };
       }
       return { msg_actualizacion_contrasenia: "Ocurrió un error inesperado" };
     }

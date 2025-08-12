@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import AuthContext from "../../context/AuthProvider";
 import { toast, ToastContainer } from "react-toastify";
 import { Button, Container, Form, ProgressBar } from "react-bootstrap";
@@ -10,16 +10,24 @@ import { useNavigate } from "react-router-dom";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const placaRegex = /^[A-Z]{3}-\d{4}$/;
+const sectorRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+$/;
 
 const validationSchema = Yup.object({
   nombre: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(20, "El nombre no debe superar los 20 caracteres")
     .required("El nombre es obligatorio"),
   apellido: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "El apellido debe tener al menos 3 caracteres")
+    .max(20, "El apellido no debe superar los 20 caracteres")
     .required("El apellido es obligatorio"),
   telefono: Yup.string()
-    .matches(/^\d{7,10}$/, "Número de celular inválido")
+    .trim("No se permiten espacios al inicio o final")
+    .matches(/^\d{10}$/, "Número de celular inválido (10 dígitos)")
     .required("El número de celular es obligatorio"),
   generoConductor: Yup.string()
     .oneOf(
@@ -28,16 +36,22 @@ const validationSchema = Yup.object({
     )
     .required("El género es obligatorio"),
   cedula: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
     .required("La cédula es obligatoria"),
   email: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .email("Correo electrónico inválido")
     .required("El correo es obligatorio"),
   placaAutomovil: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(placaRegex, "Formato de placa inválido. Ejemplo: PRT-9888")
     .required("La placa es obligatoria"),
   cooperativa: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "La cooperativa debe tener al menos 3 caracteres")
+    .max(30, "La cooperativa no debe superar los 30 caracteres")
     .required("La cooperativa es obligatoria"),
   foto: Yup.mixed()
     .required("La foto es obligatoria")
@@ -63,6 +77,7 @@ const validationSchema = Yup.object({
       trabajaraOno === "Sí" && asignacionOno === "No",
     then: (schema) =>
       schema
+        .trim("No se permiten espacios al inicio o final")
         .required("La ruta es obligatoria")
         .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12"),
     otherwise: (schema) => schema.notRequired(),
@@ -72,7 +87,10 @@ const validationSchema = Yup.object({
       trabajaraOno === "Sí" && asignacionOno === "No",
     then: (schema) =>
       schema
-        .matches(onlyLetters, "Solo se permiten letras")
+        .trim("No se permiten espacios al inicio o final")
+        .matches(sectorRegex, "Solo se permiten letras y números")
+        .min(3, "El sector debe tener al menos 3 caracteres")
+        .max(30, "El sector no debe superar los 30 caracteres")
         .required("El sector es obligatorio"),
     otherwise: (schema) => schema.notRequired(),
   }),
@@ -223,6 +241,14 @@ const FormularioRegistroAdmin = () => {
 
   // Ahora hay 4 pasos
   const progress = (step / 4) * 100;
+
+  // Limpiar ruta y sector si asignacionOno es "Sí"
+  useEffect(() => {
+    if (formik.values.asignacionOno === "Sí") {
+      formik.setFieldValue("rutaAsignada", "");
+      formik.setFieldValue("sectoresRuta", "");
+    }
+  }, [formik.values.asignacionOno]);
 
   return (
     <>

@@ -76,9 +76,35 @@ const BarraConfirmadoRemplazo = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error(
-        error.response?.data?.msg_activacion_conductor || "Ocurrió un error al realizar la activación del conductor original."
-      );
+      const backendResponse = error.response?.data;
+      if (backendResponse) {
+        if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
+          backendResponse.errors.forEach((err) => {
+            toast.error(err.msg || err);
+          });
+        }
+        if (backendResponse.msg_activacion_conductor) {
+          toast.error(backendResponse.msg_activacion_conductor);
+        }
+        if (backendResponse.msg_reemplazo) {
+          toast.error(backendResponse.msg_reemplazo);
+        }
+        if (backendResponse.msg) {
+          toast.error(backendResponse.msg);
+        }
+        if (
+          !backendResponse.errors &&
+          !backendResponse.msg_activacion_conductor &&
+          !backendResponse.msg_reemplazo &&
+          !backendResponse.msg
+        ) {
+          toast.error(
+            "Error desconocido. Por favor, verifica los datos e intenta nuevamente."
+          );
+        }
+      } else {
+        toast.error("Error de red. Por favor, intenta nuevamente.");
+      }
     }
   };
 

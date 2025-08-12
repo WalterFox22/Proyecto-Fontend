@@ -12,13 +12,20 @@ const validationSchemas = [
   // Paso 1
   Yup.object({
     nombre: Yup.string()
+      .trim("No se permiten espacios al inicio o final")
       .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "Solo letras y espacios")
+      .min(3, "El nombre debe tener al menos 3 caracteres")
+      .max(20, "El nombre no debe superar los 20 caracteres")
       .required("El nombre es obligatorio"),
     apellido: Yup.string()
+      .trim("No se permiten espacios al inicio o final")
       .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "Solo letras y espacios")
+      .min(3, "El apellido debe tener al menos 3 caracteres")
+      .max(20, "El apellido no debe superar los 20 caracteres")
       .required("El apellido es obligatorio"),
     genero: Yup.string().required("El género es obligatorio"),
     cedula: Yup.string()
+      .trim("No se permiten espacios al inicio o final")
       .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos numéricos")
       .required("La cédula es obligatoria"),
   }),
@@ -31,12 +38,13 @@ const validationSchemas = [
   Yup.object({
     turno: Yup.string().required("El turno es obligatorio"),
     ubicacionDomicilio: Yup.string()
-  .test(
-    "is-google-maps-url",
-    "Debe ser una URL válida de Google Maps",
-    (value) => !!value && googleMapsRegex.test(value)
-  )
-  .required("La dirección es obligatoria"),
+      .trim("No se permiten espacios al inicio o final")
+      .test(
+        "is-google-maps-url",
+        "Debe ser una URL válida de Google Maps",
+        (value) => !!value && googleMapsRegex.test(value)
+      )
+      .required("La dirección es obligatoria"),
   }),
 ];
 
@@ -60,6 +68,17 @@ const FormularioEstudiante = () => {
   const handleSubmit = async (values, actions) => {
     try {
       const resultado = await RegistrarEstudiantes(values);
+
+      // Mostrar todos los errores posibles del backend
+      if (resultado.errors && Array.isArray(resultado.errors)) {
+        resultado.errors.forEach((err) => {
+          toast.error(err.msg || err, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        });
+      }
+
       if (
         resultado &&
         resultado.msg_registro_estudiantes ===
@@ -71,20 +90,32 @@ const FormularioEstudiante = () => {
         });
         actions.resetForm();
         setStep(0);
-      } else if (resultado && resultado.error) {
-        toast.error(
-          resultado.error.msg_registro_estudiantes ||
-            "Ocurrió un error inesperado",
-          {
+      } else {
+        if (resultado && resultado.msg_registro_estudiantes) {
+          toast.error(resultado.msg_registro_estudiantes, {
             position: "top-right",
             autoClose: 3000,
-          }
-        );
-      } else {
-        toast.error("Ocurrió un error inesperado al registrar el estudiante", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+          });
+        }
+        if (resultado && resultado.msg) {
+          toast.error(resultado.msg, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        }
+        if (
+          !resultado.errors &&
+          !resultado.msg_registro_estudiantes &&
+          !resultado.msg
+        ) {
+          toast.error(
+            "Ocurrió un error inesperado al registrar el estudiante",
+            {
+              position: "top-right",
+              autoClose: 3000,
+            }
+          );
+        }
       }
     } catch (error) {
       toast.error("Error al procesar la solicitud. Inténtalo nuevamente.", {

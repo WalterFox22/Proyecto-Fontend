@@ -31,7 +31,6 @@ const ListadeEstudiantes = () => {
         },
       };
       const respuesta = await axios.get(url, options);
-      console.log(respuesta);
       setEstudiantes(
         Array.isArray(respuesta.data.listaCompleta)
           ? respuesta.data.listaCompleta
@@ -39,21 +38,21 @@ const ListadeEstudiantes = () => {
       );
       setError(null);
     } catch (error) {
-      // Si el backend responde 404 y el mensaje es de lista vacía, vacía la tabla y NO muestres error
-      if (
-        error.response &&
-        error.response.status === 404 &&
-        error.response.data &&
-        error.response.data.msg_lista_estudiantes
-      ) {
-        setEstudiantes([]); // Vacía la tabla
-        setError(null); // No mostrar mensaje de error
-      } else {
-        console.log(error);
-        setError(
-          "Ocurrió un error al cargar los estudiantes. Intente nuevamente."
-        );
+      const data = error.response?.data;
+      let mensaje = "Ocurrió un error al cargar los estudiantes. Intente nuevamente.";
+      if (data?.errors && Array.isArray(data.errors)) {
+        mensaje =
+          "Errores: " +
+          data.errors.map((err) => err.msg || err).join(", ");
       }
+      if (data?.msg_lista_estudiantes) {
+        mensaje = data.msg_lista_estudiantes;
+      }
+      if (data?.msg) {
+        mensaje = data.msg;
+      }
+      setEstudiantes([]); // Vacía la tabla si hay error
+      setError(mensaje);
     }
   };
   useEffect(() => {
@@ -215,17 +214,18 @@ const ListadeEstudiantes = () => {
       /^$|^(Mañana|Tarde|Completo)$/,
       "Seleccione un turno válido"
     ),
-    ubicacionDomicilio: Yup.string().test(
-      "is-google-maps-url",
-      "Debe ser una URL válida de Google Maps",
-      (value) => !value || googleMapsRegex.test(value)
-    ),
+    ubicacionDomicilio: Yup.string()
+      .trim("No se permiten espacios al inicio o final")
+      .test(
+        "is-google-maps-url",
+        "Debe ser una URL válida de Google Maps",
+        (value) => !value || googleMapsRegex.test(value)
+      ),
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Datos enviados al backend:", formUpdate); // Verifica los datos
       const token = localStorage.getItem("token");
       const url = `${
         import.meta.env.VITE_URL_BACKEND
@@ -237,26 +237,29 @@ const ListadeEstudiantes = () => {
         },
       };
       const response = await axios.patch(url, formUpdate, options);
-      console.log("datos de respuesta", response);
       if (response.data) {
         Swal.fire("Éxito", "Estudiante actualizado correctamente", "success");
         handleClose();
         RegistroDeListaEstudiantes(); // Actualiza la lista de estudiantes
       }
     } catch (error) {
-      // Centraliza el manejo de errores
       const data = error.response?.data;
-      let mensaje = "Ocurrió un error desconocido";
-      if (data?.errors) {
+      let mensaje =
+        "Ocurrió un error desconocido. Verifique los datos ingresados.";
+      if (data?.errors && Array.isArray(data.errors)) {
         mensaje =
           "Errores de validación: " +
-          data.errors.map((err) => err.msg).join(", ");
-      } else if (data?.msg_actualizar_estudiantes) {
+          data.errors.map((err) => err.msg || err).join(", ");
+      }
+      if (data?.msg_actualizar_estudiantes) {
         mensaje = data.msg_actualizar_estudiantes;
-      } else if (data?.msg) {
+      }
+      if (data?.msg_registro_estudiantes) {
+        mensaje = data.msg_registro_estudiantes;
+      }
+      if (data?.msg) {
         mensaje = data.msg;
       }
-      console.error("Error al actualizar:", error);
       Swal.fire("Error", mensaje, "error");
     }
   };

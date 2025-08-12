@@ -17,35 +17,53 @@ const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const placaRegex = /^[A-Z]{3}-\d{4}$/;
 
 const passwordSchema = Yup.object({
-  passwordAnterior: Yup.string().required(
-    "La contraseña anterior es obligatoria"
-  ),
+  passwordAnterior: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
+    .required("La contraseña anterior es obligatoria"),
   passwordActual: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .min(6, "La nueva contraseña debe tener mínimo 6 caracteres")
+    .max(10, "La nueva contraseña debe tener máximo 10 caracteres")
     .required("La nueva contraseña es obligatoria"),
   passwordActualConfirm: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .oneOf([Yup.ref("passwordActual"), null], "Las contraseñas no coinciden")
     .required("Confirma la nueva contraseña"),
 });
 
 const perfilSchema = Yup.object({
   nombre: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(20, "El nombre no debe superar los 20 caracteres")
     .notRequired(),
   apellido: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "El apellido debe tener al menos 3 caracteres")
+    .max(20, "El apellido no debe superar los 20 caracteres")
     .notRequired(),
-  email: Yup.string().email("Correo electrónico inválido").notRequired(),
+  email: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
+    .email("Correo electrónico inválido")
+    .notRequired(),
   cedula: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
     .notRequired(),
   cooperativa: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "La cooperativa debe tener al menos 3 caracteres")
+    .max(30, "La cooperativa no debe superar los 30 caracteres")
     .notRequired(),
   placaAutomovil: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(placaRegex, "Formato de placa inválido. Ejemplo: PRT-9888")
     .notRequired(),
   telefono: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(/^\d{10}$/, "Teléfono inválido, debe tener 10 dígitos")
     .notRequired(),
   // foto: Quita la validación de la foto aquí
@@ -247,17 +265,7 @@ const Perfil = () => {
 
   const handleSubmitPerfil = async (e) => {
     e.preventDefault();
-    // Validar que todos los campos estén llenos
-    if (
-      Object.values(formPerfil).includes("") ||
-      !formPerfil.fotografiaDelConductor
-    ) {
-      toast.error("Todos los campos deben ser llenados, incluida la foto", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
+    
 
     const formData = new FormData();
     formData.append("telefono", formPerfil.telefono);
@@ -288,42 +296,46 @@ const Perfil = () => {
       await cargarPerfil(token);
       if (respuesta.data.msg_actualizacion_perfil) {
         handleCloseModal();
-        if (
-          respuesta.data.msg_actualizacion_perfil ===
-          "Se ha enviado un enlace de confirmación al nuevo correo electrónico"
-        ) {
-          Swal.fire({
-            icon: "success",
-            title: "Perfil actualizado",
-            text: respuesta.data.msg_actualizacion_perfil,
-            confirmButtonText: "Ir a Login",
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-          }).then(() => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("rol");
-            navigate("/login");
-          });
-        } else {
-          Swal.fire({
-            icon: "success",
-            title: "Perfil actualizado",
-            text: respuesta.data.msg_actualizacion_perfil,
-            confirmButtonText: "OK",
-          });
-        }
+        Swal.fire({
+        icon: "success",
+        title: "Perfil actualizado",
+        text: respuesta.data.msg_actualizacion_perfil,
+        confirmButtonText: "OK",
+      });
+      // Si el mensaje es de confirmación de correo, redirige
+      if (
+        respuesta.data.msg_actualizacion_perfil ===
+        "Se ha enviado un enlace de confirmación al nuevo correo electrónico"
+      ) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("rol");
+        navigate("/login");
       }
-    } catch (error) {
+      return;
+    }
+    // Si hay mensaje de registro de conductor (error de cédula, email, placa, etc.)
+    if (respuesta.data.msg_registro_conductor) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text:
-          error.response?.data?.msg_actualizacion_perfil ||
-          "Error al actualizar el perfil",
+        text: respuesta.data.msg_registro_conductor,
         confirmButtonText: "OK",
       });
+      return;
     }
-  };
+  } catch (error) {
+    // Mostrar cualquier mensaje de error que venga del backend
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text:
+        error.response?.data?.msg_actualizacion_perfil ||
+        error.response?.data?.msg_registro_conductor ||
+        "Error al actualizar el perfil",
+      confirmButtonText: "OK",
+    });
+  }
+};
 
   // Contraseña - Formik
   const formikPassword = useFormik({
@@ -853,7 +865,7 @@ const Perfil = () => {
                     </span>
                   </div>
                   <Form.Text className="text-muted">
-                    Ejemplo: Abr980+++
+                    Debe tener de 6 a 10 dígitos. Ejemplo: Abr980+++
                   </Form.Text>
                   <Form.Control.Feedback type="invalid">
                     {formikPassword.errors.passwordActual}

@@ -17,11 +17,13 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const telefonoRegex = /^\d{10}$/;
 const perfilSchema = Yup.object({
   telefono: Yup.string()
-    .matches(telefonoRegex, "Teléfono inválido, debe tener 10 dígitos")
-    .notRequired(),
+    .trim("No se permiten espacios al inicio o final")
+    .matches(/^\d{10}$/, "Teléfono inválido, debe tener 10 dígitos")
+    .required("El teléfono es obligatorio"),
   email: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(emailRegex, "Correo electrónico inválido")
-    .notRequired(),
+    .required("El correo es obligatorio"),
   fotografiaDelConductor: Yup.mixed()
     .test(
       "fileTypeOrUrl",
@@ -38,16 +40,16 @@ const perfilSchema = Yup.object({
 });
 
 const passwordSchema = Yup.object({
-  passwordAnterior: Yup.string().required(
-    "La contraseña anterior es obligatoria"
-  ),
+  passwordAnterior: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
+    .required("La contraseña anterior es obligatoria"),
   passwordActual: Yup.string()
-    .min(
-      6,
-      "La nueva contraseña debe tener mínimo 6 caracteres. Ejem: Abt234+*+"
-    )
+    .trim("No se permiten espacios al inicio o final")
+    .min(6, "La nueva contraseña debe tener mínimo 6 caracteres")
+    .max(10, "La nueva contraseña debe tener máximo 10 caracteres")
     .required("La nueva contraseña es obligatoria"),
   passwordActualConfirm: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .oneOf([Yup.ref("passwordActual"), null], "Las contraseñas no coinciden")
     .required("Confirma la nueva contraseña"),
 });
@@ -90,6 +92,22 @@ const PerfilConductor = () => {
     },
     validationSchema: perfilSchema,
     onSubmit: async (values) => {
+      // Validación manual antes de enviar
+      if (!values.telefono || !values.email) {
+        if (!values.telefono) {
+          toast.error("El teléfono es obligatorio", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        }
+        if (!values.email) {
+          toast.error("El correo es obligatorio", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        }
+        return;
+      }
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         if (value) formData.append(key, value);
@@ -133,15 +151,51 @@ const PerfilConductor = () => {
           handleCloseModal();
         }
       } catch (error) {
-        toast.error(
-          error.response?.data?.msg_actualizacion_perfil ||
-            error.response?.data?.msg_registro_conductor ||
-            "Error al actualizar el perfil",
-          {
+        const backendResponse = error.response?.data;
+        if (backendResponse) {
+          if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
+            backendResponse.errors.forEach((err) => {
+              toast.error(err.msg || err);
+            });
+          }
+          if (backendResponse.msg_actualizacion_perfil) {
+            toast.error(backendResponse.msg_actualizacion_perfil, {
+              position: "top-right",
+              autoClose: 3000,
+            });
+          }
+          if (backendResponse.msg_registro_conductor) {
+            toast.error(backendResponse.msg_registro_conductor, {
+              position: "top-right",
+              autoClose: 3000,
+            });
+          }
+          if (backendResponse.msg) {
+            toast.error(backendResponse.msg, {
+              position: "top-right",
+              autoClose: 3000,
+            });
+          }
+          if (
+            !backendResponse.errors &&
+            !backendResponse.msg_actualizacion_perfil &&
+            !backendResponse.msg_registro_conductor &&
+            !backendResponse.msg
+          ) {
+            toast.error(
+              "Error desconocido. Por favor, verifica los datos e intenta nuevamente.",
+              {
+                position: "top-right",
+                autoClose: 3000,
+              }
+            );
+          }
+        } else {
+          toast.error("Error de red. Por favor, intenta nuevamente.", {
             position: "top-right",
             autoClose: 3000,
-          }
-        );
+          });
+        }
       }
     },
   });
@@ -287,6 +341,17 @@ const PerfilConductor = () => {
       };
       try {
         const resultado = await UpdatePassword(cleanValues);
+
+        // Mostrar todos los errores posibles del backend
+        if (resultado.errors && Array.isArray(resultado.errors)) {
+          resultado.errors.forEach((err) => {
+            toast.error(err.msg || err, {
+              position: "top-right",
+              autoClose: 3000,
+            });
+          });
+        } 
+        
         if (
           resultado.msg_actualizacion_contrasenia &&
           resultado.msg_actualizacion_contrasenia.includes("satisfactoriamente")
@@ -459,7 +524,9 @@ const PerfilConductor = () => {
                   onChange={formikPerfil.handleChange}
                   onBlur={formikPerfil.handleBlur}
                   isInvalid={
-                    !!formikPerfil.errors.email && formikPerfil.touched.email
+                    !!formikPerfil.errors.email &&
+                    formikPerfil.touched.email &&
+                    formikPerfil.values.email !== ""
                   }
                 />
                 <Form.Control.Feedback
@@ -479,7 +546,8 @@ const PerfilConductor = () => {
                   onBlur={formikPerfil.handleBlur}
                   isInvalid={
                     !!formikPerfil.errors.telefono &&
-                    formikPerfil.touched.telefono
+                    formikPerfil.touched.telefono &&
+                    formikPerfil.values.telefono !== ""
                   }
                 />
                 <Form.Control.Feedback
@@ -609,7 +677,9 @@ const PerfilConductor = () => {
                     {showPasswordActual ? <FaEye /> : <FaEyeSlash />}
                   </span>
                 </div>
-                <Form.Text className="text-muted">Ejemplo: Abr980+++</Form.Text>
+                <Form.Text className="text-muted">
+                  Debe tener de 6 a 10 dígitos. Ejemplo: Abr980+++
+                </Form.Text>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="passwordConfirm">

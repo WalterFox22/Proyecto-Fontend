@@ -103,10 +103,39 @@ const RemplazoDisponible = () => {
       ListaDisponible();
     } catch (error) {
       console.log(error);
-      toast.error(
-        error.response?.data?.msg_reemplazo ||
-          "Ocurrió un error al realizar el reemplazo temporal."
-      );
+      const backendResponse = error.response?.data;
+      if (backendResponse) {
+        if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
+          backendResponse.errors.forEach((err) => {
+            toast.error(err.msg || err);
+          });
+        }
+        if (backendResponse.msg_reemplazo) {
+          toast.error(backendResponse.msg_reemplazo);
+        }
+        if (backendResponse.msg_actualizacion_conductor) {
+          toast.error(backendResponse.msg_actualizacion_conductor);
+        }
+        if (backendResponse.msg_eliminacion_conductor) {
+          toast.error(backendResponse.msg_eliminacion_conductor);
+        }
+        if (backendResponse.msg) {
+          toast.error(backendResponse.msg);
+        }
+        if (
+          !backendResponse.errors &&
+          !backendResponse.msg_reemplazo &&
+          !backendResponse.msg_actualizacion_conductor &&
+          !backendResponse.msg_eliminacion_conductor &&
+          !backendResponse.msg
+        ) {
+          toast.error(
+            "Error desconocido. Por favor, verifica los datos e intenta nuevamente."
+          );
+        }
+      } else {
+        toast.error("Error de red. Por favor, intenta nuevamente.");
+      }
     }
   };
 
@@ -145,13 +174,35 @@ const RemplazoDisponible = () => {
       ListaDisponible();
     } catch (error) {
       console.log(error);
-      toast.error(
-        error.response?.data?.msg_reemplazo ||
-          error.response?.data?.msg_actualizacion_conductor ||
-          error.response?.data?.msg_eliminacion_conductor ||
-          error.message ||
-          "Ocurrió un error al realizar el reemplazo Permanente."
-      );
+      const backendResponse = error.response?.data;
+      if (backendResponse) {
+        if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
+          backendResponse.errors.forEach((err) => {
+            toast.error(err.msg || err);
+          });
+        }
+        if (backendResponse.msg_reemplazo) {
+          toast.error(backendResponse.msg_reemplazo);
+        }
+        if (backendResponse.msg_eliminacion_conductor) {
+          toast.error(backendResponse.msg_eliminacion_conductor);
+        }
+        if (backendResponse.msg) {
+          toast.error(backendResponse.msg);
+        }
+        if (
+          !backendResponse.errors &&
+          !backendResponse.msg_reemplazo &&
+          !backendResponse.msg_eliminacion_conductor &&
+          !backendResponse.msg
+        ) {
+          toast.error(
+            "Error desconocido. Por favor, verifica los datos e intenta nuevamente."
+          );
+        }
+      } else {
+        toast.error("Error de red. Por favor, intenta nuevamente.");
+      }
     }
   };
 

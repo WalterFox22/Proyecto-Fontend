@@ -127,6 +127,7 @@ const ListaReportes = () => {
       let body = { informacionHaVisualizar: opcion };
       if (opcion === "Listado de estudiantes de un conductor") {
         if (!busquedaRuta) {
+          setDetalle([]);
           setDetalleError("Debes ingresar la ruta a buscar.");
           setLoadingDetalle(false);
           return;
@@ -254,6 +255,13 @@ const ListaReportes = () => {
     // eslint-disable-next-line
   }, [busquedaRuta]);
 
+  useEffect(() => {
+    if (opcion === "Listado de estudiantes de un conductor" && busquedaRuta === "") {
+      setDetalle([]);
+      setDetalleError(null);
+    }
+  }, [busquedaRuta, opcion]);
+
   return (
     <Container fluid className="py-3 px-0 overflow-hidden">
       <Row className="mb-2 justify-content-center">
@@ -343,7 +351,17 @@ const ListaReportes = () => {
                   type="text"
                   placeholder="Ejemplo: 11"
                   value={busquedaRuta}
-                  onChange={(e) => setBusquedaRuta(e.target.value)}
+                  maxLength={2}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    // Solo permitir valores entre 1 y 12
+                    if (
+                      value === "" ||
+                      (Number(value) >= 1 && Number(value) <= 12)
+                    ) {
+                      setBusquedaRuta(value);
+                    }
+                  }}
                   className="flex-grow-1"
                   style={{ maxWidth: "200px" }}
                 />
@@ -377,7 +395,7 @@ const ListaReportes = () => {
               <Card.Body>
                 <div className="table-responsive">
                   {/* Listado de estudiantes */}
-                  {opcion === "Listado de estudiantes de un conductor" && (
+                  {opcion === "Listado de estudiantes de un conductor" && detalle.length > 0 && busquedaRuta && (
                     <Table
                       striped
                       bordered

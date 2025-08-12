@@ -34,21 +34,11 @@ const EstudientesProvider = ({ children }) => {
         return respuesta.data;
       }
     } catch (error) {
-      console.log(error);
-      return { error: error.response?.data || "Error desconocido" }; // Devuelve el error
+      return error.response?.data || { msg: "Error desconocido" };
     }
   };
 
-  const UpdateEstudiantes = async (id) => {
-    const token = localStorage.getItem("token");
-    try {
-      const url = `${
-        import.meta.env.VITE_URL_BACKEND
-      }/actualizar/estudiante/${id}`;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   return (
     <EstudientesContext.Provider
@@ -60,7 +50,6 @@ const EstudientesProvider = ({ children }) => {
         estudiantes,
         setEstudiantes,
         RegistrarEstudiantes,
-        UpdateEstudiantes,
       }}
     >
       {children}

@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const sectorRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+$/;
 
 const FormularioRegistro = () => {
   const [step, setStep] = useState(1);
@@ -17,21 +18,30 @@ const FormularioRegistro = () => {
     // Paso 1
     Yup.object({
       nombre: Yup.string()
+        .trim("No se permiten espacios al inicio o final")
         .matches(onlyLetters, "Solo se permiten letras")
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(20, "El nombre no debe superar los 20 caracteres")
         .required("El nombre es obligatorio"),
       apellido: Yup.string()
+        .trim("No se permiten espacios al inicio o final")
         .matches(onlyLetters, "Solo se permiten letras")
+        .min(3, "El apellido debe tener al menos 3 caracteres")
+        .max(20, "El apellido no debe superar los 20 caracteres")
         .required("El apellido es obligatorio"),
       telefono: Yup.string()
-        .matches(/^\d{7,10}$/, "Número de celular inválido")
+        .trim("No se permiten espacios al inicio o final")
+        .matches(/^\d{10}$/, "Número de celular inválido (10 dígitos)")
         .required("El número de celular es obligatorio"),
       cedula: Yup.string()
+        .trim("No se permiten espacios al inicio o final")
         .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
         .required("La cédula es obligatoria"),
     }),
     // Paso 2
     Yup.object({
       email: Yup.string()
+        .trim("No se permiten espacios al inicio o final")
         .email("Correo inválido")
         .required("El correo es obligatorio"),
       generoConductor: Yup.string()
@@ -53,31 +63,41 @@ const FormularioRegistro = () => {
     // Paso 3
     Yup.object({
       placaAutomovil: Yup.string()
+        .trim("No se permiten espacios al inicio o final")
         .matches(
           /^[A-Z]{3}-\d{4}$/,
           "Formato de placa inválido. Ejemplo: PRT-9888"
         )
         .required("La placa es obligatoria"),
       cooperativa: Yup.string()
+        .trim("No se permiten espacios al inicio o final")
         .matches(onlyLetters, "Solo se permiten letras")
+        .min(3, "La cooperativa debe tener al menos 3 caracteres")
+        .max(30, "La cooperativa no debe superar los 30 caracteres")
         .required("La cooperativa es obligatoria"),
       esReemplazo: Yup.string()
         .oneOf(["Sí", "No"], "Seleccione una opción válida")
         .required("Seleccione una opción"),
-      rutaAsignada: Yup.string().when("esReemplazo", (esReemplazo, schema) =>
-        esReemplazo === "No"
-          ? schema
-              .required("La ruta es obligatoria")
-              .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12")
-          : schema.notRequired()
-      ),
-      sectoresRuta: Yup.string().when("esReemplazo", (esReemplazo, schema) =>
-        esReemplazo === "No"
-          ? schema
-              .matches(onlyLetters, "Solo se permiten letras")
-              .required("El sector es obligatorio")
-          : schema.notRequired()
-      ),
+      rutaAsignada: Yup.string().when("esReemplazo", {
+        is: "No",
+        then: (schema) =>
+          schema
+            .trim("No se permiten espacios al inicio o final")
+            .required("La ruta es obligatoria")
+            .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12"),
+        otherwise: (schema) => schema.notRequired().nullable(),
+      }),
+      sectoresRuta: Yup.string().when("esReemplazo", {
+        is: "No",
+        then: (schema) =>
+          schema
+            .trim("No se permiten espacios al inicio o final")
+            .matches(sectorRegex,"Solo se permiten letras y números")
+            .min(3, "El sector debe tener al menos 3 caracteres")
+            .max(30, "El sector no debe superar los 30 caracteres")
+            .required("El sector es obligatorio"),
+        otherwise: (schema) => schema.notRequired().nullable(),
+      }),
     }),
   ];
 
@@ -127,17 +147,28 @@ const FormularioRegistro = () => {
       } catch (error) {
         if (error.response && error.response.data) {
           const backendResponse = error.response.data;
+          // Mostrar todos los mensajes posibles
           if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
             backendResponse.errors.forEach((err) => {
               toast.error(err.msg || err);
             });
-          } else if (backendResponse.msg_registro_conductor) {
+          }
+          if (backendResponse.msg_registro_conductor) {
             toast.error(backendResponse.msg_registro_conductor);
-          } else if (backendResponse.msg_registro_representante) {
+          }
+          if (backendResponse.msg_registro_representante) {
             toast.error(backendResponse.msg_registro_representante);
-          } else if (backendResponse.msg) {
+          }
+          if (backendResponse.msg) {
             toast.error(backendResponse.msg);
-          } else {
+          }
+          // Si hay un error genérico
+          if (
+            !backendResponse.errors &&
+            !backendResponse.msg_registro_conductor &&
+            !backendResponse.msg_registro_representante &&
+            !backendResponse.msg
+          ) {
             toast.error(
               "Error desconocido. Por favor, verifica los datos e intenta nuevamente."
             );
@@ -171,6 +202,13 @@ const FormularioRegistro = () => {
     if (file) setImagenPreview(URL.createObjectURL(file));
     else setImagenPreview(null);
   };
+
+  React.useEffect(() => {
+    if (formik.values.esReemplazo === "Sí") {
+      formik.setFieldValue("rutaAsignada", "");
+      formik.setFieldValue("sectoresRuta", "");
+    }
+  }, [formik.values.esReemplazo]);
 
   const progress = (step / 3) * 100;
 

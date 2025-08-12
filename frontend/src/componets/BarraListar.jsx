@@ -16,28 +16,44 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const onlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const placaRegex = /^[A-Z]{3}-\d{4}$/;
+const sectorRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s]+$/;
 
 const perfilSchema = Yup.object({
   nombre: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(20, "El nombre no debe superar los 20 caracteres")
     .notRequired(),
   apellido: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "El apellido debe tener al menos 3 caracteres")
+    .max(20, "El apellido no debe superar los 20 caracteres")
     .notRequired(),
   cedula: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(/^\d{10}$/, "La cédula debe tener 10 dígitos")
     .notRequired(),
   cooperativa: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(onlyLetters, "Solo se permiten letras")
+    .min(3, "La cooperativa debe tener al menos 3 caracteres")
+    .max(30, "La cooperativa no debe superar los 30 caracteres")
     .notRequired(),
   placaAutomovil: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(placaRegex, "Formato de placa inválido. Ejemplo: PRT-9888")
     .notRequired(),
   rutaAsignada: Yup.string()
+    .trim("No se permiten espacios al inicio o final")
     .matches(/^(1[0-2]|[1-9])$/, "Solo hay rutas del 1 al 12")
     .notRequired(),
   sectoresRuta: Yup.string()
-    .matches(onlyLetters, "Solo se permiten letras")
+    .trim("No se permiten espacios al inicio o final")
+    .matches(sectorRegex, "Solo se permiten letras y números")
+    .min(3, "El sector debe tener al menos 3 caracteres")
+    .max(30, "El sector no debe superar los 30 caracteres")
     .notRequired(),
 });
 
@@ -308,11 +324,34 @@ const BarraListar = () => {
           errors[err.path] = err.message;
         });
         setFormErrors(errors);
+      } else if (error.response && error.response.data) {
+        const backendResponse = error.response.data;
+        // Mostrar todos los mensajes posibles del backend
+        if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
+          backendResponse.errors.forEach((err) => {
+            toast.error(err.msg || err);
+          });
+        }
+        if (backendResponse.msg_actualizacion_conductor) {
+          toast.error(backendResponse.msg_actualizacion_conductor);
+        }
+        if (backendResponse.msg_registro_conductor) {
+          toast.error(backendResponse.msg_registro_conductor);
+        }
+        if (backendResponse.msg) {
+          toast.error(backendResponse.msg);
+        }
+        // Si hay un error genérico
+        if (
+          !backendResponse.errors &&
+          !backendResponse.msg_actualizacion_conductor &&
+          !backendResponse.msg_registro_conductor &&
+          !backendResponse.msg
+        ) {
+          toast.error("Error desconocido. Por favor, verifica los datos e intenta nuevamente.");
+        }
       } else {
-        toast.error(
-          error?.response?.data?.msg_actualizacion_conductor ||
-            "Error al actualizar el conductor."
-        );
+        toast.error("Error de red. Por favor, intenta nuevamente.");
       }
     }
   };
@@ -379,10 +418,6 @@ const BarraListar = () => {
             ? { eliminacionAdminSaliente }
             : {};
 
-        // Log para depuración
-        console.log("Enviando PATCH a:", url);
-        console.log("Body:", body);
-
         const respuesta = await axios.patch(url, body, options);
 
         Swal.fire({
@@ -397,13 +432,31 @@ const BarraListar = () => {
         });
       }
     } catch (error) {
-      // Mostrar mensaje exacto del backend si existe
-      const msg =
-        error?.response?.data?.msg_actualizacion_conductor ||
-        error?.response?.data?.msg ||
-        "Error al asignar privilegios de administrador.";
-      toast.error(msg);
-
+      // Mostrar todos los mensajes posibles del backend
+      if (error.response && error.response.data) {
+        const backendResponse = error.response.data;
+        if (backendResponse.errors && Array.isArray(backendResponse.errors)) {
+          backendResponse.errors.forEach((err) => {
+            toast.error(err.msg || err);
+          });
+        }
+        if (backendResponse.msg_actualizacion_conductor) {
+          toast.error(backendResponse.msg_actualizacion_conductor);
+        }
+        if (backendResponse.msg) {
+          toast.error(backendResponse.msg);
+        }
+        // Si hay un error genérico
+        if (
+          !backendResponse.errors &&
+          !backendResponse.msg_actualizacion_conductor &&
+          !backendResponse.msg
+        ) {
+          toast.error("Error desconocido. Por favor, verifica los datos e intenta nuevamente.");
+        }
+      } else {
+        toast.error("Error de red. Por favor, intenta nuevamente.");
+      }
       // Log para depuración
       console.error("Error al asignar admin:", error?.response?.data || error);
     }
