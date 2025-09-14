@@ -60,6 +60,70 @@ Para ejecutar este proyecto, se necesita añadir la siguiente variable de entorn
 
 `VITE_URL_BACKEND`
 
+
+## Manual de Instalación
+
+### Requisitos Previos
+
+- Node.js >= 18.x
+- npm >= 9.x
+- Acceso a la terminal (CMD, PowerShell o terminal integrada de VS Code)
+- Editor de código recomendado: Visual Studio Code
+
+### Pasos para la Instalación
+
+1. **Clona el repositorio**
+   ```bash
+   git clone <URL-del-repositorio>
+   cd Proyecto Fontend/frontend
+   ```
+
+2. **Instala las dependencias**
+   ```bash
+   npm install
+   ```
+
+3. **Configura las variables de entorno**
+   - Copia el archivo `.env.example` y renómbralo como `.env`.
+   - Edita el archivo `.env` y agrega la URL de tu backend:
+     ```
+     VITE_URL_BACKEND=http://localhost:3000
+     ```
+
+4. **Inicia el proyecto**
+   ```bash
+   npm run dev
+   ```
+   - El proyecto estará disponible en `http://localhost:5173` (por defecto).
+
+### Estructura del Proyecto
+
+```
+frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── componets/
+│   │   ├── context/
+│   │   ├── layout/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── Styles/
+│   │   └── TextAnimations/
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+```
+
+### Solución de Problemas Comunes
+
+- Si tienes problemas con dependencias, ejecuta:
+  ```bash
+  npm install --force
+  ```
+- Si el frontend no conecta con el backend, revisa la variable `VITE_URL_BACKEND` en `.env`.
+
+
+
 ## Contenido
 
 Para la realización del frontend, el sistema está dividido en secciones destinadas al administrador, quien tiene acceso a las siguientes pantallas:
@@ -74,9 +138,9 @@ Para la realización del frontend, el sistema está dividido en secciones destin
 
 
 
-## Documentation
+## Video de Uso
 
-[Documentation](https://linktodocumentation)
+[Manual de Uso](https://youtu.be/HxKuDg8sBFk?si=M3jw2zP4iogGmwyZ)
 
 
 ## Autores
